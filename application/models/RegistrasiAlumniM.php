@@ -65,10 +65,12 @@ class RegistrasiAlumniM extends CI_Model
 
     public function updateAkun($id, $namaAlumni, $nama, $tahunLulus, $tanggal_sekarang) 
     {
-        $sp = "CALL ts_UpdateAlumni(?, ?, ?, ?, ?)";
-        $data = array('Pid' => $id, 'Pnama' => $namaAlumni, 'PnamaAdmin' => $nama, 'PtahunLulus' => $tahunLulus, 'Ptanggal_sekarang' => $tanggal_sekarang);
-
-        return $this->db->query($sp, $data);
+        return $this->db->query("UPDATE ts_registrasialumni
+                                 SET nama = '$namaAlumni',
+                                 tahun_lulus = '$tahunLulus',
+                                 modified_by = '$nama',
+                                 modified_date = '$tanggal_sekarang'
+                                 WHERE id = $id;");
     }
 }
 

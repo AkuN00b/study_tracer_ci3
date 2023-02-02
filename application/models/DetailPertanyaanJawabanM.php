@@ -19,6 +19,15 @@ class DetailPertanyaanJawabanM extends CI_Model
         return $this->db->get_where($this->_table, array('id_detailPertanyaanJawaban' => $id));
     }
 
+    public function getDTP($idJawaban) 
+    {
+        return $this->db->query("SELECT pku.id_pku, pku.kode, pku.deskripsiPertanyaan, pku.jenis, djp.id_jawabankuesioner
+                                 FROM ts_detailpertanyaanjawaban djp
+                                 INNER JOIN ts_pertanyaankuesioner pku ON pku.id_pku = djp.id_pku_answer
+                                 WHERE djp.id_jawabankuesioner = '$idJawaban' AND djp.status = 'Aktif' AND pku.status = 'Aktif' AND pku.pertanyaan_utama = 'Tidak'
+                                 ORDER BY djp.id_pku_answer ASC");
+    }
+
     public function save($nama, $id_jawabanKuesioner, $id_pku_answer, $tanggal_sekarang)
     {
       	$sp = "CALL ts_InsertDetailPertanyaanJawaban(?, ?, ?, ?)";

@@ -24,6 +24,7 @@ class Alumni extends CI_Controller {
 		parent::__construct();
 
 		$this->load->model("DetailJenisPeriodeM");
+		$this->load->model("DetailPertanyaanJawabanM");
 		$this->load->model("HasilKuesionerM");
 		$this->load->model("PertanyaanKuesionerM");
 		$this->load->model("JawabanKuesionerM");
@@ -84,13 +85,83 @@ class Alumni extends CI_Controller {
 	{
 		$result = $this->PertanyaanKuesionerM->getUtama($id)->result();
 		$data = array();
+
 		foreach ($result as $row) {
-			 $data[] = array
-			 	('id_pku' => $row->id_pku,
-			 	 'pertanyaan' => $row->deskripsiPertanyaan,
-			 	 'jenis' => $row->jenis,
-			 	 'kode' => $row->kode,
-				 'jawaban' => array('data' => $this->JawabanKuesionerM->getJawaban($row->id_pku)->result()));
+			$data2 = array();
+			$result2 = $this->JawabanKuesionerM->getJawaban($row->id_pku)->result();
+
+			foreach ($result2 as $row2) {
+				$data3 = array();
+				$result3 = $this->DetailPertanyaanJawabanM->getDTP($row2->id_jawabanKuesioner)->result();
+
+				foreach ($result3 as $row3) {
+					$data4 = array();
+					$result4 = $this->JawabanKuesionerM->getJawaban($row3->id_pku)->result();
+
+					foreach ($result4 as $row4) {
+						$data5 = array();
+						$result5 = $this->DetailPertanyaanJawabanM->getDTP($row4->id_jawabanKuesioner)->result();
+
+						foreach ($result5 as $row5) {
+							$data6 = array();
+							$result6 = $this->JawabanKuesionerM->getJawaban($row5->id_pku)->result();
+
+							foreach ($result6 as $row6) {
+								$data6[] = array (
+									'id_jawabanKuesioner' => $row4->id_jawabanKuesioner,
+									'nilaiJawaban' => $row4->nilaiJawaban,
+									'deskripsiJawaban' => $row4->deskripsiJawaban,
+									'textbox' => $row4->textbox,
+									'kode' => $row4->kode,
+								);
+							}
+
+							$data5[] = array (
+								'id_pku' => $row5->id_pku,
+							 	'pertanyaan' => $row5->deskripsiPertanyaan,
+							 	'jenis' => $row5->jenis,
+							 	'kode' => $row5->kode,
+							 	'jawaban_pertanyaan_turunan_2' => $data6,
+							);
+						}
+
+						$data4[] = array (
+							'id_jawabanKuesioner' => $row4->id_jawabanKuesioner,
+							'nilaiJawaban' => $row4->nilaiJawaban,
+							'deskripsiJawaban' => $row4->deskripsiJawaban,
+							'textbox' => $row4->textbox,
+							'kode' => $row4->kode,
+							'pertanyaan_turunan_2' => $data5,
+						);
+					}
+
+					$data3[] = array (
+						'id_pku' => $row3->id_pku,
+					 	'pertanyaan' => $row3->deskripsiPertanyaan,
+					 	'jenis' => $row3->jenis,
+					 	'kode' => $row3->kode,
+					 	'jawaban_pertanyaan_turunan' => $data4,
+					);
+				}
+
+				$data2[] = array (
+					'id_jawabanKuesioner' => $row2->id_jawabanKuesioner,
+					'nilaiJawaban' => $row2->nilaiJawaban,
+					'deskripsiJawaban' => $row2->deskripsiJawaban,
+					'textbox' => $row2->textbox,
+					'kode' => $row2->kode,
+					'pertanyaan_turunan' => $data3,			
+				);
+			}
+
+			$data[] = array (
+				'id_pku' => $row->id_pku,
+			 	'pertanyaan' => $row->deskripsiPertanyaan,
+			 	'jenis' => $row->jenis,
+			 	'kode' => $row->kode,
+			 	'jawaban' => $data2,
+			);
+
 			// $data['test'] = $row->id_pku;
 		}
 	

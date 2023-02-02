@@ -65,7 +65,11 @@
 
 <span style="font-size: Larger; font-weight: bold;">Kuesioner Wajib</span><br><br>
 
-<div id="pertanyaan"></div>
+<div id="pertanyaan"></div><br><br>
+
+<span style="font-size: Larger; font-weight: bold;">Kuesioner Tambahan</span><br><br>
+
+<div id="pertanyaanTurunan"></div>
 
 <?php
 	$data = ob_get_clean();
@@ -92,23 +96,14 @@
 				const inputLainnya = document.createElement("input");
 				const enter = document.createElement("br");
 
+				// get pertanyaan utama
 				for (let i = 0; i < res.length; i++) {
 					const formGroup = document.createElement("div");
 					formGroup.setAttribute("class", "form-group");
 
-					if (res[i].jenis == "Radio Button") {
-						temp = "radio";
-					} else if (res[i].jenis == "Combo Box") {
-						temp = "select";
-					} else if (res[i].jenis == "Text Box") {
-						temp = "text";
-					} else if (res[i].jenis == "Text Area") {
-						temp = "textarea";
-					} else if (res[i].jenis == "Check Box") {
-						temp = "checkbox";
-					} else if (res[i].jenis == "DateTime Picker") {
-						temp = "date";
-					}
+					const select = document.createElement('select');
+					select.setAttribute("name", "jawabanKuesioner[]");
+					select.setAttribute("class", "form-control");
 
 					inputHiddenKodeValue.setAttribute("type", "hidden");
 					inputHiddenKodeValue.setAttribute("name", "kode[]");
@@ -118,30 +113,72 @@
 					ask.setAttribute("class", "mb-1");
 					ask.innerHTML = res[i].pertanyaan;
 					formGroup.innerHTML += ask.outerHTML;
-					// tanya.innerHTML += ask.outerHTML;
 
-					for (let j = 0; j < res[i].jawaban.data.length; j++) {
+					if (res[i].jenis == "Radio Button") {
+						temp = "radio";
+					} else if (res[i].jenis == "Combo Box") {
+						temp = "select";
+
+						const option = document.createElement("option");   						
+
+						option.value = "";
+						option.text = "-- Pilih " + res[i].pertanyaan + " --";
+
+						select.appendChild(option);
+					} else if (res[i].jenis == "Text Box") {
+						temp = "text";
+
+						const askTB = document.createElement("input");
+
+						askTB.setAttribute("name", "jawabanKuesioner[]");
+						askTB.setAttribute("type", temp);
+						askTB.setAttribute("class", "form-control");
+
+						formGroup.innerHTML += askTB.outerHTML;
+					} else if (res[i].jenis == "Text Area") {
+						temp = "textarea";
+
+						const textArea = document.createElement(temp);
+
+						textArea.setAttribute("name", "jawabanKuesioner[]");
+						textArea.setAttribute("rows", "7");
+						textArea.setAttribute("class", "form-control");
+
+						formGroup.innerHTML += textArea.outerHTML;
+					} else if (res[i].jenis == "Check Box") {
+						temp = "checkbox";
+					} else if (res[i].jenis == "DateTime Picker") {
+						temp = "date";
+					}
+
+					// get opsi jawaban dari pertanyaan utama
+					for (let j = 0; j < res[i].jawaban.length; j++) {
+						const ask1 = document.createElement("input");
+						const label = document.createElement("label");
+
 						if (temp == "radio") {
-							const ask1 = document.createElement("input");
-							const label = document.createElement("label");
-
 							ask1.setAttribute("name", "jawabanKuesioner[" + i + "]");
-							ask1.setAttribute("value", res[i].jawaban.data[j].nilaiJawaban);
+							ask1.setAttribute("value", res[i].jawaban[j].nilaiJawaban);
 							ask1.setAttribute("type", temp);
 							ask1.setAttribute("class", "mr-1");
-							ask1.setAttribute("id", "jawabanKuesioner[" + i + "]" + res[i].jawaban.data[j].nilaiJawaban);
+							ask1.setAttribute("id", "jawabanKuesioner[" + i + "]" + res[i].jawaban[j].nilaiJawaban);
 
-							label.setAttribute("for", "jawabanKuesioner[" + i + "]" + res[i].jawaban.data[j].nilaiJawaban);
-							label.innerHTML = res[i].jawaban.data[j].deskripsiJawaban;
-							// console.log("jawaban : "+ res[i].jawaban.data[j].deskripsiJawaban);
-						} else if (temp == "combo box") {
-							
+							label.setAttribute("for", "jawabanKuesioner[" + i + "]" + res[i].jawaban[j].nilaiJawaban);
+							label.innerHTML = res[i].jawaban[j].deskripsiJawaban;
+							// console.log("jawaban : "+ res[i].jawaban[j].deskripsiJawaban);
+						} else if (temp == "select") {
+    						const option = document.createElement("option");   						
+
+    						option.value = res[i].jawaban[j].nilaiJawaban;
+    						option.text = res[i].jawaban[j].deskripsiJawaban;
+
+							select.appendChild(option);
 						}
 
-						if (res[i].jawaban.data[j].textbox == "Ya") {
+						if (res[i].jawaban[j].textbox == "Ya") {
 							inputHiddenKodeValueJawaban.setAttribute("type", "hidden");
 							inputHiddenKodeValueJawaban.setAttribute("name", "kode[]");
-							inputHiddenKodeValueJawaban.setAttribute("value", res[i].jawaban.data[j].kode);
+							inputHiddenKodeValueJawaban.setAttribute("value", res[i].jawaban[j].kode);
 							formGroup.innerHTML += inputHiddenKodeValueJawaban.outerHTML;
 
 							inputLainnya.setAttribute("class", "ml-1");
@@ -152,17 +189,26 @@
 
 						if (temp == "radio") {
 							formGroup.innerHTML += ask1.outerHTML;
-						} else if (temp == "combo box") {
-
 						}
 
-						if (res[i].jawaban.data[j].textbox == "Ya") {
+						if (res[i].jawaban[j].textbox == "Ya") {
 							formGroup.innerHTML += label.outerHTML;
 							formGroup.innerHTML += inputLainnya.outerHTML + enter.outerHTML;
 						} else {
-							formGroup.innerHTML += label.outerHTML + enter.outerHTML;
+							if (temp == "radio") {
+								formGroup.innerHTML += label.outerHTML + enter.outerHTML;
+							}
 						}
-					}					
+
+						// get pertanyaan turunan dari opsi jawaban pertanyaan utama
+						// for (let k = 0; k < res[i].jawaban.length; k++) {
+							
+						// }
+					}	
+
+					if (temp == "select") {
+						formGroup.innerHTML += select.outerHTML;
+					}				
 
 					tanya.innerHTML += formGroup.outerHTML;
 				}

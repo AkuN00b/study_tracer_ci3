@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Generation Time: Feb 01, 2023 at 04:05 AM
+-- Generation Time: Feb 02, 2023 at 09:04 PM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.1
 
@@ -51,16 +51,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_DeleteJawabanKuesioner` (IN `Pid
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_DeletePertanyaanKuesioner` (IN `Pid` VARCHAR(10), IN `Pnama` VARCHAR(50), IN `Ptanggal_sekarang` DATETIME)  BEGIN
-	UPDATE ts_pertanyaankuesioner 
+	UPDATE ts_pertanyaankuesioner
     SET status = 'Tidak Aktif',
     modified_by = Pnama,
     modified_date = Ptanggal_sekarang
-    WHERE id_pku = Pid;	
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataAdmin` ()  BEGIN
-	SELECT *
-	FROM ts_admin;
+    WHERE id_pku = Pid;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataAlumni` ()  BEGIN
@@ -69,19 +64,18 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataAlumni` ()  BEGIN
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataDetailJenisPeriode` ()  BEGIN 
-	SELECT * FROM ts_detailjenisperiode ORDER BY id_detailPeriode ASC;
+	SELECT * FROM ts_detailjenisperiode;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataDetailPertanyaanJawaban` ()  BEGIN 
-	SELECT dpj.id_detailpertanyaanjawaban, pkuu.kode, jk.nilaiJawaban, jk.deskripsiJawaban, pku.kode AS kodee, pku.deskripsiPertanyaan, dpj.created_by, dpj.created_date, dpj.modified_by, dpj.modified_date, dpj.status
+	SELECT dpj.id_detailpertanyaanjawaban, pkuu.kode AS kodee, jk.nilaiJawaban, jk.deskripsiJawaban, pku.kode, pku.deskripsiPertanyaan, dpj.created_by, dpj.created_date, dpj.modified_by, dpj.modified_date, dpj.status
     FROM ts_detailpertanyaanjawaban dpj
     INNER JOIN ts_jawabankuesioner jk ON 
     	jk.id_jawabankuesioner = dpj.id_jawabankuesioner
 	INNER JOIN ts_pertanyaankuesioner pku ON 
     	pku.id_pku = dpj.id_pku_answer
 	INNER JOIN ts_pertanyaankuesioner pkuu ON 
-    	pkuu.id_pku = jk.id_pku
-    ORDER BY dpj.id_detailPertanyaanJawaban ASC;
+    	pkuu.id_pku = jk.id_pku;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataForUpdateAlumni` (IN `Pid` INT)  BEGIN
@@ -91,19 +85,19 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataForUpdateAlumni` (IN `Pid
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataForUpdateDetailJenisPeriode` (IN `Pid` INT)  BEGIN
-	SELECT jenis_kuesioner, periode, status
+	SELECT jenis_kuesioner, periode
 	FROM ts_detailjenisperiode
 	WHERE id_detailperiode = Pid;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataForUpdateDetailPertanyaanJawaban` (IN `Pid` INT)  BEGIN
-	SELECT id_jawabankuesioner, id_pku_answer, status
+	SELECT id_jawabankuesioner, id_pku_answer 
     FROM ts_detailpertanyaanjawaban 
     WHERE id_detailpertanyaanjawaban = Pid;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataForUpdateJawabanKuesioner` (IN `Pid` VARCHAR(10))  BEGIN
-	SELECT id_pku, deskripsijawaban, kode, nilaijawaban, textbox, status
+	SELECT id_pku, deskripsijawaban, kode, nilaijawaban, textbox
 	FROM ts_jawabankuesioner
 	WHERE id_jawabankuesioner = Pid;
 END$$
@@ -117,59 +111,39 @@ END$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataJawabanKuesioner` ()  BEGIN
 	SELECT jk.id_jawabankuesioner, pku.kode AS kodepertanyaan, pku.deskripsipertanyaan, jk.deskripsijawaban, jk.kode, jk.nilaijawaban, jk.textbox, jk.created_by, jk.created_date, jk.modified_by, jk.modified_date, pku.id_pku, jk.status
     FROM ts_jawabankuesioner jk
-    INNER JOIN ts_pertanyaankuesioner pku ON jk.id_pku = pku.id_pku
-    ORDER BY jk.id_jawabanKuesioner ASC;
+    INNER JOIN ts_pertanyaankuesioner pku ON jk.id_pku = pku.id_pku;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataPertanyaanKuesioner` ()  BEGIN
 	SELECT pku.id_pku, pku.deskripsiPertanyaan, pku.jenis, pku.kode, dp.jenis_kuesioner, dp.periode, pku.pertanyaan_utama, pku.created_by, pku.created_date, pku.modified_by, pku.modified_date, pku.status
     FROM ts_pertanyaanKuesioner pku
 	INNER JOIN ts_detailJenisPeriode dp 
-    	ON dp.id_detailPeriode = pku.id_detailPeriode
-    ORDER BY pku.id_pku ASC;
+    	ON dp.id_detailPeriode = pku.id_detailPeriode;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataPertanyaanKuesionerTidakUtama` ()  BEGIN
-	SELECT pku.id_pku, pku.deskripsiPertanyaan, pku.jenis, pku.kode, dp.jenis_kuesioner, dp.periode, pku.pertanyaan_utama, pku.created_by, pku.created_date, pku.modified_by, pku.modified_date
-    FROM ts_pertanyaanKuesioner pku
-	INNER JOIN ts_detailJenisPeriode dp ON 
-    	dp.id_detailPeriode= pku.id_detailPeriode
-    WHERE pku.pertanyaan_utama = 'Tidak';
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataRegistrasiAlumni` ()  BEGIN
-	SELECT *
-	FROM ts_registrasiAlumni
-    ORDER BY id ASC;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_InsertDetailJenisPeriode` (IN `Pnama` VARCHAR(50), IN `Pjenis_kuesioner` VARCHAR(30), IN `Pperiode` INT(4), IN `Ptanggal_sekarang` DATETIME)  BEGIN
-	INSERT INTO ts_detailJenisPeriode 
-    	(jenis_kuesioner, periode, created_by, 
-         created_date, modified_by, modified_date, status)
-	VALUES 
-    	(Pjenis_kuesioner, Pperiode, Pnama, Ptanggal_sekarang, Pnama, Ptanggal_sekarang, 'Aktif');
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_InsertDetailJenisPeriode` (IN `Pnama` VARCHAR(50), IN `Pjenis_kuesioner` VARCHAR(30), IN `Pperiode` INT(11), IN `Ptanggal_sekarang` DATETIME)  BEGIN
+	INSERT INTO ts_detailjenisperiode
+    	(jenis_kuesioner, periode, created_by, created_date, modified_by, modified_date, status)
+    	VALUES (Pjenis_kuesioner, Pperiode, Pnama, Ptanggal_sekarang, Pnama, Ptanggal_sekarang, 'Aktif');
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_InsertDetailPertanyaanJawaban` (IN `Pnama` VARCHAR(50), IN `Pid_jawabanKuesioner` VARCHAR(10), IN `Pid_pku_answer` VARCHAR(10), IN `Ptanggal_sekarang` DATETIME)  BEGIN
-	INSERT INTO ts_detailPertanyaanJawaban
-		(id_jawabanKuesioner, id_pku_answer, created_by,
-         created_date, modified_by, modified_date, status)
-	VALUES
-		(Pid_jawabanKuesioner, Pid_pku_answer, Pnama, Ptanggal_sekarang,
-         Pnama, Ptanggal_sekarang, 'Aktif');
+	INSERT INTO ts_detailpertanyaanjawaban
+    	(id_jawabankuesioner, id_pku_answer, created_by, created_date, modified_by, modified_date, status)
+        VALUES
+        	(Pid_jawabanKuesioner, Pid_pku_answer, Pnama, Ptanggal_sekarang, Pnama, Ptanggal_sekarang, 'Aktif');
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_InsertJawabanKuesioner` (IN `Pid_jawabanKuesioner` VARCHAR(10), IN `Pid_pku` VARCHAR(10), IN `PdeskripsiJawaban` TEXT, IN `Pkode` VARCHAR(10), IN `PnilaiJawaban` TEXT, IN `Ptextbox` VARCHAR(10), IN `Pnama` VARCHAR(50), IN `Ptanggal_sekarang` DATETIME)  BEGIN
-	INSERT INTO ts_jawabanKuesioner
-		VALUES (PdeskripsiJawaban, Pid_jawabanKuesioner, Pid_pku, 
-                Pkode, Ptextbox, PnilaiJawaban,
-                Pnama, Ptanggal_sekarang, Pnama, Ptanggal_sekarang, 'Aktif');
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_InsertJawabanKuesioner` (IN `Pid` VARCHAR(10), IN `Pid_pku` VARCHAR(10), IN `PdeskripsiJawaban` TEXT, IN `Pkode` VARCHAR(10), IN `PnilaiJawaban` TEXT, IN `Ptextbox` VARCHAR(11), IN `Pnama` VARCHAR(50), IN `Ptanggal_sekarang` DATETIME)  BEGIN
+	INSERT INTO ts_jawabankuesioner
+    VALUES
+    	(PdeskripsiJawaban, Pid, Pid_pku, Pkode, Ptextbox, PnilaiJawaban, Pnama, Ptanggal_sekarang, Pnama, Ptanggal_sekarang, 'Aktif');
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_InsertPertanyaanKuesioner` (IN `Pid_pku` VARCHAR(10), IN `PdeskripsiPertanyaan` TEXT, IN `Pjenis` VARCHAR(30), IN `Pkode` TEXT, IN `Pid_detailPeriode` INT, IN `Ppertanyaan_utama` VARCHAR(11), IN `Pnama` VARCHAR(50), IN `Ptanggal_sekarang` DATETIME)  BEGIN
-	INSERT INTO ts_pertanyaanKuesioner
-		VALUES (PdeskripsiPertanyaan, Pid_pku, Pkode, Pid_detailPeriode, Ppertanyaan_utama, Pjenis, Pnama, Ptanggal_sekarang, Pnama, Ptanggal_sekarang, 'Aktif');
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_InsertPertanyaanKuesioner` (IN `Pid_pku` VARCHAR(10), IN `PdeskripsiPertanyaan` TEXT, IN `Pjenis` VARCHAR(30), IN `Pkode` TEXT, IN `Pid_detailPeriode` INT(11), IN `Ppertanyaan_utama` VARCHAR(11), IN `Pnama` VARCHAR(50), IN `Ptanggal_sekarang` DATETIME)  BEGIN
+	INSERT INTO ts_pertanyaankuesioner
+    VALUES
+		(PdeskripsiPertanyaan, Pid_pku, Pkode, Pid_detailPeriode, Ppertanyaan_utama, Pjenis, Pnama, Ptanggal_sekarang, Pnama, Ptanggal_sekarang, 'Aktif');
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_InsertRegistrasiAlumni` (IN `Pnim` VARCHAR(10), IN `Pnik` VARCHAR(16), IN `Pnama` VARCHAR(100), IN `Palamat` TEXT, IN `Ptanggal_lahir` DATE, IN `Ptahun_lulus` VARCHAR(4), IN `Pemail` VARCHAR(100), IN `Ppassword` VARCHAR(200), IN `Ptelepon` VARCHAR(13), IN `Pstatus` VARCHAR(30), IN `Ptanggal_sekarang` DATETIME)  BEGIN
@@ -177,82 +151,6 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_InsertRegistrasiAlumni` (IN `Pni
 	(nim, nik, nama, alamat, tanggal_lahir, tahun_lulus, email, password, status, telepon, created_by, created_date, modified_by, modified_date)
     VALUES
     (Pnim, Pnik, Pnama, Palamat, Ptanggal_lahir, Ptahun_lulus, Pemail, Ppassword, Pstatus, Ptelepon, Pnama, Ptanggal_sekarang, Pnama, Ptanggal_sekarang);
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_UpdateAlumni` (IN `Pid` INT, IN `Pnama` VARCHAR(100), IN `PnamaAdmin` VARCHAR(100), IN `PtahunLulus` INT, IN `Ptanggal_sekarang` DATETIME)  BEGIN
-	UPDATE ts_registrasiAlumni
-	SET 
-	nama = Pnama,
-	tahun_lulus = PtahunLulus,
-	modified_by = PnamaAdmin,
-	modified_date = Ptanggal_sekarang
-	WHERE id = Pid;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_UpdateAlumniDiterima` (IN `Pid` INT, IN `PnamaAdmin` VARCHAR(100), IN `Ptanggal_sekarang` DATETIME)  BEGIN
-	UPDATE ts_registrasiAlumni
-	SET status = 'Diterima',
-	modified_by = PnamaAdmin,
-	modified_date = Ptanggal_sekarang
-	WHERE id = Pid;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_UpdateAlumniDitolak` (IN `Pid` INT, IN `PnamaAdmin` VARCHAR(100), IN `Ptanggal_sekarang` DATETIME)  BEGIN
-	UPDATE ts_registrasiAlumni
-	SET status = 'Ditolak',
-	modified_by = PnamaAdmin,
-	modified_date = Ptanggal_sekarang 
-	WHERE id = Pid;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_UpdateAlumniResetPassword` (IN `Pid` INT, IN `Ppassword` VARCHAR(200), IN `PnamaAdmin` VARCHAR(100), IN `Ptanggal_sekarang` DATETIME)  BEGIN
-	UPDATE ts_registrasiAlumni
-	SET password = Ppassword,
-	modified_by = PnamaAdmin,
-	modified_date = Ptanggal_sekarang
-	WHERE id = Pid;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_UpdateDetailJenisPeriode` (IN `Pid` INT, IN `Pnama` VARCHAR(50), IN `Pjenis_kuesioner` VARCHAR(30), IN `Pperiode` INT, IN `Ptanggal_sekarang` DATETIME)  BEGIN
-	UPDATE ts_detailJenisPeriode 
-		SET jenis_kuesioner = Pjenis_kuesioner,
-			periode = Pperiode,
-			modified_by = Pnama,
-			modified_date = Ptanggal_sekarang
-	WHERE id_detailPeriode = Pid;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_UpdateDetailPertanyaanJawaban` (IN `Pid` INT, IN `Pnama` VARCHAR(50), IN `Pid_jawabanKuesioner` VARCHAR(10), IN `Pid_pku_answer` VARCHAR(10), IN `Ptanggal_sekarang` DATETIME)  BEGIN
-	UPDATE ts_detailPertanyaanJawaban
-	SET id_jawabanKuesioner = Pid_jawabanKuesioner,
-		id_pku_answer = Pid_pku_answer,
-		modified_by = Pnama,
-		modified_date = Ptanggal_sekarang
-	WHERE id_detailPertanyaanJawaban = Pid;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_UpdateJawabanKuesioner` (IN `Pid` VARCHAR(10), IN `Pid_pku` VARCHAR(10), IN `PdeskripsiJawaban` TEXT, IN `Pkode` VARCHAR(10), IN `PnilaiJawaban` TEXT, IN `Ptextbox` VARCHAR(10), IN `Pnama` VARCHAR(50), IN `Ptanggal_sekarang` DATETIME)  BEGIN
-	UPDATE ts_jawabanKuesioner
-	SET id_pku = Pid_pku,
-		deskripsiJawaban = PdeskripsiJawaban,
-		kode = Pkode,
-		nilaiJawaban = PnilaiJawaban,
-		textbox = Ptextbox,
-		modified_by = Pnama,
-		modified_date = Ptanggal_sekarang
-	WHERE id_jawabanKuesioner = Pid;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_UpdatePertanyaanKuesioner` (IN `Pid` VARCHAR(10), IN `PdeskripsiPertanyaan` TEXT, IN `Pjenis` VARCHAR(30), IN `Pkode` TEXT, IN `Pid_detailPeriode` INT, IN `Ppertanyaan_utama` VARCHAR(11), IN `Pnama` VARCHAR(50), IN `Ptanggal_sekarang` DATETIME)  BEGIN
-	UPDATE ts_pertanyaanKuesioner
-	SET deskripsiPertanyaan = PdeskripsiPertanyaan,
-		jenis = Pjenis,
-		kode = Pkode,
-		id_detailPeriode = Pid_detailPeriode,
-		pertanyaan_utama = Ppertanyaan_utama,
-		modified_by = Pnama,
-		modified_date = Ptanggal_sekarang
-	WHERE id_pku = Pid;
 END$$
 
 DELIMITER ;
@@ -304,7 +202,8 @@ INSERT INTO `ts_detailjenisperiode` (`id_detailPeriode`, `jenis_kuesioner`, `per
 (1, 'Polman', 2023, 'nama1', '2023-01-29 10:53:41', 'nama1', '2023-01-29 19:12:11', 'Tidak Aktif'),
 (2, 'Polman', 2025, 'nama1', '2023-01-29 18:20:45', 'nama1', '2023-01-29 19:11:52', 'Tidak Aktif'),
 (3, 'Polman', 2023, 'nama1', '2023-01-29 20:00:46', 'nama1', '2023-01-29 20:00:46', 'Aktif'),
-(4, 'Dikti', 2023, 'nama1', '2023-01-29 20:00:53', 'nama1', '2023-01-29 20:00:53', 'Aktif');
+(4, 'Dikti', 2023, 'nama1', '2023-01-29 20:00:53', 'nama1', '2023-01-29 20:00:53', 'Aktif'),
+(5, 'Dikti', 112, 'nama1', '2023-02-03 01:28:57', 'nama1', '2023-02-03 01:29:06', 'Tidak Aktif');
 
 -- --------------------------------------------------------
 
@@ -348,7 +247,8 @@ INSERT INTO `ts_detailpertanyaanjawaban` (`id_detailPertanyaanJawaban`, `id_jawa
 (18, 'JK005', 'PKU010', 'nama1', '2023-01-31 16:07:46', 'nama1', '2023-01-31 16:07:46', 'Aktif'),
 (19, 'JK005', 'PKU009', 'nama1', '2023-01-31 16:07:53', 'nama1', '2023-01-31 16:07:53', 'Aktif'),
 (20, 'JK011', 'PKU007', 'nama1', '2023-01-31 16:08:04', 'nama1', '2023-01-31 16:08:04', 'Aktif'),
-(21, 'JK005', 'PKU006', 'nama1', '2023-01-31 16:08:13', 'nama1', '2023-01-31 16:08:13', 'Aktif');
+(21, 'JK005', 'PKU006', 'nama1', '2023-01-31 16:08:13', 'nama1', '2023-01-31 16:08:13', 'Aktif'),
+(22, 'JK010', 'PKU012', 'nama1', '2023-02-03 01:34:42', 'nama1', '2023-02-03 01:35:23', 'Tidak Aktif');
 
 -- --------------------------------------------------------
 
@@ -596,7 +496,8 @@ INSERT INTO `ts_jawabankuesioner` (`deskripsiJawaban`, `id_jawabanKuesioner`, `i
 ('Foreman / Service Advisor', 'JK202', 'PKU061', '', 'Tidak', 'Foreman / Service Advisor', 'nama1', '2023-02-01 08:26:27', 'nama1', '2023-02-01 08:26:27', 'Aktif'),
 ('Teknisi Maintenance', 'JK203', 'PKU061', '', 'Tidak', 'Teknisi Maintenance', 'nama1', '2023-02-01 08:26:47', 'nama1', '2023-02-01 08:26:47', 'Aktif'),
 ('Guru / Instruktur / Dosen', 'JK204', 'PKU061', '', 'Tidak', 'Guru / Instruktur / Dosen', 'nama1', '2023-02-01 08:27:34', 'nama1', '2023-02-01 08:27:34', 'Aktif'),
-('Supervisor', 'JK205', 'PKU061', '', 'Tidak', 'Supervisor', 'nama1', '2023-02-01 08:28:31', 'nama1', '2023-02-01 08:28:31', 'Aktif');
+('Supervisor', 'JK205', 'PKU061', '', 'Tidak', 'Supervisor', 'nama1', '2023-02-01 08:28:31', 'nama1', '2023-02-01 08:28:31', 'Aktif'),
+('des99', 'JK206', 'PKU027', 'kod199', 'Ya', '119', 'nama1', '2023-02-03 01:27:35', 'nama1', '2023-02-03 01:28:36', 'Tidak Aktif');
 
 -- --------------------------------------------------------
 
@@ -712,7 +613,8 @@ INSERT INTO `ts_pertanyaankuesioner` (`deskripsiPertanyaan`, `id_pku`, `kode`, `
 ('Dalam 2 tahun setelah lulus sudah berapa kali pindah perusahaan? (Deskripsikan)', 'PKU059', 'Dalam 2 tahun setelah lulus sudah berapa kali pindah perusahaan? (Deskripsikan)', 3, 'Ya', 'Text Box', 'nama1', '2023-02-01 06:15:06', 'nama1', '2023-02-01 06:15:06', 'Aktif'),
 ('Pilihlah hadiah yang menarik bagi alumni ! (Lucky Draw)', 'PKU060', 'Pilihlah hadiah yang menarik bagi alumni ! (Lucky Draw)', 3, 'Ya', 'Combo Box', 'nama1', '2023-02-01 06:15:29', 'nama1', '2023-02-01 06:15:29', 'Aktif'),
 ('Posisi anda di perusahaan disaat anda pertama kali mendapat pekerjaan?', 'PKU061', 'Posisi anda di perusahaan disaat anda pertama kali mendapat pekerjaan?', 3, 'Ya', 'Combo Box', 'nama1', '2023-02-01 06:16:06', 'nama1', '2023-02-01 06:21:20', 'Aktif'),
-('Deskripsi Pekerjaan', 'PKU062', 'Deskripsi Pekerjaan', 3, 'Ya', 'Text Area', 'nama1', '2023-02-01 06:16:31', 'nama1', '2023-02-01 06:16:31', 'Aktif');
+('Deskripsi Pekerjaan', 'PKU062', 'Deskripsi Pekerjaan', 3, 'Ya', 'Text Area', 'nama1', '2023-02-01 06:16:31', 'nama1', '2023-02-01 06:16:31', 'Aktif'),
+('tesy', 'PKU063', 'tesy', 4, 'Tidak', 'Combo Box', 'nama1', '2023-02-03 01:07:35', 'nama1', '2023-02-03 01:09:28', 'Tidak Aktif');
 
 -- --------------------------------------------------------
 
@@ -754,9 +656,10 @@ CREATE TABLE `ts_registrasialumni` (
 --
 
 INSERT INTO `ts_registrasialumni` (`alamat`, `email`, `id`, `nama`, `nik`, `nim`, `password`, `status`, `tahun_lulus`, `tanggal_lahir`, `telepon`, `created_by`, `created_date`, `modified_by`, `modified_date`) VALUES
-('alamat1', 'email1@gmail.com', 17, 'nama1', '1111111111111111', '0320180001', '79d06f8c00a355f8bf9dbb032780e5a5b62ebd46b76460fe664cacebaf41050b10e4697c46a24c406820d9b6a26feecd2564e24e9b06c545871c96e28ed06278lhecZnYC4vOD0UfOAM3EAoDVt8FhSoFpz1vSwvxV5Wk=', 'Belum Diverifikasi', '2021', '2000-08-11', '1111111111111', 'nama1', '2023-01-25 10:36:57', 'nama1', '2023-01-30 08:28:52'),
+('alamat1', 'email1@gmail.com', 17, 'nama1', '1111111111111111', '0320180001', '79d06f8c00a355f8bf9dbb032780e5a5b62ebd46b76460fe664cacebaf41050b10e4697c46a24c406820d9b6a26feecd2564e24e9b06c545871c96e28ed06278lhecZnYC4vOD0UfOAM3EAoDVt8FhSoFpz1vSwvxV5Wk=', 'Diterima', '2021', '2000-08-11', '1111111111111', 'nama1', '2023-01-25 10:36:57', 'nama1', '2023-02-03 01:39:57'),
 ('alamat2', 'email2@gmail.com', 18, 'nama2', '2222222222222222', '0320190002', '591d7c7c6396f4d1a877cf13b1fb36fe26f4634457fa30ced80b621e8a49e6d214e1adcc0425349d0d1af5795fd00437e9b5746a20f1a7adb9388c14b02d3852+tZEPzbTzx07FHkIUx+wsXciS8MpON74T5Y2xEsGa9o=', 'Diterima', '2022', '2001-07-18', '2222222222222', 'nama2', '2023-01-25 10:38:33', 'nama1', '2023-01-30 02:39:11'),
-('alamat3', 'email3@gmail.com', 19, 'nama23', '3333333333333333', '0320190001', '97fc174c4b7292f0eb4f03d45b8a3d2bce710952903da27c8fa276acf66414beb95a13a163ad67a61a515c0b885bd6b8e2d706d684c3feb7da7ee28db29b0a6dm6gPh7om+SBRyv6uKyckBJ+n+Vz833QusuUXhsXaHFU=', 'Ditolak', '2023', '2001-04-06', '3333333333333', 'nama3', '2023-01-27 16:41:47', 'nama1', '2023-01-30 08:09:24');
+('alamat3', 'email3@gmail.com', 19, 'nama23', '3333333333333333', '0320190001', '97fc174c4b7292f0eb4f03d45b8a3d2bce710952903da27c8fa276acf66414beb95a13a163ad67a61a515c0b885bd6b8e2d706d684c3feb7da7ee28db29b0a6dm6gPh7om+SBRyv6uKyckBJ+n+Vz833QusuUXhsXaHFU=', 'Ditolak', '2023', '2001-04-06', '3333333333333', 'nama3', '2023-01-27 16:41:47', 'nama1', '2023-01-30 08:09:24'),
+('alamat4', 'email4@gmail.com', 20, 'nama44', '4444444444444444', '0320190003', '1f7a828403151e7c01cb09905eb73968fa358ad240eb2ce724553b5894c558cc97122f4c9c52e9dd36c6a218ba1e1c8c873b6a9e4ea8a26853d4b8e94e7f1d0angw2YxQ5dTqOnDA72SDqtZYmy1Z4EpGbUyifihlqnzU=', 'Ditolak', '2023', '2001-06-14', '4444444444444', 'nama4', '2023-02-02 19:39:39', 'nama1', '2023-02-03 01:54:12');
 
 --
 -- Indexes for dumped tables
@@ -839,19 +742,19 @@ ALTER TABLE `ts_registrasialumni`
 -- AUTO_INCREMENT for table `ts_detailjenisperiode`
 --
 ALTER TABLE `ts_detailjenisperiode`
-  MODIFY `id_detailPeriode` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_detailPeriode` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `ts_detailpertanyaanjawaban`
 --
 ALTER TABLE `ts_detailpertanyaanjawaban`
-  MODIFY `id_detailPertanyaanJawaban` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id_detailPertanyaanJawaban` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `ts_registrasialumni`
 --
 ALTER TABLE `ts_registrasialumni`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- Constraints for dumped tables
