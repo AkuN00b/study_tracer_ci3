@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Generation Time: Feb 02, 2023 at 09:04 PM
+-- Generation Time: Feb 07, 2023 at 05:49 PM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.1
 
@@ -61,6 +61,149 @@ END$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataAlumni` ()  BEGIN
 	SELECT *
 	FROM ts_registrasialumni;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataAlumniTOP5` ()  BEGIN
+	SELECT *
+	FROM ts_registrasialumni
+    WHERE status = 'Belum Diverifikasi'
+    ORDER BY id ASC
+    LIMIT 5;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataDetailJenisPeriode` ()  BEGIN 
+	SELECT * FROM ts_detailjenisperiode;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataDetailPertanyaanJawaban` ()  BEGIN 
+	SELECT dpj.id_detailpertanyaanjawaban, pkuu.kode AS kodee, jk.nilaiJawaban, jk.deskripsiJawaban, pku.kode, pku.deskripsiPertanyaan, dpj.created_by, dpj.created_date, dpj.modified_by, dpj.modified_date, dpj.status
+    FROM ts_detailpertanyaanjawaban dpj
+    INNER JOIN ts_jawabankuesioner jk ON 
+    	jk.id_jawabankuesioner = dpj.id_jawabankuesioner
+	INNER JOIN ts_pertanyaankuesioner pku ON 
+    	pku.id_pku = dpj.id_pku_answer
+	INNER JOIN ts_pertanyaankuesioner pkuu ON 
+    	pkuu.id_pku = jk.id_pku;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataForUpdateAlumni` (IN `Pid` INT)  BEGIN
+	SELECT nama, tahun_lulus
+	FROM ts_registrasialumni
+	WHERE id = Pid;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataForUpdateDetailJenisPeriode` (IN `Pid` INT)  BEGIN
+	SELECT jenis_kuesioner, periode
+	FROM ts_detailjenisperiode
+	WHERE id_detailperiode = Pid;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataForUpdateDetailPertanyaanJawaban` (IN `Pid` INT)  BEGIN
+	SELECT id_jawabankuesioner, id_pku_answer 
+    FROM ts_detailpertanyaanjawaban 
+    WHERE id_detailpertanyaanjawaban = Pid;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataForUpdateJawabanKuesioner` (IN `Pid` VARCHAR(10))  BEGIN
+	SELECT id_pku, deskripsijawaban, kode, nilaijawaban, textbox
+	FROM ts_jawabankuesioner
+	WHERE id_jawabankuesioner = Pid;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataForUpdatePertanyaanKuesioner` (IN `Pid` VARCHAR(10))  BEGIN
+	SELECT deskripsipertanyaan, jenis, kode, id_detailperiode, pertanyaan_utama
+	FROM ts_pertanyaankuesioner
+	WHERE id_pku = Pid;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataJawabanKuesioner` ()  BEGIN
+	SELECT jk.id_jawabankuesioner, pku.kode AS kodepertanyaan, pku.deskripsipertanyaan, jk.deskripsijawaban, jk.kode, jk.nilaijawaban, jk.textbox, jk.created_by, jk.created_date, jk.modified_by, jk.modified_date, pku.id_pku, jk.status
+    FROM ts_jawabankuesioner jk
+    INNER JOIN ts_pertanyaankuesioner pku ON jk.id_pku = pku.id_pku;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataPertanyaanKuesioner` ()  BEGIN
+	SELECT pku.id_pku, pku.deskripsiPertanyaan, pku.jenis, pku.kode, dp.jenis_kuesioner, dp.periode, pku.pertanyaan_utama, pku.created_by, pku.created_date, pku.modified_by, pku.modified_date, pku.status
+    FROM ts_pertanyaanKuesioner pku
+	INNER JOIN ts_detailJenisPeriode dp 
+    	ON dp.id_detailPeriode = pku.id_detailPeriode;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_InsertDetailJenisPeriode` (IN `Pnama` VARCHAR(50), IN `Pjenis_kuesioner` VARCHAR(30), IN `Pperiode` INT(11), IN `Ptanggal_sekarang` DATETIME)  BEGIN
+	INSERT INTO ts_detailjenisperiode
+    	(jenis_kuesioner, periode, created_by, created_date, modified_by, modified_date, status)
+    	VALUES (Pjenis_kuesioner, Pperiode, Pnama, Ptanggal_sekarang, Pnama, Ptanggal_sekarang, 'Aktif');
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_InsertDetailPertanyaanJawaban` (IN `Pnama` VARCHAR(50), IN `Pid_jawabanKuesioner` VARCHAR(10), IN `Pid_pku_answer` VARCHAR(10), IN `Ptanggal_sekarang` DATETIME)  BEGIN
+	INSERT INTO ts_detailpertanyaanjawaban
+    	(id_jawabankuesioner, id_pku_answer, created_by, created_date, modified_by, modified_date, status)
+        VALUES
+        	(Pid_jawabanKuesioner, Pid_pku_answer, Pnama, Ptanggal_sekarang, Pnama, Ptanggal_sekarang, 'Aktif');
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_InsertJawabanKuesioner` (IN `Pid` VARCHAR(10), IN `Pid_pku` VARCHAR(10), IN `PdeskripsiJawaban` TEXT, IN `Pkode` VARCHAR(10), IN `PnilaiJawaban` TEXT, IN `Ptextbox` VARCHAR(11), IN `Pnama` VARCHAR(50), IN `Ptanggal_sekarang` DATETIME)  BEGIN
+	INSERT INTO ts_jawabankuesioner
+    VALUES
+    	(PdeskripsiJawaban, Pid, Pid_pku, Pkode, Ptextbox, PnilaiJawaban, Pnama, Ptanggal_sekarang, Pnama, Ptanggal_sekarang, 'Aktif');
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_InsertPertanyaanKuesioner` (IN `Pid_pku` VARCHAR(10), IN `PdeskripsiPertanyaan` TEXT, IN `Pjenis` VARCHAR(30), IN `Pkode` TEXT, IN `Pid_detailPeriode` INT(11), IN `Ppertanyaan_utama` VARCHAR(11), IN `Pnama` VARCHAR(50), IN `Ptanggal_sekarang` DATETIME)  BEGIN
+	INSERT INTO ts_pertanyaankuesioner
+    VALUES
+		(PdeskripsiPertanyaan, Pid_pku, Pkode, Pid_detailPeriode, Ppertanyaan_utama, Pjenis, Pnama, Ptanggal_sekarang, Pnama, Ptanggal_sekarang, 'Aktif');
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_InsertRegistrasiAlumni` (IN `Pnim` VARCHAR(10), IN `Pnik` VARCHAR(16), IN `Pnama` VARCHAR(100), IN `Palamat` TEXT, IN `Ptanggal_lahir` DATE, IN `Ptahun_lulus` VARCHAR(4), IN `Pemail` VARCHAR(100), IN `Ppassword` VARCHAR(200), IN `Ptelepon` VARCHAR(13), IN `Pstatus` VARCHAR(30), IN `Ptanggal_sekarang` DATETIME)  BEGIN
+	INSERT INTO ts_registrasialumni
+	(nim, nik, nama, alamat, tanggal_lahir, tahun_lulus, email, password, status, telepon, created_by, created_date, modified_by, modified_date)
+    VALUES
+    (Pnim, Pnik, Pnama, Palamat, Ptanggal_lahir, Ptahun_lulus, Pemail, Ppassword, Pstatus, Ptelepon, Pnama, Ptanggal_sekarang, Pnama, Ptanggal_sekarang);
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_DeleteDetailJenisPeriode` (IN `Pid` INT, IN `Pnama` VARCHAR(50), IN `Ptanggal_sekarang` DATETIME)  BEGIN
+	UPDATE ts_detailjenisperiode 
+    SET status = 'Tidak Aktif',
+    modified_by = Pnama,
+    modified_date = Ptanggal_sekarang
+    WHERE id_detailperiode = Pid;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_DeleteDetailPertanyaanJawaban` (IN `Pid` INT, IN `Pnama` VARCHAR(50), IN `Ptanggal_sekarang` DATETIME)  BEGIN
+	UPDATE ts_detailpertanyaanjawaban 
+    SET status = 'Tidak Aktif',
+    modified_by = Pnama,
+    modified_date = Ptanggal_sekarang
+    WHERE id_detailpertanyaanjawaban = Pid;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_DeleteJawabanKuesioner` (IN `Pid` VARCHAR(10), IN `Pnama` VARCHAR(50), IN `Ptanggal_sekarang` DATETIME)  BEGIN
+	UPDATE ts_jawabankuesioner
+    SET status = 'Tidak Aktif',
+    modified_by = Pnama,
+    modified_date = Ptanggal_sekarang
+    WHERE id_jawabankuesioner = Pid;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_DeletePertanyaanKuesioner` (IN `Pid` VARCHAR(10), IN `Pnama` VARCHAR(50), IN `Ptanggal_sekarang` DATETIME)  BEGIN
+	UPDATE ts_pertanyaankuesioner
+    SET status = 'Tidak Aktif',
+    modified_by = Pnama,
+    modified_date = Ptanggal_sekarang
+    WHERE id_pku = Pid;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataAlumni` ()  BEGIN
+	SELECT *
+	FROM ts_registrasialumni;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataAlumniTOP5` ()  BEGIN
+	SELECT *
+	FROM ts_registrasialumni
+    WHERE status = 'Belum Diverifikasi'
+    ORDER BY id ASC
+    LIMIT 5;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataDetailJenisPeriode` ()  BEGIN 
@@ -203,7 +346,12 @@ INSERT INTO `ts_detailjenisperiode` (`id_detailPeriode`, `jenis_kuesioner`, `per
 (2, 'Polman', 2025, 'nama1', '2023-01-29 18:20:45', 'nama1', '2023-01-29 19:11:52', 'Tidak Aktif'),
 (3, 'Polman', 2023, 'nama1', '2023-01-29 20:00:46', 'nama1', '2023-01-29 20:00:46', 'Aktif'),
 (4, 'Dikti', 2023, 'nama1', '2023-01-29 20:00:53', 'nama1', '2023-01-29 20:00:53', 'Aktif'),
-(5, 'Dikti', 112, 'nama1', '2023-02-03 01:28:57', 'nama1', '2023-02-03 01:29:06', 'Tidak Aktif');
+(5, 'Dikti', 112, 'nama1', '2023-02-03 01:28:57', 'nama1', '2023-02-03 01:29:06', 'Tidak Aktif'),
+(6, 'Dikti', 11, 'nama1', '2023-02-05 22:03:40', 'nama1', '2023-02-05 22:04:08', 'Tidak Aktif'),
+(7, 'Dikti', 22, 'nama1', '2023-02-06 22:47:12', 'nama1', '2023-02-06 22:49:27', 'Tidak Aktif'),
+(8, 'Dikti', 22, 'nama1', '2023-02-06 22:49:18', 'nama1', '2023-02-06 22:49:30', 'Tidak Aktif'),
+(9, 'Polman', 2024, 'nama1', '2023-02-07 09:02:42', 'nama1', '2023-02-07 09:02:42', 'Aktif'),
+(10, 'Dikti', 2024, 'nama1', '2023-02-07 09:04:45', 'nama1', '2023-02-07 09:04:45', 'Aktif');
 
 -- --------------------------------------------------------
 
@@ -248,7 +396,8 @@ INSERT INTO `ts_detailpertanyaanjawaban` (`id_detailPertanyaanJawaban`, `id_jawa
 (19, 'JK005', 'PKU009', 'nama1', '2023-01-31 16:07:53', 'nama1', '2023-01-31 16:07:53', 'Aktif'),
 (20, 'JK011', 'PKU007', 'nama1', '2023-01-31 16:08:04', 'nama1', '2023-01-31 16:08:04', 'Aktif'),
 (21, 'JK005', 'PKU006', 'nama1', '2023-01-31 16:08:13', 'nama1', '2023-01-31 16:08:13', 'Aktif'),
-(22, 'JK010', 'PKU012', 'nama1', '2023-02-03 01:34:42', 'nama1', '2023-02-03 01:35:23', 'Tidak Aktif');
+(22, 'JK010', 'PKU012', 'nama1', '2023-02-03 01:34:42', 'nama1', '2023-02-03 01:35:23', 'Tidak Aktif'),
+(23, 'JK005', 'PKU006', 'nama1', '2023-02-05 22:07:16', 'nama1', '2023-02-05 22:08:01', 'Tidak Aktif');
 
 -- --------------------------------------------------------
 
@@ -266,6 +415,16 @@ CREATE TABLE `ts_hasilkuesioner` (
   `modified_by` varchar(50) NOT NULL,
   `modified_date` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `ts_hasilkuesioner`
+--
+
+INSERT INTO `ts_hasilkuesioner` (`id_hasilKuesioner`, `id_detailPeriode`, `nim`, `tanggal_pengisian`, `created_by`, `created_date`, `modified_by`, `modified_date`) VALUES
+('HKU001', 4, '0320170002', '2023-02-07', 'Doni Septrian', '2023-02-07 00:45:21', 'Doni Septrian', '2023-02-07 00:45:21'),
+('HKU002', 3, '0320170002', '2023-02-07', 'Doni Septrian', '2023-02-07 00:47:26', 'Doni Septrian', '2023-02-07 00:47:26'),
+('HKU003', 3, '0320170007', '2023-02-07', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:31', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:31'),
+('HKU004', 4, '0320170007', '2023-02-07', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:35', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:35');
 
 -- --------------------------------------------------------
 
@@ -297,7 +456,7 @@ INSERT INTO `ts_jawabankuesioner` (`deskripsiJawaban`, `id_jawabanKuesioner`, `i
 ('dj3', 'JK003', 'PKU003', 'kj3', 'Ya', '3', 'nama1', '2023-01-30 00:19:54', 'nama1', '2023-01-31 08:51:45', 'Tidak Aktif'),
 ('dj444', 'JK004', 'PKU004', 'kj444', 'Tidak', '444', 'nama1', '2023-01-30 00:20:06', 'nama1', '2023-01-31 08:51:49', 'Tidak Aktif'),
 ('Bekerja (full time / part time)', 'JK005', 'PKU005', '', 'Tidak', '1', 'nama1', '2023-01-31 14:31:51', 'nama1', '2023-01-31 14:31:51', 'Aktif'),
-('Belum memungkinkan bekerja', 'JK006', 'PKU005', '', 'Tidak', '2', 'nama1', '2023-01-31 14:52:01', 'nama1', '2023-01-31 14:52:01', 'Aktif'),
+('Belum memungkinkan bekerja', 'JK006', 'PKU005', '', 'Tidak', '2', 'nama1', '2023-01-31 14:52:01', 'nama1', '2023-02-05 14:24:34', 'Aktif'),
 ('Wiraswasta', 'JK007', 'PKU005', '', 'Tidak', '3', 'nama1', '2023-01-31 14:52:15', 'nama1', '2023-01-31 14:52:15', 'Aktif'),
 ('Melanjutkan Pendidikan', 'JK008', 'PKU005', '', 'Tidak', '4', 'nama1', '2023-01-31 14:52:32', 'nama1', '2023-01-31 14:52:44', 'Aktif'),
 ('Tidak kerja tetapi sedang mencari kerja	', 'JK009', 'PKU005', '', 'Tidak', '5', 'nama1', '2023-01-31 14:53:01', 'nama1', '2023-01-31 14:53:01', 'Aktif'),
@@ -465,7 +624,7 @@ INSERT INTO `ts_jawabankuesioner` (`deskripsiJawaban`, `id_jawabanKuesioner`, `i
 ('Lainnya', 'JK171', 'PKU048', 'f1002', 'Ya', '5', 'nama1', '2023-01-31 15:39:51', 'nama1', '2023-02-01 05:49:24', 'Aktif'),
 ('Pertanyaan tidak sesuai; pekerjaan saya sekarang sudah sesuai dengan pendidikan saya.	', 'JK172', 'PKU049', 'f1601', 'Tidak', '', 'nama1', '2023-01-31 15:40:46', 'nama1', '2023-01-31 15:40:46', 'Aktif'),
 ('Saya belum mendapatkan pekerjaan yang lebih sesuai.', 'JK173', 'PKU049', 'f1602', 'Tidak', '', 'nama1', '2023-01-31 15:41:00', 'nama1', '2023-01-31 15:41:00', 'Aktif'),
-('Di pekerjaan ini saya memeroleh prospek karir yang baik.', 'JK174', 'PKU049', 'f1603', 'Tidak', '', 'nama1', '2023-01-31 15:41:14', 'nama1', '2023-01-31 15:41:14', 'Aktif'),
+('Di pekerjaan ini saya memeroleh prospek karir yang baik.', 'JK174', 'PKU049', 'f1603', 'Tidak', '', 'nama1', '2023-01-31 15:41:14', 'nama1', '2023-02-05 14:24:46', 'Aktif'),
 ('Saya lebih suka bekerja di area pekerjaan yang tidak ada hubungannya dengan pendidikan saya.', 'JK175', 'PKU049', 'f1604', 'Tidak', '', 'nama1', '2023-01-31 15:43:09', 'nama1', '2023-01-31 15:43:09', 'Aktif'),
 ('Saya dipromosikan ke posisi yang kurang berhubungan dengan pendidikan saya dibanding posisi sebelumnya.	', 'JK176', 'PKU049', 'f1605', 'Tidak', '', 'nama1', '2023-01-31 15:43:20', 'nama1', '2023-01-31 15:43:20', 'Aktif'),
 ('Saya dapat memeroleh pendapatan yang lebih tinggi di pekerjaan ini.', 'JK177', 'PKU049', 'f1606', 'Tidak', '', 'nama1', '2023-01-31 15:43:32', 'nama1', '2023-01-31 15:43:32', 'Aktif'),
@@ -497,7 +656,8 @@ INSERT INTO `ts_jawabankuesioner` (`deskripsiJawaban`, `id_jawabanKuesioner`, `i
 ('Teknisi Maintenance', 'JK203', 'PKU061', '', 'Tidak', 'Teknisi Maintenance', 'nama1', '2023-02-01 08:26:47', 'nama1', '2023-02-01 08:26:47', 'Aktif'),
 ('Guru / Instruktur / Dosen', 'JK204', 'PKU061', '', 'Tidak', 'Guru / Instruktur / Dosen', 'nama1', '2023-02-01 08:27:34', 'nama1', '2023-02-01 08:27:34', 'Aktif'),
 ('Supervisor', 'JK205', 'PKU061', '', 'Tidak', 'Supervisor', 'nama1', '2023-02-01 08:28:31', 'nama1', '2023-02-01 08:28:31', 'Aktif'),
-('des99', 'JK206', 'PKU027', 'kod199', 'Ya', '119', 'nama1', '2023-02-03 01:27:35', 'nama1', '2023-02-03 01:28:36', 'Tidak Aktif');
+('des99', 'JK206', 'PKU027', 'kod199', 'Ya', '119', 'nama1', '2023-02-03 01:27:35', 'nama1', '2023-02-03 01:28:36', 'Tidak Aktif'),
+('23', 'JK207', 'PKU056', '23', 'Ya', '23', 'nama1', '2023-02-05 22:00:41', 'nama1', '2023-02-05 22:01:00', 'Tidak Aktif');
 
 -- --------------------------------------------------------
 
@@ -520,12 +680,50 @@ CREATE TABLE `ts_kabkota` (
 CREATE TABLE `ts_laporankuesioner` (
   `id_hasilKuesioner` varchar(10) NOT NULL,
   `jawabanKuesioner` text NOT NULL,
-  `kode` varchar(10) NOT NULL,
+  `kode` varchar(255) NOT NULL,
   `created_by` varchar(50) NOT NULL,
   `created_date` datetime NOT NULL,
   `modified_by` varchar(50) NOT NULL,
   `modified_date` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `ts_laporankuesioner`
+--
+
+INSERT INTO `ts_laporankuesioner` (`id_hasilKuesioner`, `jawabanKuesioner`, `kode`, `created_by`, `created_date`, `modified_by`, `modified_date`) VALUES
+('HKU001', 'doniseptrian17@gmail.com', 'emailmsmh', 'Doni Septrian', '2023-02-07 00:45:21', 'Doni Septrian', '2023-02-07 00:45:21'),
+('HKU001', '57401', 'kdpstmsmh', 'Doni Septrian', '2023-02-07 00:45:21', 'Doni Septrian', '2023-02-07 00:45:21'),
+('HKU001', '35003', 'kdptimsmh', 'Doni Septrian', '2023-02-07 00:45:21', 'Doni Septrian', '2023-02-07 00:45:21'),
+('HKU001', '0320170002170002', 'nik', 'Doni Septrian', '2023-02-07 00:45:21', 'Doni Septrian', '2023-02-07 00:45:21'),
+('HKU001', '0320170002', 'nimhsmsmh', 'Doni Septrian', '2023-02-07 00:45:21', 'Doni Septrian', '2023-02-07 00:45:21'),
+('HKU001', 'Doni Septrian', 'nmmhsmsmh', 'Doni Septrian', '2023-02-07 00:45:21', 'Doni Septrian', '2023-02-07 00:45:21'),
+('HKU001', '2020', 'tahun_lulus', 'Doni Septrian', '2023-02-07 00:45:21', 'Doni Septrian', '2023-02-07 00:45:21'),
+('HKU001', '085747821298', 'telpomsmh', 'Doni Septrian', '2023-02-07 00:45:21', 'Doni Septrian', '2023-02-07 00:45:21'),
+('HKU002', 'doniseptrian17@gmail.com', 'emailmsmh', 'Doni Septrian', '2023-02-07 00:47:26', 'Doni Septrian', '2023-02-07 00:47:26'),
+('HKU002', '57401', 'kdpstmsmh', 'Doni Septrian', '2023-02-07 00:47:26', 'Doni Septrian', '2023-02-07 00:47:26'),
+('HKU002', '35003', 'kdptimsmh', 'Doni Septrian', '2023-02-07 00:47:26', 'Doni Septrian', '2023-02-07 00:47:26'),
+('HKU002', '0320170002170002', 'nik', 'Doni Septrian', '2023-02-07 00:47:26', 'Doni Septrian', '2023-02-07 00:47:26'),
+('HKU002', '0320170002', 'nimhsmsmh', 'Doni Septrian', '2023-02-07 00:47:26', 'Doni Septrian', '2023-02-07 00:47:26'),
+('HKU002', 'Doni Septrian', 'nmmhsmsmh', 'Doni Septrian', '2023-02-07 00:47:26', 'Doni Septrian', '2023-02-07 00:47:26'),
+('HKU002', '2020', 'tahun_lulus', 'Doni Septrian', '2023-02-07 00:47:26', 'Doni Septrian', '2023-02-07 00:47:26'),
+('HKU002', '085747821298', 'telpomsmh', 'Doni Septrian', '2023-02-07 00:47:26', 'Doni Septrian', '2023-02-07 00:47:26'),
+('HKU003', 'rachmadrizkywidodo@gmail.com', 'emailmsmh', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:31', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:31'),
+('HKU003', '57401', 'kdpstmsmh', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:31', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:31'),
+('HKU003', '35003', 'kdptimsmh', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:31', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:31'),
+('HKU003', '0320170007170007', 'nik', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:31', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:31'),
+('HKU003', '0320170007', 'nimhsmsmh', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:31', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:31'),
+('HKU003', 'RACHMAD RIZKY WIDODO', 'nmmhsmsmh', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:31', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:31'),
+('HKU003', '2020', 'tahun_lulus', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:31', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:31'),
+('HKU003', '085814232252', 'telpomsmh', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:31', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:31'),
+('HKU004', 'rachmadrizkywidodo@gmail.com', 'emailmsmh', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:35', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:35'),
+('HKU004', '57401', 'kdpstmsmh', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:35', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:35'),
+('HKU004', '35003', 'kdptimsmh', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:35', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:35'),
+('HKU004', '0320170007170007', 'nik', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:35', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:35'),
+('HKU004', '0320170007', 'nimhsmsmh', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:35', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:35'),
+('HKU004', 'RACHMAD RIZKY WIDODO', 'nmmhsmsmh', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:35', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:35'),
+('HKU004', '2020', 'tahun_lulus', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:35', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:35'),
+('HKU004', '085814232252', 'telpomsmh', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:35', 'RACHMAD RIZKY WIDODO', '2023-02-07 13:17:35');
 
 -- --------------------------------------------------------
 
@@ -614,7 +812,9 @@ INSERT INTO `ts_pertanyaankuesioner` (`deskripsiPertanyaan`, `id_pku`, `kode`, `
 ('Pilihlah hadiah yang menarik bagi alumni ! (Lucky Draw)', 'PKU060', 'Pilihlah hadiah yang menarik bagi alumni ! (Lucky Draw)', 3, 'Ya', 'Combo Box', 'nama1', '2023-02-01 06:15:29', 'nama1', '2023-02-01 06:15:29', 'Aktif'),
 ('Posisi anda di perusahaan disaat anda pertama kali mendapat pekerjaan?', 'PKU061', 'Posisi anda di perusahaan disaat anda pertama kali mendapat pekerjaan?', 3, 'Ya', 'Combo Box', 'nama1', '2023-02-01 06:16:06', 'nama1', '2023-02-01 06:21:20', 'Aktif'),
 ('Deskripsi Pekerjaan', 'PKU062', 'Deskripsi Pekerjaan', 3, 'Ya', 'Text Area', 'nama1', '2023-02-01 06:16:31', 'nama1', '2023-02-01 06:16:31', 'Aktif'),
-('tesy', 'PKU063', 'tesy', 4, 'Tidak', 'Combo Box', 'nama1', '2023-02-03 01:07:35', 'nama1', '2023-02-03 01:09:28', 'Tidak Aktif');
+('tesy', 'PKU063', 'tesy', 4, 'Tidak', 'Combo Box', 'nama1', '2023-02-03 01:07:35', 'nama1', '2023-02-03 01:09:28', 'Tidak Aktif'),
+('tes hapus', 'PKU064', 'tes hapus', 3, 'Ya', 'Radio Button', 'nama1', '2023-02-05 20:14:06', 'nama1', '2023-02-05 20:22:16', 'Tidak Aktif'),
+('tes hapus', 'PKU065', 'tes hapus', 3, 'Ya', 'Combo Box', 'nama1', '2023-02-05 20:14:50', 'nama1', '2023-02-05 20:22:07', 'Tidak Aktif');
 
 -- --------------------------------------------------------
 
@@ -656,10 +856,18 @@ CREATE TABLE `ts_registrasialumni` (
 --
 
 INSERT INTO `ts_registrasialumni` (`alamat`, `email`, `id`, `nama`, `nik`, `nim`, `password`, `status`, `tahun_lulus`, `tanggal_lahir`, `telepon`, `created_by`, `created_date`, `modified_by`, `modified_date`) VALUES
-('alamat1', 'email1@gmail.com', 17, 'nama1', '1111111111111111', '0320180001', '79d06f8c00a355f8bf9dbb032780e5a5b62ebd46b76460fe664cacebaf41050b10e4697c46a24c406820d9b6a26feecd2564e24e9b06c545871c96e28ed06278lhecZnYC4vOD0UfOAM3EAoDVt8FhSoFpz1vSwvxV5Wk=', 'Diterima', '2021', '2000-08-11', '1111111111111', 'nama1', '2023-01-25 10:36:57', 'nama1', '2023-02-03 01:39:57'),
-('alamat2', 'email2@gmail.com', 18, 'nama2', '2222222222222222', '0320190002', '591d7c7c6396f4d1a877cf13b1fb36fe26f4634457fa30ced80b621e8a49e6d214e1adcc0425349d0d1af5795fd00437e9b5746a20f1a7adb9388c14b02d3852+tZEPzbTzx07FHkIUx+wsXciS8MpON74T5Y2xEsGa9o=', 'Diterima', '2022', '2001-07-18', '2222222222222', 'nama2', '2023-01-25 10:38:33', 'nama1', '2023-01-30 02:39:11'),
-('alamat3', 'email3@gmail.com', 19, 'nama23', '3333333333333333', '0320190001', '97fc174c4b7292f0eb4f03d45b8a3d2bce710952903da27c8fa276acf66414beb95a13a163ad67a61a515c0b885bd6b8e2d706d684c3feb7da7ee28db29b0a6dm6gPh7om+SBRyv6uKyckBJ+n+Vz833QusuUXhsXaHFU=', 'Ditolak', '2023', '2001-04-06', '3333333333333', 'nama3', '2023-01-27 16:41:47', 'nama1', '2023-01-30 08:09:24'),
-('alamat4', 'email4@gmail.com', 20, 'nama44', '4444444444444444', '0320190003', '1f7a828403151e7c01cb09905eb73968fa358ad240eb2ce724553b5894c558cc97122f4c9c52e9dd36c6a218ba1e1c8c873b6a9e4ea8a26853d4b8e94e7f1d0angw2YxQ5dTqOnDA72SDqtZYmy1Z4EpGbUyifihlqnzU=', 'Ditolak', '2023', '2001-06-14', '4444444444444', 'nama4', '2023-02-02 19:39:39', 'nama1', '2023-02-03 01:54:12');
+('alamat170001', 'amanina.ulya1@gmail.com', 23, 'Amanina Ulya Safira', '0320170001170001', '0320170001', 'c67a30a7bea459a24f9fe1389e2cfff1943e0cd819e73f0c72264991e60cbfeecbf1b25bdc5d112a4babf28877c79290360276b997a7806a37b535e5c54f8d94lhcgqCuvTu0c6uCBaAJW1o3tJr8E8YInzehuJKEkWHM=', 'Belum Diverifikasi', '2020', '1999-06-08', '082227464002', 'Amanina Ulya Safira', '2023-02-05 17:26:21', 'Amanina Ulya Safira', '2023-02-05 17:26:21'),
+('alamat170002', 'doniseptrian17@gmail.com', 24, 'Doni Septrian', '0320170002170002', '0320170002', '30485c2a0aeccd2a4fdc46295ce5b321a13cce477a12f5764d03ef8f8a1ab40932c6c6398ea4509a0efda4f93b93e9bb41b669a6e29fde1a5f4ce667c243c7c9pdfu1ZX3u6NW5tk4UJrH5Nf+SLbK90ZdZ8mLmZKPrFY=', 'Diterima', '2020', '1999-08-19', '085747821298', 'Doni Septrian', '2023-02-05 17:27:38', 'nama1', '2023-02-05 23:34:54'),
+('alamat170003', 'melamela.hidayah@gmail.com', 25, 'Mela Hidayah', '0320170003170003', '0320170003', '33e0d1f35a3018a1664cb53b68ba0dcf08cd3064615cfe2488e3564421d2178953c7d870bb3d77f7165219de82eee6151add5638688ab118b7b9ca0df2b22b2ejZDRtlgoFUJmhyGn8lxio1pqStABbQnbJBncfHAahIQ=', 'Ditolak', '2020', '1999-02-09', '085591990224', 'Mela Hidayah', '2023-02-05 17:28:39', 'nama1', '2023-02-05 23:36:21'),
+('alamat170004', 'muthiakandza30@gmail.com', 26, 'Muthia Kandza', '0320170004170004', '0320170004', '148ff789cc8010597cb78e13e73af16058c8d680795040df61acfb83b006aaf9adc3a1718687fe6e3e72a21d7c3b280774c9e8108f5e89361985d5d78382dc78fKPMja8kV5odvhJcskZSzy9f+6Oi+RaPkzZ1PPmCjas=', 'Belum Diverifikasi', '2020', '1999-07-30', '085742092637', 'Muthia Kandza', '2023-02-05 18:17:28', 'Muthia Kandza', '2023-02-05 18:17:28'),
+('alamat170005', 'nindyoktanovianti@gmail.com', 27, 'Nindy Okta Novianti', '0320170005170005', '0320170005', '851113a3f02ec38926c894ab7989ab41de96b432507f5c7cce6d25482777d67fe072688cf0061c3867f9dc88371f7d38054ebe84007cd17408d21dde433ea6caLi7/25vTPaI1pc7TbYTyu7jGm1AUa7uJ2ignt4VnjnU=', 'Belum Diverifikasi', '2020', '1999-07-07', '081217146328', 'Nindy Okta Novianti', '2023-02-05 18:18:32', 'Nindy Okta Novianti', '2023-02-05 18:18:32'),
+('alamat170006', 'Noerlisnaa@gmail.com', 28, 'Noer lisna anjani', '0320170006170006', '0320170006', 'bac2d318520d09d899795a6949e48a57b3e847a6332656e8ac86401e9d75a0b670a9eb0a299e6da28f43c9eca1e1074727a6a81f414d9b61aafa61cf03edbc35tZNDmrGRhv0n24z+JPOLte2MlTy6BHgzIUf+zYE3jl4=', 'Ditolak', '2020', '1999-06-08', '085870391945', 'Noer lisna anjani', '2023-02-05 18:19:41', 'nama1', '2023-02-06 01:40:32'),
+('alamat170007', 'rachmadrizkywidodo@gmail.com', 29, 'RACHMAD RIZKY WIDODO', '0320170007170007', '0320170007', 'f85f8914bf10b34f24b464e48c46845e2a831618ba73c9112e825e68ad376b25cef0fbee98891335105d7395f2bf8a46e695a8e2b151c4535b5f30d4bba9ccd7Wae6sYWYbB6MNFNXH803E8zBbhhLKOwVC3Xxn8ENUjo=', 'Diterima', '2020', '1999-09-13', '085814232252', 'RACHMAD RIZKY WIDODO', '2023-02-05 18:20:26', 'nama1', '2023-02-06 01:40:40'),
+('alamat170008', 'taqiyahcantika24@gmail.com', 30, 'TAQIYAH CANTIKA', '0320170008170008', '0320170008', 'faedc3b1495f629d47d55b1c71754229b9edbc2b3366da6ee8aa13221eb1fe096e4e6ae1c0d229b1b227b2e7bc66a5f114403412a60417795d277500d7174db7Z8iW8NLsGcTxgoZFN8RzZoLgTqG67F5yij5hIHkZ7ZE=', 'Belum Diverifikasi', '2020', '1999-02-09', '082281907624', 'TAQIYAH CANTIKA', '2023-02-05 18:21:11', 'TAQIYAH CANTIKA', '2023-02-05 18:21:11'),
+('alamat170009', 'fhzhafirah@gmail.com', 31, 'Farah Hana Zhafirah', '0320170009170009', '0320170009', '86d499fc73856f26227311d6b50678acb03c2724f8c280f539591bc8e464b3b6b4486d0257265091b76885d48c96e939b83eb6190cc019bf85e7af74a227a768nVZpjjda/2c7PgGzg+HdZ8/efxbSEjTK3Kc8QYLNLII=', 'Belum Diverifikasi', '2020', '1999-05-03', '089603979495', 'Farah Hana Zhafirah', '2023-02-05 18:21:56', 'Farah Hana Zhafirah', '2023-02-05 18:21:56'),
+('alamat170010', 'ferdypudyas@gmail.com', 32, 'Ferdy Pudyas Rahmansyah', '0320170010170010', '0320170010', '9f6ce106c68e78d587486e482b34b6a701d688df34c584daf7d389fb3200427178170414236ec3ea2790e087bf4699e4c2d992e6350e700373341900b7eca7c4J9MF5o6XuirAqbRcIpcG4vHeucvfXYqVZwkzpMdrJmU=', 'Belum Diverifikasi', '2020', '1999-02-26', '081282193063', 'Ferdy Pudyas Rahmansyah', '2023-02-05 18:23:14', 'Ferdy Pudyas Rahmansyah', '2023-02-05 18:23:14'),
+('alamat180001', 'rahmatalfiyanto@gmail.com', 33, 'Rahmat Alfiyanto', '0320180001180001', '0320180001', '57d09e89e27d9ec0848e53aa6b7d2f1f3795b5eb59aabafe54758fb1b426fc56bd4ebe9e4f857b82393db602406d801ccea48d9dda0199640060afdeea560befz8IAGimxcO9yx4+7gm64loEgRx5PQGVimcYN/t9Nt+I=', 'Belum Diverifikasi', '2021', '2000-06-15', '0828377832765', 'Rahmat Alfiyanto', '2023-02-07 17:05:00', 'Rahmat Alfiyanto', '2023-02-07 17:05:00'),
+('alamat190001', 'bimonugroho@gmail.com', 34, 'Bimo Nugroho', '0320190001190001', '0320190001', 'fcf65e5655a2c624e909e4fc69a9cab2183191bb1779ecbbd039b6796f6b31572451e584079a5ceeb29fed8cab15358e2644b5c018c361fa59e948493b736671QZlM6G2vxuWCavMVDmQdbgTo3QlXunV9AJnhigwD7LY=', 'Belum Diverifikasi', '2022', '2001-06-14', '0888390472387', 'Bimo Nugroho', '2023-02-07 17:45:03', 'Bimo Nugroho', '2023-02-07 17:45:03');
 
 --
 -- Indexes for dumped tables
@@ -742,19 +950,19 @@ ALTER TABLE `ts_registrasialumni`
 -- AUTO_INCREMENT for table `ts_detailjenisperiode`
 --
 ALTER TABLE `ts_detailjenisperiode`
-  MODIFY `id_detailPeriode` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_detailPeriode` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `ts_detailpertanyaanjawaban`
 --
 ALTER TABLE `ts_detailpertanyaanjawaban`
-  MODIFY `id_detailPertanyaanJawaban` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id_detailPertanyaanJawaban` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `ts_registrasialumni`
 --
 ALTER TABLE `ts_registrasialumni`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- Constraints for dumped tables
