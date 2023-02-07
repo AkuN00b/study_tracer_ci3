@@ -56,23 +56,30 @@ class DetailPertanyaanJawaban extends CI_Controller {
 
 	public function postCreate()
     {
-    	$timestamp = time();
-		$dt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
-		$dt->setTimestamp($timestamp);
-
     	$post = $this->input->post();
 
-    	$result = $this->DetailPertanyaanJawabanM->save(
-    			  	$this->session->userdata('user_nama'), $post["txtJawabanKuesioner"],
-					$post["txtPertanyaanTurunan"], $dt->format('Y-m-d H:i:s'));
-        
-        if ($result) {
-        	$this->session->set_flashdata("success", "Detail Pertanyaan Jawaban berhasil Ditambahkan !!");
-        } else {
-        	$this->session->set_flashdata("error", "Detail Pertanyaan Jawaban gagal Ditambahkan !!");
-        }
+    	$findDPJ = $this->DetailPertanyaanJawabanM->findDPJ($post["txtJawabanKuesioner"], $post["txtPertanyaanTurunan"]);
 
-        redirect(site_url('DetailPertanyaanJawaban'));
+    	if ($findDPJ) {
+    		$this->session->set_flashdata("error", "Detail Pertanyaan Jawaban sudah ada, tidak boleh sama !!");
+	        redirect(site_url('DetailPertanyaanJawaban'));
+    	} else {
+	    	$timestamp = time();
+			$dt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
+			$dt->setTimestamp($timestamp);
+
+	    	$result = $this->DetailPertanyaanJawabanM->save(
+	    			  	$this->session->userdata('user_nama'), $post["txtJawabanKuesioner"],
+						$post["txtPertanyaanTurunan"], $dt->format('Y-m-d H:i:s'));
+	        
+	        if ($result) {
+	        	$this->session->set_flashdata("success", "Detail Pertanyaan Jawaban berhasil Ditambahkan !!");
+	        } else {
+	        	$this->session->set_flashdata("error", "Detail Pertanyaan Jawaban gagal Ditambahkan !!");
+	        }
+
+	        redirect(site_url('DetailPertanyaanJawaban'));
+	    }
     }
 
 	public function getEdit()
@@ -105,23 +112,30 @@ class DetailPertanyaanJawaban extends CI_Controller {
 	}
 
 	public function postUpdate() {
-		$timestamp = time();
-		$dt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
-		$dt->setTimestamp($timestamp);
-
 		$post = $this->input->post();
 
-    	$result = $this->DetailPertanyaanJawabanM->update(
-    			  	$post["txtID"], $this->session->userdata('user_nama'), $post["txtJawabanKuesioner"], 
-					$post["txtPertanyaanTurunan"], $dt->format('Y-m-d H:i:s'));
-        
-        if ($result) {
-        	$this->session->set_flashdata("success", "Detail Pertanyaan Jawaban berhasil Diubah !!");
-        } else {
-        	$this->session->set_flashdata("error", "Detail Pertanyaan Jawaban gagal Diubah !!");
-        }
+    	$findDPJ = $this->DetailPertanyaanJawabanM->findDPJ($post["txtJawabanKuesioner"], $post["txtPertanyaanTurunan"]);
 
-        redirect(site_url('DetailPertanyaanJawaban'));
+    	if ($findDPJ) {
+    		$this->session->set_flashdata("error", "Detail Pertanyaan Jawaban sudah ada, tidak boleh sama !!");
+	        redirect(site_url('DetailPertanyaanJawaban'));
+    	} else {
+			$timestamp = time();
+			$dt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
+			$dt->setTimestamp($timestamp);
+
+	    	$result = $this->DetailPertanyaanJawabanM->update(
+	    			  	$post["txtID"], $this->session->userdata('user_nama'), $post["txtJawabanKuesioner"], 
+						$post["txtPertanyaanTurunan"], $dt->format('Y-m-d H:i:s'));
+	        
+	        if ($result) {
+	        	$this->session->set_flashdata("success", "Detail Pertanyaan Jawaban berhasil Diubah !!");
+	        } else {
+	        	$this->session->set_flashdata("error", "Detail Pertanyaan Jawaban gagal Diubah !!");
+	        }
+
+	        redirect(site_url('DetailPertanyaanJawaban'));
+	    }
 	}
 
 	public function postDelete()

@@ -8,9 +8,14 @@
 	<input type="hidden" name="txtID" value="<?= $id; ?>" class="form-control">
 
 	<div class="form-group">
-		<span class="mb-1">Jenis Kuesioner</span>
+        <label for="txtJenisKuesioner">
+            Jenis Kuesioner
+            <span style="color: red;">*</span>
+        </label>
         
-        <select class="form-control" name="txtJenisKuesioner">
+        <select class="form-control" name="txtJenisKuesioner" id="txtJenisKuesioner" required
+                oninvalid="this.setCustomValidity('Jenis Kuesioner Wajib Diisi')"
+                oninput="this.setCustomValidity('')">
         	<option disabled="" value="">-- Pilih Jenis Kuesioner --</option>
         	<option value="Polman" <?php if ($jenis_kuesioner == 'Polman') echo "selected" ?>>Polman</option>
         	<option value="Dikti" <?php if ($jenis_kuesioner == 'Dikti') echo "selected" ?>>Dikti</option>
@@ -18,8 +23,14 @@
     </div>
 
     <div class="form-group">
-		<span class="mb-1">Periode</span>
-		<input type="text" name="txtPeriode" value="<?= $periode; ?>" maxlength="4" class="form-control">
+        <label for="txtPeriode">
+            Periode
+            <span style="color: red;">*</span>
+        </label>
+
+		<input type="text" name="txtPeriode" id="txtPeriode" value="<?= $periode; ?>" maxlength="4" class="form-control" required
+                oninvalid="this.setCustomValidity('Periode Wajib Diisi')"
+                oninput="this.setCustomValidity('')">
     </div>
 
     <button type="submit" class="btn btn-primary btn-block mb-1">

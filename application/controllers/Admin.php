@@ -23,6 +23,13 @@ class Admin extends CI_Controller {
 	{
 		parent::__construct();
 
+		$this->load->model("RegistrasiAlumniM");
+		$this->load->model("PertanyaanKuesionerM");
+		$this->load->model("JawabanKuesionerM");
+		$this->load->model("DetailJenisPeriodeM");
+		$this->load->model("DetailPertanyaanJawabanM");
+		$this->load->model("HasilKuesionerM");
+
 		if (!$this->session->userdata('logged_in')) {
 			$this->session->set_flashdata('warning', 'Anda belum login atau session habis !!');
 	     	redirect('welcome');
@@ -35,6 +42,17 @@ class Admin extends CI_Controller {
 	public function index()
 	{
 		$data['title'] = "Dashboard Admin";
+		$data['getData'] = $this->RegistrasiAlumniM->getTOP5();
+
+		$data['getCountPK'] = $this->PertanyaanKuesionerM->getCountAktif()->num_rows();
+		$data['getCountJK'] = $this->JawabanKuesionerM->getCountAktif()->num_rows();
+		$data['getCountDJP'] = $this->DetailJenisPeriodeM->getCountAktif()->num_rows();
+		$data['getCountDPJ'] = $this->DetailPertanyaanJawabanM->getCountAktif()->num_rows();
+
+		$data['chartBarRA'] = $this->RegistrasiAlumniM->chartBar();
+		$data['chartDoughnutRA'] = $this->RegistrasiAlumniM->chartDoughnut();
+		$data['chartPieHK'] = $this->HasilKuesionerM->chartPie();
+
 		$this->load->view('admin/dashboard.php', $data);
 	}
 

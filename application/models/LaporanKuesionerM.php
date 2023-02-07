@@ -6,7 +6,34 @@ class LaporanKuesionerM extends CI_Model
 
 	public function getAll()
     {
-        return $this->db->get($this->_table)->result();
+        return $this->db->query("SELECT * FROM ts_laporankuesioner ORDER BY id_hasilKuesioner");
+    }
+
+    public function saveJawaban($jawabanKuesioner, $kode, $idHK, $nama, $tanggal)
+    {
+    	$result = array();
+    	$i = 0;
+
+    	foreach($jawabanKuesioner AS $key => $val){
+			$result[] = array(
+		        'id_hasilKuesioner'    => $idHK,
+		        'jawabanKuesioner'   	=> $_POST['jawabanKuesioner'][$key],
+		        'kode'					=> $_POST['kode'][$key],
+		        'created_by'			=> $nama,
+		        'created_date'			=> $tanggal,
+		        'modified_by'			=> $nama,
+		        'modified_date'			=> $tanggal,
+	        );
+	    }      
+
+	    //MULTIPLE INSERT TO DETAIL TABLE                  
+	    $query = $this->db->insert_batch('ts_laporankuesioner', $result);
+
+	    if ($query) {
+            return $query;
+        } else {
+        	return false;
+        }
     }
 }
 

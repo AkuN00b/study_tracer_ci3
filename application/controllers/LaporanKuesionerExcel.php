@@ -18,10 +18,26 @@ class LaporanKuesionerExcel extends CI_Controller {
 	 * map to /index.php/welcome/<method_name>
 	 * @see https://codeigniter.com/userguide3/general/urls.html
 	 */
+
+	public function __construct()
+	{
+		parent::__construct();
+
+		$this->load->model("LaporanKuesionerM");
+
+		if (!$this->session->userdata('logged_in')) {
+			$this->session->set_flashdata('warning', 'Anda belum login atau session habis !!');
+	     	redirect('welcome');
+	    } else if ($this->session->userdata('user_role') == 'Alumni') {
+			$this->session->set_flashdata('warning', 'Anda tidak diizinkan untuk mengakses !!');
+	    	redirect('alumni');
+	    }
+	}
 	
 	public function index()
 	{
 		$data['title'] = "Laporan Kuesioner Excel";
+		$data['getData'] = $this->LaporanKuesionerM->getAll();
 		$this->load->view('admin/laporan_kuesioner_excel/index', $data);
 	}
 }

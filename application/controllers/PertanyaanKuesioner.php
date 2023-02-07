@@ -66,24 +66,31 @@ class PertanyaanKuesioner extends CI_Controller {
 
 	public function postCreate()
     {
-    	$timestamp = time();
-		$dt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
-		$dt->setTimestamp($timestamp);
+	    $post = $this->input->post();
 
-    	$post = $this->input->post();
+    	$findPK = $this->PertanyaanKuesionerM->findPK($post["txtkode"], $post["txtid_detailPeriode"]);
 
-    	$result = $this->PertanyaanKuesionerM->save(
-    			  	$this->session->userdata('user_nama'), $post["txtid_pku"], $post["txtdeskripsiPertanyaan"],
-					$post["txtjenis"], $post["txtkode"], $post["txtid_detailPeriode"],
-					$post["txtpertanyaan_utama"], $dt->format('Y-m-d H:i:s'));
-        
-        if ($result) {
-        	$this->session->set_flashdata("success", "Pertanyaan Kuesioner berhasil Ditambahkan !!");
-        } else {
-        	$this->session->set_flashdata("error", "Pertanyaan Kuesioner gagal Ditambahkan !!");
-        }
+    	if ($findPK) {
+	        $this->session->set_flashdata("error", "Pertanyaan Kuesioner sudah ada, tidak boleh sama !!");
+	        redirect(site_url('PertanyaanKuesioner'));
+    	} else {
+    		$timestamp = time();
+			$dt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
+			$dt->setTimestamp($timestamp);
 
-        redirect(site_url('PertanyaanKuesioner'));
+	    	$result = $this->PertanyaanKuesionerM->save(
+	    			  	$this->session->userdata('user_nama'), $post["txtid_pku"], $post["txtdeskripsiPertanyaan"],
+						$post["txtjenis"], $post["txtkode"], $post["txtid_detailPeriode"],
+						$post["txtpertanyaan_utama"], $dt->format('Y-m-d H:i:s'));
+	        
+	        if ($result) {
+	        	$this->session->set_flashdata("success", "Pertanyaan Kuesioner berhasil Ditambahkan !!");
+	        } else {
+	        	$this->session->set_flashdata("error", "Pertanyaan Kuesioner gagal Ditambahkan !!");
+	        }
+
+	        redirect(site_url('PertanyaanKuesioner'));
+	    }
     }
 
 	public function getEdit()
@@ -117,24 +124,31 @@ class PertanyaanKuesioner extends CI_Controller {
 	}
 
 	public function postUpdate() {
-		$timestamp = time();
-		$dt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
-		$dt->setTimestamp($timestamp);
-
 		$post = $this->input->post();
 
-    	$result = $this->PertanyaanKuesionerM->update(
-    			  	$post["txtID"], $this->session->userdata('user_nama'), $post["txtdeskripsiPertanyaan"],
-					$post["txtjenis"], $post["txtkode"], $post["txtid_detailPeriode"],
-					$post["txtpertanyaan_utama"], $dt->format('Y-m-d H:i:s'));
-        
-        if ($result) {
-        	$this->session->set_flashdata("success", "Pertanyaan Kuesioner berhasil Diubah !!");
-        } else {
-        	$this->session->set_flashdata("error", "Pertanyaan Kuesioner gagal Diubah !!");
-        }
+    	$findPK = $this->PertanyaanKuesionerM->findPK($post["txtkode"], $post["txtid_detailPeriode"]);
 
-        redirect(site_url('PertanyaanKuesioner'));
+    	if ($findPK) {
+    		$this->session->set_flashdata("error", "Pertanyaan Kuesioner sudah ada, tidak boleh sama !!");
+	        redirect(site_url('PertanyaanKuesioner'));
+    	} else {
+    		$timestamp = time();
+			$dt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
+			$dt->setTimestamp($timestamp);
+
+	    	$result = $this->PertanyaanKuesionerM->update(
+	    			  	$post["txtID"], $this->session->userdata('user_nama'), $post["txtdeskripsiPertanyaan"],
+						$post["txtjenis"], $post["txtkode"], $post["txtid_detailPeriode"],
+						$post["txtpertanyaan_utama"], $dt->format('Y-m-d H:i:s'));
+	        
+	        if ($result) {
+	        	$this->session->set_flashdata("success", "Pertanyaan Kuesioner berhasil Diubah !!");
+	        } else {
+	        	$this->session->set_flashdata("error", "Pertanyaan Kuesioner gagal Diubah !!");
+	        }
+
+	        redirect(site_url('PertanyaanKuesioner'));
+    	}
 	}
 
 	public function postDelete()

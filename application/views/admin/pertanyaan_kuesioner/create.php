@@ -8,13 +8,25 @@
 	<input type="hidden" value="<?php echo $id; ?>" name="txtid_pku">
 
 	<div class="form-group">
-		<span class="mb-1">Deskripsi Pertanyaan</span>
-        <textarea name="txtdeskripsiPertanyaan" class="form-control" rows="10"></textarea>
+        <label for="txtdeskripsiPertanyaan">
+            Deskripsi Pertanyaan
+            <span style="color: red;">*</span>
+        </label>
+
+        <textarea name="txtdeskripsiPertanyaan" id="txtdeskripsiPertanyaan" class="form-control" rows="10" required
+                oninvalid="this.setCustomValidity('Deskripsi Pertanyaan Wajib Diisi')"
+                oninput="this.setCustomValidity('')"></textarea>
     </div>
 
     <div class="form-group">
-		<span class="mb-1">Bentuk Jawaban</span>
-		<select class="form-control" name="txtjenis">
+        <label for="txtjenis">
+            Bentuk Jawaban
+            <span style="color: red;">*</span>
+        </label>
+
+		<select class="form-control" name="txtjenis" id="txtjenis" 
+                oninvalid="this.setCustomValidity('Bentuk Jawaban Wajib Diisi')" required
+                oninput="this.setCustomValidity('')">
         	<option disabled="" selected="" value="">-- Pilih Bentuk Jawaban --</option>
         	<option value="Combo Box">Combo Box</option>
         	<option value="Radio Button">Radio Button</option>
@@ -26,13 +38,25 @@
     </div>
 
     <div class="form-group">
-		<span class="mb-1">Kode Pertanyaan</span>
-        <input type="text" name="txtkode" class="form-control">
+        <label for="txtkode">
+            Kode Pertanyaan
+            <span style="color: red;">*</span>
+        </label>
+
+        <input type="text" name="txtkode" id="txtkode" class="form-control" required
+                oninvalid="this.setCustomValidity('Kode Pertanyaan Wajib Diisi')"
+                oninput="this.setCustomValidity('')">
     </div>
 
     <div class="form-group">
-		<span class="mb-1">Periode dan Jenis Kuesioner</span>
-		<select class="form-control" name="txtid_detailPeriode">
+        <label for="txtid_detailPeriode">
+            Periode dan Jenis Kuesioner
+            <span style="color: red;">*</span>
+        </label>
+
+		<select class="form-control" name="txtid_detailPeriode" id="txtid_detailPeriode" required
+                oninvalid="this.setCustomValidity('Periode dan Jenis Kuesioner Wajib Diisi')"
+                oninput="this.setCustomValidity('')">
         	<option disabled="" selected="" value="">-- Pilih Periode dan Jenis Kuesioner --</option>
         	<?php
                 foreach ($getDataPeriodeDanJenisKuesioner as $row) {
@@ -43,8 +67,14 @@
     </div>
 
     <div class="form-group">
-		<span class="mb-1">Pertanyaan Utama?</span>
-		<select class="form-control" name="txtpertanyaan_utama">
+        <label for="txtpertanyaan_utama">
+            Pertanyaan Utama?
+            <span style="color: red;">*</span>
+        </label>
+
+		<select class="form-control" name="txtpertanyaan_utama" id="txtpertanyaan_utama" required
+                oninvalid="this.setCustomValidity('Pertanyaan Utama? Wajib Diisi')"
+                oninput="this.setCustomValidity('')">
         	<option disabled="" selected="" value="">-- Pilih Apakah Pertanyaan Utama? --</option>
         	<option value="Ya">Ya</option>
         	<option value="Tidak">Tidak</option>

@@ -66,24 +66,31 @@ class JawabanKuesioner extends CI_Controller {
 
 	public function postCreate()
     {
-    	$timestamp = time();
-		$dt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
-		$dt->setTimestamp($timestamp);
-
     	$post = $this->input->post();
 
-    	$result = $this->JawabanKuesionerM->save(
-    			  	$this->session->userdata('user_nama'), $post["txtIdJK"], $post["txtJawabanUntukPertanyaan"],
-					$post["txtDeskripsiJawaban"], $post["txtKodeJawaban"], $post["txtNilaiJawaban"],
-					$post["txtButuhTextbox"], $dt->format('Y-m-d H:i:s'));
-        
-        if ($result) {
-        	$this->session->set_flashdata("success", "Jawaban Kuesioner berhasil Ditambahkan !!");
-        } else {
-        	$this->session->set_flashdata("error", "Jawaban Kuesioner gagal Ditambahkan !!");
-        }
+    	$findJK = $this->JawabanKuesionerM->findJK($post["txtDeskripsiJawaban"], $post["txtJawabanUntukPertanyaan"]);
 
-        redirect(site_url('JawabanKuesioner'));
+    	if ($findJK) {
+    		$this->session->set_flashdata("error", "Jawaban Kuesioner sudah ada, tidak boleh sama !!");
+	        redirect(site_url('JawabanKuesioner'));
+    	} else {
+	    	$timestamp = time();
+			$dt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
+			$dt->setTimestamp($timestamp);
+
+	    	$result = $this->JawabanKuesionerM->save(
+	    			  	$this->session->userdata('user_nama'), $post["txtIdJK"], $post["txtJawabanUntukPertanyaan"],
+						$post["txtDeskripsiJawaban"], $post["txtKodeJawaban"], $post["txtNilaiJawaban"],
+						$post["txtButuhTextbox"], $dt->format('Y-m-d H:i:s'));
+	        
+	        if ($result) {
+	        	$this->session->set_flashdata("success", "Jawaban Kuesioner berhasil Ditambahkan !!");
+	        } else {
+	        	$this->session->set_flashdata("error", "Jawaban Kuesioner gagal Ditambahkan !!");
+	        }
+
+	        redirect(site_url('JawabanKuesioner'));
+	    }
     }
 
 	public function getEdit()
@@ -118,24 +125,31 @@ class JawabanKuesioner extends CI_Controller {
 	}
 
 	public function postUpdate() {
-		$timestamp = time();
-		$dt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
-		$dt->setTimestamp($timestamp);
-
 		$post = $this->input->post();
 
-    	$result = $this->JawabanKuesionerM->update(
-    			  	$post["txtIdJK"], $this->session->userdata('user_nama'), $post["txtJawabanUntukPertanyaan"],
-					$post["txtDeskripsiJawaban"], $post["txtKodeJawaban"], $post["txtNilaiJawaban"],
-					$post["txtButuhTextbox"], $dt->format('Y-m-d H:i:s'));
-        
-        if ($result) {
-        	$this->session->set_flashdata("success", "Jawaban Kuesioner berhasil Diubah !!");
-        } else {
-        	$this->session->set_flashdata("error", "Jawaban Kuesioner gagal Diubah !!");
-        }
+    	$findJK = $this->JawabanKuesionerM->findJK($post["txtDeskripsiJawaban"], $post["txtJawabanUntukPertanyaan"]);
 
-        redirect(site_url('JawabanKuesioner'));
+    	if ($findJK) {
+    		$this->session->set_flashdata("error", "Jawaban Kuesioner sudah ada, tidak boleh sama !!");
+	        redirect(site_url('JawabanKuesioner'));
+    	} else {
+			$timestamp = time();
+			$dt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
+			$dt->setTimestamp($timestamp);
+
+	    	$result = $this->JawabanKuesionerM->update(
+	    			  	$post["txtIdJK"], $this->session->userdata('user_nama'), $post["txtJawabanUntukPertanyaan"],
+						$post["txtDeskripsiJawaban"], $post["txtKodeJawaban"], $post["txtNilaiJawaban"],
+						$post["txtButuhTextbox"], $dt->format('Y-m-d H:i:s'));
+	        
+	        if ($result) {
+	        	$this->session->set_flashdata("success", "Jawaban Kuesioner berhasil Diubah !!");
+	        } else {
+	        	$this->session->set_flashdata("error", "Jawaban Kuesioner gagal Diubah !!");
+	        }
+
+	        redirect(site_url('JawabanKuesioner'));
+	    }
 	}
 
 	public function postDelete()

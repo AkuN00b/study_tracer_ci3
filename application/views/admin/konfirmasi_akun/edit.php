@@ -8,13 +8,25 @@
 	<input type="hidden" name="txtID" value="<?= $id; ?>" class="form-control">
 
 	<div class="form-group">
-		<span class="mb-1">Nama</span>        
-        <input type="text" value="<?= $nama; ?>" name="txtNama" class="form-control">
+		<label for="txtNama">
+			Nama
+            <span style="color: red;">*</span>
+        </label>
+
+        <input type="text" value="<?= $nama; ?>" name="txtNama" id="txtNama" class="form-control" required
+        		oninvalid="this.setCustomValidity('Nama Wajib Diisi')"
+                oninput="this.setCustomValidity('')">
     </div>
 
     <div class="form-group">
-		<span class="mb-1">Tahun Lulus</span>        
-        <input type="text" value="<?= $tahun_lulus; ?>" maxlength="4" name="txtTahunLulus" class="form-control">
+    	<label for="txtTahunLulus">
+    		Tahun Lulus
+            <span style="color: red;">*</span>
+        </label>
+
+        <input type="text" value="<?= $tahun_lulus; ?>" maxlength="4" name="txtTahunLulus" id="txtTahunLulus" class="form-control"
+        		oninvalid="this.setCustomValidity('Tahun Lulus Wajib Diisi')" required
+                oninput="this.setCustomValidity('')">
     </div>
 
     <button type="submit" class="btn btn-primary btn-block mb-1">

@@ -8,8 +8,14 @@
 	<input type="hidden" name="txtID" value="<?= $id; ?>" class="form-control">
 
 	<div class="form-group">
-		<span class="mb-1">Password Baru</span>        
-        <input type="password" name="txtPassword" class="form-control">
+		<label for="txtPassword">
+			Password Baru
+            <span style="color: red;">*</span>
+        </label>
+
+        <input type="password" name="txtPassword" id="txtPassword" class="form-control" required
+        		oninvalid="this.setCustomValidity('Password Baru Wajib Diisi')"
+                oninput="this.setCustomValidity('')">
     </div>
 
     <button type="submit" class="btn btn-primary btn-block mb-1">

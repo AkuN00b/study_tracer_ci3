@@ -25,7 +25,9 @@
                                 Nomor Induk Mahasiswa (NIM)
                                 <span style="color: red;">*</span>
                             </label>
-                            <input type="text" name="txtNIM" maxlength="10" class="form-control">
+                            <input id="txtNIM" type="text" name="txtNIM" maxlength="10" class="form-control" required
+                                    oninvalid="this.setCustomValidity('Nomor Induk Mahasiswa (NIM) Wajib Diisi')"
+                                    oninput="this.setCustomValidity('')">
                         </div>
 
                         <div class="form-group">
@@ -33,7 +35,9 @@
                                 Nama
                                 <span style="color: red;">*</span>
                             </label>
-                            <input type="text" name="txtNama" maxlength="100" class="form-control">
+                            <input id="txtNama" type="text" name="txtNama" maxlength="100" class="form-control" required
+                                    oninvalid="this.setCustomValidity('Nama Wajib Diisi')"
+                                    oninput="this.setCustomValidity('')">
                         </div>
 
                         <div class="form-group">
@@ -41,7 +45,9 @@
                                 Nomor Induk Kependudukan (NIK)
                                 <span style="color: red;">*</span>
                             </label>
-                            <input type="text" name="txtNIK" maxlength="16" class="form-control">
+                            <input id="txtNIK" type="text" name="txtNIK" maxlength="16" class="form-control" required
+                                    oninvalid="this.setCustomValidity('Nomor Induk Kependudukan (NIK) Wajib Diisi')"
+                                    oninput="this.setCustomValidity('')">
                         </div>
                     </div>
 
@@ -51,7 +57,9 @@
                                 Tanggal Lahir
                                 <span style="color: red;">*</span>
                             </label>
-                            <input type="date" name="txtTanggalLahir" class="form-control">
+                            <input id="txtTanggalLahir" type="date" name="txtTanggalLahir" class="form-control" required
+                                    oninvalid="this.setCustomValidity('Tanggal Lahir Wajib Diisi')"
+                                    oninput="this.setCustomValidity('')">
                         </div>
 
                         <div class="form-group">
@@ -59,7 +67,9 @@
                                 Tahun Lulus
                                 <span style="color: red;">*</span>
                             </label>
-                            <select class="form-control" name="txtTahunLulus" id="txtTahunLulus">
+                            <select id="txtTahunLulus" class="form-control" name="txtTahunLulus" id="txtTahunLulus" required
+                                    oninvalid="this.setCustomValidity('Tahun Lulus Wajib Diisi')"
+                                    oninput="this.setCustomValidity('')">
                             </select>
                         </div>
 
@@ -68,7 +78,9 @@
                                 Nomor Telepon
                                 <span style="color: red;">*</span>
                             </label>
-                            <input type="number" onKeyPress="if(this.value.length == 13) return false;" name="txtTelepon" class="form-control">
+                            <input id="txtTelepon" type="number" onKeyPress="if(this.value.length == 13) return false;" name="txtTelepon" class="form-control" required
+                                    oninvalid="this.setCustomValidity('Nomor Telepon Wajib Diisi')"
+                                    oninput="this.setCustomValidity('')">
                         </div>
                     </div>
 
@@ -78,7 +90,9 @@
                                 Email
                                 <span style="color: red;">*</span>
                             </label>
-                            <input type="email" maxlength="100" name="txtEmail" class="form-control">
+                            <input id="txtEmail" type="email" maxlength="100" name="txtEmail" class="form-control" required
+                                    oninvalid="this.setCustomValidity('Email Wajib Diisi')"
+                                    oninput="this.setCustomValidity('')">
                         </div>
 
                         <div class="form-group">
@@ -86,7 +100,9 @@
                                 Password
                                 <span style="color: red;">*</span>
                             </label>
-                            <input type="password" maxlength="50" id="txtPassword" name="txtPassword" class="form-control">
+                            <input type="password" maxlength="50" id="txtPassword" name="txtPassword" class="form-control" required
+                                    oninvalid="this.setCustomValidity('Password Wajib Diisi')"
+                                    oninput="this.setCustomValidity('')">
                         </div>
 
                         <div class="form-group">
@@ -94,7 +110,9 @@
                                 Konfirmasi Password
                                 <span style="color: red;">*</span><span style="color: red;" id="txtKonfirmasiPasswordMsg"></span>
                             </label>
-                            <input type="password" maxlength="50" id="txtKonfirmasiPassword" name="txtKonfirmasiPassword" class="form-control">
+                            <input type="password" maxlength="50" id="txtKonfirmasiPassword" name="txtKonfirmasiPassword" class="form-control" required
+                                    oninvalid="this.setCustomValidity('Konfirmasi Password Wajib Diisi')"
+                                    oninput="this.setCustomValidity('')">
                         </div>
                     </div>
 
@@ -104,7 +122,9 @@
                                 Alamat
                                 <span style="color: red;">*</span>
                             </label>
-                            <textarea name="txtAlamat" class="form-control" rows="10"></textarea>
+                            <textarea id="txtAlamat" name="txtAlamat" class="form-control" rows="10" required
+                                    oninvalid="this.setCustomValidity('Alamat Wajib Diisi')"
+                                    oninput="this.setCustomValidity('')"></textarea>
                         </div>
                     </div>
                 </div>

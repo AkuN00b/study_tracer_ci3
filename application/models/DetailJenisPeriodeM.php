@@ -6,7 +6,10 @@ class DetailJenisPeriodeM extends CI_Model
 
     public function get()
     {
-        return $this->db->get_where($this->_table, array('status' => 'Aktif'))->result();
+        $yNow = date('Y');
+
+        return $this->db->query("SELECT * FROM ts_detailjenisperiode WHERE status = 'Aktif'
+                                 ORDER BY id_detailPeriode ASC");
     }
 
 	public function getAll()
@@ -14,9 +17,25 @@ class DetailJenisPeriodeM extends CI_Model
         return $this->db->query("CALL ts_getDataDetailJenisPeriode");
     }
 
+    public function getCountAktif() 
+    {
+        return $this->db->get_where($this->_table, array('status' => 'Aktif'));
+    }
+
     public function get_id($id) 
     {
     	return $this->db->get_where($this->_table, array('id_detailPeriode' => $id));
+    }
+
+    public function findDJP($jenis_kuesioner, $periode)
+    {
+      $query = $this->db->query("SELECT * FROM ts_detailjenisperiode WHERE status = 'Aktif' AND jenis_kuesioner = '$jenis_kuesioner' AND periode = '$periode'");
+
+      if ($query->result()) {
+        return true;
+      } else {
+        return false;
+      }
     }
 
     public function save($nama, $jenis_kuesioner, $periode, $tanggal_sekarang)

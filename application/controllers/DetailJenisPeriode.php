@@ -52,23 +52,30 @@ class DetailJenisPeriode extends CI_Controller {
 
 	public function postCreate()
     {
-    	$timestamp = time();
-		$dt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
-		$dt->setTimestamp($timestamp);
-
     	$post = $this->input->post();
 
-    	$result = $this->DetailJenisPeriodeM->save(
-    			  	$this->session->userdata('user_nama'), $post["txtJenisKuesioner"], 
-					$post["txtPeriode"], $dt->format('Y-m-d H:i:s'));
-        
-        if ($result) {
-        	$this->session->set_flashdata("success", "Data Jenis Periode berhasil Ditambahkan !!");
-        } else {
-        	$this->session->set_flashdata("error", "Data Jenis Periode gagal Ditambahkan !!");
-        }
+    	$findDJP = $this->DetailJenisPeriodeM->findDJP($post["txtJenisKuesioner"], $post["txtPeriode"]);
 
-        redirect(site_url('DetailJenisPeriode'));
+    	if ($findDJP) {
+    		$this->session->set_flashdata("error", "Detail Jenis Periode sudah ada, tidak boleh sama !!");
+	        redirect(site_url('DetailJenisPeriode'));
+    	} else {
+	    	$timestamp = time();
+			$dt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
+			$dt->setTimestamp($timestamp);
+
+	    	$result = $this->DetailJenisPeriodeM->save(
+	    			  	$this->session->userdata('user_nama'), $post["txtJenisKuesioner"], 
+						$post["txtPeriode"], $dt->format('Y-m-d H:i:s'));
+	        
+	        if ($result) {
+	        	$this->session->set_flashdata("success", "Data Jenis Periode berhasil Ditambahkan !!");
+	        } else {
+	        	$this->session->set_flashdata("error", "Data Jenis Periode gagal Ditambahkan !!");
+	        }
+
+	        redirect(site_url('DetailJenisPeriode'));
+	    }
     }
 
 	public function getEdit()
@@ -100,23 +107,30 @@ class DetailJenisPeriode extends CI_Controller {
 	}
 
 	public function postUpdate() {
-		$timestamp = time();
-		$dt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
-		$dt->setTimestamp($timestamp);
-
 		$post = $this->input->post();
 
-    	$result = $this->DetailJenisPeriodeM->update(
-    			  	$post["txtID"], $this->session->userdata('user_nama'), $post["txtJenisKuesioner"], 
-					$post["txtPeriode"], $dt->format('Y-m-d H:i:s'));
-        
-        if ($result) {
-        	$this->session->set_flashdata("success", "Data Jenis Periode berhasil Diubah !!");
-        } else {
-        	$this->session->set_flashdata("error", "Data Jenis Periode gagal Diubah !!");
-        }
+    	$findDJP = $this->DetailJenisPeriodeM->findDJP($post["txtJenisKuesioner"], $post["txtPeriode"]);
 
-        redirect(site_url('DetailJenisPeriode'));
+    	if ($findDJP) {
+    		$this->session->set_flashdata("error", "Detail Jenis Periode sudah ada, tidak boleh sama !!");
+	        redirect(site_url('DetailJenisPeriode'));
+    	} else {
+			$timestamp = time();
+			$dt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
+			$dt->setTimestamp($timestamp);
+
+	    	$result = $this->DetailJenisPeriodeM->update(
+	    			  	$post["txtID"], $this->session->userdata('user_nama'), $post["txtJenisKuesioner"], 
+						$post["txtPeriode"], $dt->format('Y-m-d H:i:s'));
+	        
+	        if ($result) {
+	        	$this->session->set_flashdata("success", "Data Jenis Periode berhasil Diubah !!");
+	        } else {
+	        	$this->session->set_flashdata("error", "Data Jenis Periode gagal Diubah !!");
+	        }
+
+	        redirect(site_url('DetailJenisPeriode'));
+	    }
 	}
 
 	public function postDelete()

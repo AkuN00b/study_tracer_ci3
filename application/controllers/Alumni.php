@@ -26,6 +26,7 @@ class Alumni extends CI_Controller {
 		$this->load->model("DetailJenisPeriodeM");
 		$this->load->model("DetailPertanyaanJawabanM");
 		$this->load->model("HasilKuesionerM");
+		$this->load->model("LaporanKuesionerM");
 		$this->load->model("PertanyaanKuesionerM");
 		$this->load->model("JawabanKuesionerM");
 
@@ -41,7 +42,10 @@ class Alumni extends CI_Controller {
 	public function index()
 	{
 		$data['title'] = "Dashboard Alumni";
-		$data['getListKuesionerTahunIni'] = $this->DetailJenisPeriodeM->get();
+		$data['getListKuesionerTahunIni'] = $this->DetailJenisPeriodeM->get()->result();
+		$data['getListKuesionerTahunIniC'] = $this->DetailJenisPeriodeM->get()->num_rows();
+		$data['getListSudahIsiC'] = $this->HasilKuesionerM->getDataHKBaseUser($this->session->userdata('user_nim'))->num_rows();
+		$data['getListSudahIsi'] = $this->HasilKuesionerM->getDataHKBaseUser($this->session->userdata('user_nim'))->result();
 		$this->load->view('alumni/dashboard.php', $data);
 	}
 
@@ -173,7 +177,39 @@ class Alumni extends CI_Controller {
 
 	public function postKuesioner() 
 	{
+		$timestamp = time();
+		$dt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
+		$dt->setTimestamp($timestamp);
 
+		$data = array (
+			'id_hasilKuesioner' => $this->input->post('txtid_hasilKuesioner'),
+			'id_detailPeriode' => $this->input->post('txtid_DetailPeriode'),
+			'nim' => $this->session->userdata('user_nim'),
+			'tanggal_pengisian' => $dt->format('Y-m-d'),
+			'created_by' => $this->session->userdata('user_nama'),
+			'created_date' => $dt->format('Y-m-d H:i:s'),
+			'modified_by' => $this->session->userdata('user_nama'),
+			'modified_date' => $dt->format('Y-m-d H:i:s'),
+		);
+
+		$result = $this->HasilKuesionerM->saveJawaban($data);
+
+		if ($result) {
+			$jawabanKuesioner = $this->input->post('jawabanKuesioner', TRUE);
+			$kode = $this->input->post('kode', TRUE);
+
+			$result2 = $this->LaporanKuesionerM->saveJawaban($jawabanKuesioner, $kode, $this->input->post('txtid_hasilKuesioner'), $this->session->userdata('user_nama'), $dt->format('Y-m-d H:i:s'));
+
+			if ($result2) {
+	        	$this->session->set_flashdata("success", "Kuesioner berhasil Dijawab !!");
+			} else {
+	        	$this->session->set_flashdata("error", "Kuesioner gagal Dijawab !!");
+			}
+		} else {
+	        $this->session->set_flashdata("error", "Kuesioner gagal Dijawab !!");
+		}
+
+		redirect(site_url('Alumni'));
 	}
 
 	public function logout() {

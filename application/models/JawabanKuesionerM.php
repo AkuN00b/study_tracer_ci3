@@ -27,6 +27,14 @@ class JawabanKuesionerM extends CI_Model
                                  INNER JOIN ts_pertanyaanKuesioner pku ON jk.id_pku = pku.id_pku");
     }
 
+    public function getCountAktif()
+    {
+      return $this->db->query("SELECT jk.id_jawabanKuesioner, jk.nilaiJawaban, jk.deskripsiJawaban, jk.textbox, jk.kode
+                                 FROM ts_jawabanKuesioner jk
+                                 INNER JOIN ts_pertanyaanKuesioner pku ON jk.id_pku = pku.id_pku
+                                 WHERE jk.status = 'Aktif'");
+    }
+
 	public function getAll()
     {
         return $this->db->query("CALL ts_getDataJawabanKuesioner");
@@ -35,6 +43,17 @@ class JawabanKuesionerM extends CI_Model
     public function get_id($id) 
     {
     	return $this->db->get_where($this->_table, array('id_jawabanKuesioner' => $id));
+    }
+
+    public function findJK($deskripsiJawaban, $id_pku)
+    {
+      $query = $this->db->query("SELECT * FROM ts_jawabankuesioner WHERE status = 'Aktif' AND deskripsiJawaban = '$deskripsiJawaban' AND id_pku = '$id_pku'");
+
+      if ($query->result()) {
+        return true;
+      } else {
+        return false;
+      }
     }
 
     public function save($nama, $id_jawabanKuesioner, $id_pku, $deskripsiJawaban, $kode, $nilaiJawaban, $textbox, $tanggal_sekarang)

@@ -8,9 +8,14 @@
 	<input type="hidden" value="<?php echo $id; ?>" name="txtIdJK">
 
 	<div class="form-group">
-		<span class="mb-1">Jawaban untuk Pertanyaan</span>
-        
-        <select class="form-control" name="txtJawabanUntukPertanyaan">
+        <label for="txtJawabanUntukPertanyaan">
+            Jawaban untuk Pertanyaan
+            <span style="color: red;">*</span>
+        </label>
+
+        <select class="form-control" name="txtJawabanUntukPertanyaan" id="txtJawabanUntukPertanyaan" required
+                oninvalid="this.setCustomValidity('Jawaban untuk Pertanyaan Wajib Diisi')"
+                oninput="this.setCustomValidity('')">
         	<option disabled="" value="">-- Pilih Pertanyaan Kuesioner --</option>
         	<?php
                 foreach ($getDataPertanyaanKuesioner->result() as $row) {
@@ -29,23 +34,41 @@
     </div>
 
     <div class="form-group">
-		<span class="mb-1">Deskripsi Jawaban</span>
-        <input type="text" name="txtDeskripsiJawaban" value="<?= $deskripsiJawaban; ?>" class="form-control"></input>
+        <label for="txtDeskripsiJawaban">
+            Deskripsi Jawaban
+            <span style="color: red;">*</span>
+        </label>
+
+        <input type="text" name="txtDeskripsiJawaban" id="txtDeskripsiJawaban" value="<?= $deskripsiJawaban; ?>" class="form-control"
+                oninvalid="this.setCustomValidity('Deskripsi Jawaban Wajib Diisi')" required
+                oninput="this.setCustomValidity('')"></input>
     </div>
 
     <div class="form-group">
-		<span class="mb-1">Kode Jawaban</span>
-		<input type="text" name="txtKodeJawaban" value="<?= $kode; ?>" class="form-control">
+        <label for="txtKodeJawaban">
+            Kode Jawaban
+        </label>
+
+		<input type="text" name="txtKodeJawaban" id="txtKodeJawaban" value="<?= $kode; ?>" class="form-control">
     </div>
 
     <div class="form-group">
-		<span class="mb-1">Nilai Jawaban</span>
-		<input type="text" name="txtNilaiJawaban" value="<?= $nilaiJawaban; ?>" class="form-control">
+        <label for="txtNilaiJawaban">
+            Nilai Jawaban
+        </label>
+
+		<input type="text" name="txtNilaiJawaban" id="txtNilaiJawaban" value="<?= $nilaiJawaban; ?>" class="form-control">
     </div>
 
     <div class="form-group">
-		<span class="mb-1">Butuh Textbox?</span>
-		<select class="form-control" name="txtButuhTextbox">
+        <label for="txtButuhTextbox">
+            Butuh Textbox?
+            <span style="color: red;">*</span>
+        </label>
+
+		<select class="form-control" name="txtButuhTextbox" id="txtButuhTextbox" required
+                oninvalid="this.setCustomValidity('Butuh Textbox? Wajib Diisi')"
+                oninput="this.setCustomValidity('')">
         	<option disabled="" value="">-- Pilih Butuh Textbox? --</option>
         	<option value="Ya" <?php if ($textbox == 'Ya') echo "selected" ?>>Ya</option>
         	<option value="Tidak" <?php if ($textbox == 'Tidak') echo "selected" ?>>Tidak</option>

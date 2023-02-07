@@ -10,7 +10,9 @@
                 Nomor Induk Mahasiswa (NIM)
                 <span style="color: red;">*</span>
             </label>
-            <input type="text" name="txtUsername" maxlength="10" class="form-control">
+            <input type="text" id="txtUsername" name="txtUsername" maxlength="10" class="form-control" required="" 
+                    oninvalid="this.setCustomValidity('Nomor Induk Mahasiswa (NIM) Wajib Diisi')"
+                    oninput="this.setCustomValidity('')">
         </div>
 
         <div class="form-group">
@@ -18,7 +20,9 @@
                 Kata Sandi
                 <span style="color: red;">*</span>
             </label>
-            <input type="password" name="txtPassword" class="form-control">
+            <input id="txtPassword" type="password" name="txtPassword" class="form-control" required
+                    oninvalid="this.setCustomValidity('Kata Sandi Wajib Diisi')"
+                    oninput="this.setCustomValidity('')">
         </div>
 
         <button id="btnLogin" class="btn btn-primary" style="width: 100%; margin-top: 10px; margin-bottom: 10px;">Masuk</button>

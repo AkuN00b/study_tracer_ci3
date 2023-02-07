@@ -150,17 +150,24 @@ class Welcome extends CI_Controller {
 	{
 		$post = $this->input->post();
 
-		$result = $this->RegistrasiAlumniM->inputRegisterM($post["txtNIM"], $post["txtNIK"], $post["txtNama"], $post["txtAlamat"],
-														   $post["txtTanggalLahir"], $post["txtTahunLulus"], $post["txtEmail"],
-														   $this->encryption->encrypt($post["txtPassword"]), $post["txtTelepon"],
-														   "Belum Diverifikasi", date('Y-m-d H:i:s'));
-        
-        if ($result) {
-        	$this->session->set_flashdata("success", "Berhasil Mendaftar, Tunggu Info Selanjutnya untuk Mengakses Tracer Study !!");
-        } else {
-        	$this->session->set_flashdata("error", "Pendaftaran Gagal, Data yang Dimasukan tidak sesuai !!");
-        }
+    	$findRA = $this->RegistrasiAlumniM->findRA($post["txtNIM"], $post["txtNIK"], $post["txtEmail"], $post["txtTelepon"]);
 
-        redirect(site_url('Welcome/register'));
+    	if ($findRA) {
+    		$this->session->set_flashdata("error", "Akun Alumni sudah ada, tidak boleh sama !!");
+	        redirect(site_url('Welcome/register'));
+    	} else {
+			$result = $this->RegistrasiAlumniM->inputRegisterM($post["txtNIM"], $post["txtNIK"], $post["txtNama"], $post["txtAlamat"],
+															   $post["txtTanggalLahir"], $post["txtTahunLulus"], $post["txtEmail"],
+															   $this->encryption->encrypt($post["txtPassword"]), $post["txtTelepon"],
+															   "Belum Diverifikasi", date('Y-m-d H:i:s'));
+	        
+	        if ($result) {
+	        	$this->session->set_flashdata("success", "Berhasil Mendaftar, Tunggu Info Selanjutnya untuk Mengakses Tracer Study !!");
+	        } else {
+	        	$this->session->set_flashdata("error", "Pendaftaran Gagal, Data yang Dimasukan tidak sesuai !!");
+	        }
+
+	        redirect(site_url('Welcome/register'));
+	    }
 	}
 }

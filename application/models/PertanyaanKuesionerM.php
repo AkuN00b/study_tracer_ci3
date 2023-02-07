@@ -25,6 +25,14 @@ class PertanyaanKuesionerM extends CI_Model
         return $this->db->query("SELECT * FROM ts_pertanyaanKuesioner");
     }
 
+    public function getCountAktif()
+    {
+      return $this->db->query("SELECT pku.id_pku, pku.kode, pku.deskripsiPertanyaan, pku.jenis
+                                 FROM ts_pertanyaanKuesioner pku
+                                 INNER JOIN ts_detailJenisPeriode dp ON dp.id_detailPeriode = pku.id_detailPeriode
+                                 WHERE pku.status = 'Aktif'");
+    }
+
     public function getTurunan()
     {
         return $this->db->query("SELECT pku.id_pku, pku.kode, pku.deskripsiPertanyaan, dp.jenis_kuesioner, dp.periode
@@ -41,6 +49,17 @@ class PertanyaanKuesionerM extends CI_Model
     public function get_id($id) 
     {
       	return $this->db->get_where($this->_table, array('id_pku' => $id));
+    }
+
+    public function findPK($kode, $id_detailPeriode)
+    {
+      $query = $this->db->query("SELECT * FROM ts_pertanyaankuesioner WHERE status = 'Aktif' AND id_detailPeriode = '$id_detailPeriode' AND kode = '$kode'");
+
+      if ($query->result()) {
+        return true;
+      } else {
+        return false;
+      }
     }
 
     public function save($nama, $id_pku, $deskripsiPertanyaan, $jenis, $kode, $id_detailPeriode, $pertanyaan_utama, $tanggal_sekarang)

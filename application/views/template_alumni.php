@@ -23,6 +23,7 @@
     <script src="<?php echo base_url() ?>assets/Scripts/jquery.fancybox.pack.js"></script>
     <script src="<?php echo base_url() ?>assets/Scripts/bootstrap-select.min.js"></script>
     <script src="<?php echo base_url() ?>assets/Scripts/LetterAvatar.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.7.1/sweetalert2.min.js"></script>
 
     <script type="text/javascript">
         $(function () {

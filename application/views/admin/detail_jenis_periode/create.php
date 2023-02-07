@@ -6,9 +6,14 @@
 
 <form action="<?php echo site_url('DetailJenisPeriode/postCreate') ?>" method="POST" autocomplete="off">
 	<div class="form-group">
-		<span class="mb-1">Jenis Kuesioner</span>
+        <label for="txtJenisKuesioner">
+            Jenis Kuesioner
+            <span style="color: red;">*</span>
+        </label>
         
-        <select class="form-control" name="txtJenisKuesioner">
+        <select class="form-control" name="txtJenisKuesioner" id="txtJenisKuesioner" required
+                oninvalid="this.setCustomValidity('Jenis Kuesioner Wajib Diisi')"
+                oninput="this.setCustomValidity('')">
         	<option disabled="" selected="" value="">-- Pilih Jenis Kuesioner --</option>
         	<option value="Polman">Polman</option>
         	<option value="Dikti">Dikti</option>
@@ -16,8 +21,14 @@
     </div>
 
     <div class="form-group">
-		<span class="mb-1">Periode</span>
-		<input type="text" name="txtPeriode" maxlength="4" class="form-control">
+        <label for="txtPeriode">
+            Periode
+            <span style="color: red;">*</span>
+        </label>
+		
+		<input type="text" name="txtPeriode" maxlength="4" class="form-control" id="txtPeriode" required
+                oninvalid="this.setCustomValidity('Periode Wajib Diisi')"
+                oninput="this.setCustomValidity('')">
     </div>
 
     <button type="submit" class="btn btn-primary btn-block mb-1">

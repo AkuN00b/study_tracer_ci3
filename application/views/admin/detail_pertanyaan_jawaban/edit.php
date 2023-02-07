@@ -8,9 +8,14 @@
 	<input type="hidden" value="<?php echo $id; ?>" name="txtID">
 
 	<div class="form-group">
-		<span class="mb-1">Jawaban Kuesioner</span>
+        <label for="txtJawabanKuesioner">
+            Jawaban Kuesioner
+            <span style="color: red;">*</span>
+        </label>
         
-        <select class="form-control" name="txtJawabanKuesioner">
+        <select class="form-control" name="txtJawabanKuesioner" id="txtJawabanKuesioner" required
+                oninvalid="this.setCustomValidity('Jawaban Kuesioner Wajib Diisi')"
+                oninput="this.setCustomValidity('')">
         	<option disabled="" selected="" value="">-- Pilih Jawaban Kuesioner --</option>
         	<?php
                 foreach ($getDataJawabanKuesioner->result() as $row) {
@@ -29,9 +34,14 @@
     </div>
 
     <div class="form-group">
-		<span class="mb-1">Pertanyaan Turunan</span>
+        <label for="txtPertanyaanTurunan">
+            Pertanyaan Turunan
+            <span style="color: red;">*</span>
+        </label>
 		
-		<select class="form-control" name="txtPertanyaanTurunan">
+		<select class="form-control" name="txtPertanyaanTurunan" id="txtPertanyaanTurunan" required
+                oninvalid="this.setCustomValidity('Pertanyaan Turunan Wajib Diisi')"
+                oninput="this.setCustomValidity('')">
         	<option disabled="" selected="" value="">-- Pilih Pertanyaan Turunan --</option>
         	<?php
                 foreach ($getDataPertanyaanKuesionerTurunan->result() as $row) {
