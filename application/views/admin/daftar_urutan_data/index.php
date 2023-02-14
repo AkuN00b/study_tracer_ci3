@@ -1,12 +1,12 @@
 <?php ob_start();?>
 
 <center>
-	<span style="font-size: Larger; font-weight: bold;">Daftar <?php echo $title; ?></span>
+	<span style="font-size: Larger; font-weight: bold;"><?php echo $title; ?></span>
 </center><br>
 
 <div class="row mb-3">
 	<div class="col-12">
-		<a href="<?php echo site_url('PertanyaanKuesioner/getCreate'); ?>" class="btn btn-primary float-right">
+		<a href="<?php echo site_url('DaftarUrutanData/getCreate'); ?>" class="btn btn-primary float-right">
 			<i class="fa fa-plus"></i>&nbsp;Tambah
 		</a>
 	</div>
@@ -17,13 +17,10 @@
 		<thead>
 			<tr>
 				<th class="align-middle text-center">No.</th>
-				<th class="align-middle text-center">ID Pertanyaan Kuesioner</th>
+				<th class="align-middle text-center">ID Daftar Urutan Data</th>
 				<th class="align-middle text-center">Aksi</th>
-				<th class="">Deskripsi Pertanyaan</th>
-				<th class="align-middle text-center">Bentuk Jawaban</th>
-				<th class="">Kode Pertanyaan</th>
-				<th class="align-middle text-center">Jenis Kuesioner - Periode</th>
-				<th class="align-middle text-center">Pertanyaan Utama</th>
+				<th class="align-middle text-center">Kode</th>
+				<th class="align-middle text-center">Jenis - Periode Kuesioner</th>
 			</tr>
 		</thead>
 
@@ -33,26 +30,23 @@
 			<?php foreach ($getData->result() as $row) { ?>
 				<tr style="height: 45px;">
 					<td><?= $no++; ?></td>
-					<td><?= $row->id_pku; ?></td>
+					<td><?= $row->id; ?></td>
 					<td>
 						<?php if ($row->status == 'Tidak Aktif') { ?>
 							Status Tidak Aktif
 						<?php } else if ($row->status == 'Aktif') { ?>
 							<a rel="tooltip" data-placement="left" title="Ubah <?php echo $title; ?>" 
-							   href="<?php echo site_url('PertanyaanKuesioner/getEdit/'.$row->id_pku); ?>">
+							   href="<?php echo site_url('DaftarUrutanData/getEdit/'.$row->id); ?>">
 	                        	<i class="fa fa-edit" aria-hidden="true"></i>
 	                        </a>&nbsp;
-	                        <a rel="tooltip" data-placement="left" title="Hapus <?php echo $title; ?>" href="#"
-							   data-id="<?= $row->id_pku ?>" class="remove">
+	                        <a rel="tooltip" data-placement="left" title="Hapus <?php echo $title; ?>" 
+							   href="#" data-id="<?= $row->id; ?>" class="remove">
 	                        	<i class="fa fa-trash" aria-hidden="true"></i>
 	                        </a>
 						<?php } ?>
 					</td>
-					<td class="text-left"><?= $row->deskripsiPertanyaan; ?></td>
-					<td><?= $row->jenis; ?></td>
-					<td class="text-left"><?= $row->kode; ?></td>
+					<td><?= $row->kode; ?></td>
 					<td><?= $row->jenis_kuesioner; ?> - <?= $row->periode; ?></td>
-					<td><?= $row->pertanyaan_utama; ?></td>
 				</tr>
 			<?php } ?>
 		</tbody>
@@ -80,7 +74,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '/study-tracer/PertanyaanKuesioner/postDelete/' + id,
+                    url: '/study-tracer/DaftarUrutanData/postDelete/' + id,
                     method: "POST"
                 });
 
@@ -91,7 +85,7 @@
                     icon: 'success'
                 }).then(okay => {
                     if (okay) {
-                        window.location.href = "<?php echo base_url('PertanyaanKuesioner') ?>"
+                        window.location.href = "<?php echo base_url('DaftarUrutanData') ?>"
                     }
                 });
             } else if (result.dismiss === Swal.DismissReason.cancel) {

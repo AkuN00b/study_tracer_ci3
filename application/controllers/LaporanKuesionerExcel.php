@@ -24,6 +24,10 @@ class LaporanKuesionerExcel extends CI_Controller {
 		parent::__construct();
 
 		$this->load->model("LaporanKuesionerM");
+		$this->load->model("PertanyaanKuesionerM");
+		$this->load->model("JawabanKuesionerM");
+		$this->load->model("HasilKuesionerM");
+		$this->load->model("DaftarUrutanDataM");
 
 		if (!$this->session->userdata('logged_in')) {
 			$this->session->set_flashdata('warning', 'Anda belum login atau session habis !!');
@@ -37,7 +41,25 @@ class LaporanKuesionerExcel extends CI_Controller {
 	public function index()
 	{
 		$data['title'] = "Laporan Kuesioner Excel";
-		$data['getData'] = $this->LaporanKuesionerM->getAll();
+		$data['dataHasilKuesioner'] = $this->HasilKuesionerM->getDetailPeriode();
+		$data['getDataHK'] = $this->HasilKuesionerM->getAll();
+
 		$this->load->view('admin/laporan_kuesioner_excel/index', $data);
+	}
+
+	public function detailPeriode()
+	{
+		$id = $this->uri->segment(3);
+
+		$data['title'] = "Laporan Kuesioner Excel";
+
+		if ($this->LaporanKuesionerM->getAll($id) != 0) {
+			$data['getLaporan'] = $this->LaporanKuesionerM->getLaporan($id);
+			$data['getHeaderLaporan'] = $this->DaftarUrutanDataM->getHeaderLaporan($id);
+		}
+
+		$data['getData'] = $this->LaporanKuesionerM->getAll($id);
+
+		$this->load->view('admin/laporan_kuesioner_excel/detailPeriode', $data);
 	}
 }

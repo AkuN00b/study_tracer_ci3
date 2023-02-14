@@ -9,17 +9,17 @@
 
 	<div class="form-group">
 		<label for="txtPassword">
-			Password Baru
+			Kata Sandi Baru
             <span style="color: red;">*</span>
         </label>
 
         <input type="password" name="txtPassword" id="txtPassword" class="form-control" required
-        		oninvalid="this.setCustomValidity('Password Baru Wajib Diisi')"
+        		oninvalid="this.setCustomValidity('Kata Sandi Baru Wajib Diisi')"
                 oninput="this.setCustomValidity('')">
     </div>
 
     <button type="submit" class="btn btn-primary btn-block mb-1">
-    	<i class="fa fa-floppy-o"></i> Reset Password
+    	<i class="fa fa-floppy-o"></i> Reset Kata Sandi
     </button>
 </form>
 

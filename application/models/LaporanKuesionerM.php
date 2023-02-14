@@ -4,9 +4,50 @@ class LaporanKuesionerM extends CI_Model
 {
 	private $_table = "ts_laporankuesioner";
 
-	public function getAll()
+	public function getAll($id)
     {
-        return $this->db->query("SELECT * FROM ts_laporankuesioner ORDER BY id_hasilKuesioner");
+        $query = $this->db->query("SELECT * FROM ts_laporankuesioner lk
+        						   INNER JOIN ts_hasilkuesioner hk ON lk.id_hasilKuesioner = hk.id_hasilKuesioner
+        						   WHERE hk.id_detailPeriode = $id
+        						   ORDER BY lk.id_hasilKuesioner");
+        $result = $query->num_rows();
+    	$query->free_result();
+
+    	return $result;
+    }
+
+    public function getLaporan($id) {
+    	$this->db->select("hk.id_hasilKuesioner");
+
+		$unique_codes = $this->db->query("
+		  SELECT DISTINCT lk.kode
+		  FROM ts_laporankuesioner lk
+		  INNER JOIN ts_hasilkuesioner hk ON hk.id_hasilKuesioner = lk.id_hasilKuesioner
+		  WHERE hk.id_detailPeriode = $id
+		")->result_array();
+
+		foreach ($unique_codes as $code) {
+		  $this->db->select("MAX(IF(kode = '{$code['kode']}', jawabanKuesioner, NULL)) AS '{$code['kode']}'");
+		}
+
+		$this->db->from("ts_laporankuesioner lk");
+		$this->db->join('ts_hasilKuesioner hk', 'lk.id_hasilKuesioner = hk.id_hasilKuesioner');
+		$this->db->where('hk.id_detailPeriode', $id);
+		$this->db->group_by("lk.id_hasilKuesioner");
+		$query = $this->db->get();
+
+		return $query->result_array();
+    }
+
+    public function getHeaderLaporan($id) {
+    	$unique_codes = $this->db->query("
+		  SELECT DISTINCT lk.kode
+		  FROM ts_laporankuesioner lk
+		  INNER JOIN ts_hasilkuesioner hk ON hk.id_hasilKuesioner = lk.id_hasilKuesioner
+		  WHERE hk.id_detailPeriode = $id
+		");
+
+		return $unique_codes->result_array();
     }
 
     public function saveJawaban($jawabanKuesioner, $kode, $idHK, $nama, $tanggal)

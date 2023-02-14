@@ -43,7 +43,8 @@
             Kode Jawaban
         </label>
 
-		<input type="text" name="txtKodeJawaban" id="txtKodeJawaban" class="form-control">
+		<input type="text" name="txtKodeJawaban" id="txtKodeJawaban" class="form-control" 
+                onkeypress="allowAlphaNumericSpace(event)">
     </div>
 
     <div class="form-group">

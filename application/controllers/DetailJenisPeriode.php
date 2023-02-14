@@ -69,9 +69,9 @@ class DetailJenisPeriode extends CI_Controller {
 						$post["txtPeriode"], $dt->format('Y-m-d H:i:s'));
 	        
 	        if ($result) {
-	        	$this->session->set_flashdata("success", "Data Jenis Periode berhasil Ditambahkan !!");
+	        	$this->session->set_flashdata("success", "Detail Jenis Periode berhasil Ditambahkan !!");
 	        } else {
-	        	$this->session->set_flashdata("error", "Data Jenis Periode gagal Ditambahkan !!");
+	        	$this->session->set_flashdata("error", "Detail Jenis Periode gagal Ditambahkan !!");
 	        }
 
 	        redirect(site_url('DetailJenisPeriode'));
@@ -87,7 +87,7 @@ class DetailJenisPeriode extends CI_Controller {
 	        $i = $result->row_array();
 
 	        if ($i['status'] == 'Tidak Aktif') {
-	        	$this->session->set_flashdata("warning", "Data Jenis Periode sudah tidak aktif !!");
+	        	$this->session->set_flashdata("warning", "Detail Jenis Periode sudah tidak aktif !!");
 	    		echo "<script>window.history.back(); </script>";
 	        } else {
 	        	$data = array(
@@ -101,7 +101,7 @@ class DetailJenisPeriode extends CI_Controller {
 		        $this->load->view('admin/detail_jenis_periode/edit', $data);
 	        }
 	    } else {
-	    	$this->session->set_flashdata("warning", "Data Jenis Periode tidak Ditemukan !!");
+	    	$this->session->set_flashdata("warning", "Detail Jenis Periode tidak Ditemukan !!");
 	    	echo "<script>window.history.back(); </script>";
 	    }
 	}
@@ -124,9 +124,9 @@ class DetailJenisPeriode extends CI_Controller {
 						$post["txtPeriode"], $dt->format('Y-m-d H:i:s'));
 	        
 	        if ($result) {
-	        	$this->session->set_flashdata("success", "Data Jenis Periode berhasil Diubah !!");
+	        	$this->session->set_flashdata("success", "Detail Jenis Periode berhasil Diubah !!");
 	        } else {
-	        	$this->session->set_flashdata("error", "Data Jenis Periode gagal Diubah !!");
+	        	$this->session->set_flashdata("error", "Detail Jenis Periode gagal Diubah !!");
 	        }
 
 	        redirect(site_url('DetailJenisPeriode'));
@@ -145,9 +145,9 @@ class DetailJenisPeriode extends CI_Controller {
     			  	$id, $this->session->userdata('user_nama'), $dt->format('Y-m-d H:i:s'));
         
         if ($result) {
-        	$this->session->set_flashdata("success", "Data Jenis Periode berhasil Dihapus !!");
+        	$this->session->set_flashdata("success", "Detail Jenis Periode berhasil Dihapus !!");
         } else {
-        	$this->session->set_flashdata("error", "Data Jenis Periode gagal Dihapus !!");
+        	$this->session->set_flashdata("error", "Detail Jenis Periode gagal Dihapus !!");
         }
 
         redirect(site_url('DetailJenisPeriode'));

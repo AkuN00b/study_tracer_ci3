@@ -56,7 +56,7 @@ class KonfirmasiAkun extends CI_Controller {
     			  	$id, $this->session->userdata('user_nama'), $dt->format('Y-m-d H:i:s'));
         
         if ($result) {
-        	$this->session->set_flashdata("success", "Akun Alumni sudah Diterima !!");
+        	$this->session->set_flashdata("success", "Akun Alumni telah Diterima !!");
         } else {
         	$this->session->set_flashdata("error", "Akun Alumni gagal Diterima !!");
         }
@@ -76,7 +76,7 @@ class KonfirmasiAkun extends CI_Controller {
     			  	$id, $this->session->userdata('user_nama'), $dt->format('Y-m-d H:i:s'));
         
         if ($result) {
-        	$this->session->set_flashdata("success", "Akun Alumni sudah Ditolak !!");
+        	$this->session->set_flashdata("success", "Akun Alumni telah Ditolak !!");
         } else {
         	$this->session->set_flashdata("error", "Akun Alumni gagal Ditolak !!");
         }
@@ -88,7 +88,7 @@ class KonfirmasiAkun extends CI_Controller {
 	{
 		$id = $this->uri->segment(3);		
 		$data['title'] = "Konfirmasi Akun";
-    	$data['title2'] = "Reset Password Akun Alumni";
+    	$data['title2'] = "Reset Kata Sandi Akun Alumni";
 
     	$result = $this->RegistrasiAlumniM->getForUpdate($id);
 
@@ -114,9 +114,9 @@ class KonfirmasiAkun extends CI_Controller {
     			  	$post["txtID"], $this->encryption->encrypt($post["txtPassword"]), $this->session->userdata('user_nama'), $dt->format('Y-m-d H:i:s'));
         
         if ($result) {
-        	$this->session->set_flashdata("success", "Password Akun berhasil Diubah !!");
+        	$this->session->set_flashdata("success", "Kata Sandi berhasil Diubah !!");
         } else {
-        	$this->session->set_flashdata("error", "Password Akun gagal Diubah !!");
+        	$this->session->set_flashdata("error", "Kata Sandi gagal Diubah !!");
         }
 
         redirect(site_url('KonfirmasiAkun'));

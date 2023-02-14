@@ -17,7 +17,7 @@ class PertanyaanKuesionerM extends CI_Model
         return $this->db->query("SELECT pku.id_pku, pku.kode, pku.deskripsiPertanyaan, pku.jenis
                                  FROM ts_pertanyaanKuesioner pku
                                  INNER JOIN ts_detailJenisPeriode dp ON dp.id_detailPeriode = pku.id_detailPeriode
-                                 WHERE pku.status = 'Aktif' AND pku.pertanyaan_utama = 'Ya' AND pku.id_detailPeriode = $id");
+                                 WHERE pku.status = 'Aktif' AND pku.id_detailPeriode = $id");
     }
 
     public function getCountID()

@@ -29,6 +29,9 @@ class Alumni extends CI_Controller {
 		$this->load->model("LaporanKuesionerM");
 		$this->load->model("PertanyaanKuesionerM");
 		$this->load->model("JawabanKuesionerM");
+		$this->load->model("RegistrasiAlumniM");
+		$this->load->model("ProvinsiM");
+		$this->load->model("KabKotaM");
 
 		if (!$this->session->userdata('logged_in')) {
 			$this->session->set_flashdata('warning', 'Anda belum login atau session habis !!');
@@ -95,66 +98,12 @@ class Alumni extends CI_Controller {
 			$result2 = $this->JawabanKuesionerM->getJawaban($row->id_pku)->result();
 
 			foreach ($result2 as $row2) {
-				$data3 = array();
-				$result3 = $this->DetailPertanyaanJawabanM->getDTP($row2->id_jawabanKuesioner)->result();
-
-				foreach ($result3 as $row3) {
-					$data4 = array();
-					$result4 = $this->JawabanKuesionerM->getJawaban($row3->id_pku)->result();
-
-					foreach ($result4 as $row4) {
-						$data5 = array();
-						$result5 = $this->DetailPertanyaanJawabanM->getDTP($row4->id_jawabanKuesioner)->result();
-
-						foreach ($result5 as $row5) {
-							$data6 = array();
-							$result6 = $this->JawabanKuesionerM->getJawaban($row5->id_pku)->result();
-
-							foreach ($result6 as $row6) {
-								$data6[] = array (
-									'id_jawabanKuesioner' => $row4->id_jawabanKuesioner,
-									'nilaiJawaban' => $row4->nilaiJawaban,
-									'deskripsiJawaban' => $row4->deskripsiJawaban,
-									'textbox' => $row4->textbox,
-									'kode' => $row4->kode,
-								);
-							}
-
-							$data5[] = array (
-								'id_pku' => $row5->id_pku,
-							 	'pertanyaan' => $row5->deskripsiPertanyaan,
-							 	'jenis' => $row5->jenis,
-							 	'kode' => $row5->kode,
-							 	'jawaban_pertanyaan_turunan_2' => $data6,
-							);
-						}
-
-						$data4[] = array (
-							'id_jawabanKuesioner' => $row4->id_jawabanKuesioner,
-							'nilaiJawaban' => $row4->nilaiJawaban,
-							'deskripsiJawaban' => $row4->deskripsiJawaban,
-							'textbox' => $row4->textbox,
-							'kode' => $row4->kode,
-							'pertanyaan_turunan_2' => $data5,
-						);
-					}
-
-					$data3[] = array (
-						'id_pku' => $row3->id_pku,
-					 	'pertanyaan' => $row3->deskripsiPertanyaan,
-					 	'jenis' => $row3->jenis,
-					 	'kode' => $row3->kode,
-					 	'jawaban_pertanyaan_turunan' => $data4,
-					);
-				}
-
 				$data2[] = array (
 					'id_jawabanKuesioner' => $row2->id_jawabanKuesioner,
 					'nilaiJawaban' => $row2->nilaiJawaban,
 					'deskripsiJawaban' => $row2->deskripsiJawaban,
 					'textbox' => $row2->textbox,
-					'kode' => $row2->kode,
-					'pertanyaan_turunan' => $data3,			
+					'kode' => $row2->kode,			
 				);
 			}
 
@@ -165,12 +114,45 @@ class Alumni extends CI_Controller {
 			 	'kode' => $row->kode,
 			 	'jawaban' => $data2,
 			);
-
-			// $data['test'] = $row->id_pku;
 		}
 	
 		// $result = array('tanya' => $this->PertanyaanKuesionerM->getUtama($id)->result(), 
 		// 				'jawab' => $this->JawabanKuesionerM->getJawaban($id)->result());
+		// $data['test'] = $row->id_pku;
+		
+		header('Content-type: application/json');
+		echo json_encode($data, JSON_PRETTY_PRINT);
+	}
+
+	public function getProvinsi()
+	{
+		$result = $this->ProvinsiM->getAll();
+		$data = array();
+
+		foreach ($result as $row) {
+			$data[] = array (
+				'provinsi_id' => $row->provinsi_id,
+			 	'provinsi_deskripsi' => $row->provinsi_deskripsi,
+			);
+		}
+
+		header('Content-type: application/json');
+		echo json_encode($data, JSON_PRETTY_PRINT);
+	}
+
+	public function getKabupatenKota($id)
+	{
+		$result = $this->KabKotaM->getID($id);
+		$data = array();
+
+		foreach ($result as $row) {
+			$data[] = array (
+				'kabkota_id' => $row->kabkota_id,
+				'kabkota_deskripsi' => $row->kabkota_deskripsi,
+			 	'kabkota_provinsi_id' => $row->kabkota_provinsi_id,
+			);
+		}
+
 		header('Content-type: application/json');
 		echo json_encode($data, JSON_PRETTY_PRINT);
 	}
@@ -210,6 +192,34 @@ class Alumni extends CI_Controller {
 		}
 
 		redirect(site_url('Alumni'));
+	}
+
+	public function postNPWP() {
+		$post = $this->input->post();
+
+    	$findNPWP = $this->RegistrasiAlumniM->findNPWP($post["txtNPWP"]);
+
+    	if ($findNPWP) {
+	        $this->session->set_flashdata("error", "NPWP sudah ada, tidak boleh sama !!");
+	        redirect(site_url('Alumni'));
+    	} else {
+    		$timestamp = time();
+			$dt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
+			$dt->setTimestamp($timestamp);
+
+	    	$result = $this->RegistrasiAlumniM->saveNPWP(
+	    			  	$this->session->userdata('user_nama'), $this->session->userdata('user_id'),
+	    			  	$post["txtNPWP"], $dt->format('Y-m-d H:i:s'));
+	        
+	        if ($result) {
+	        	$this->session->set_userdata('user_npwp', $post["txtNPWP"]);
+	        	$this->session->set_flashdata("success", "NPWP berhasil Ditambahkan !!");
+	        } else {
+	        	$this->session->set_flashdata("error", "NPWP gagal Ditambahkan !!");
+	        }
+
+	        redirect(site_url('Alumni'));
+	    }
 	}
 
 	public function logout() {

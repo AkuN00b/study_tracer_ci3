@@ -8,6 +8,11 @@ class KabKotaM extends CI_Model
     {
         return $this->db->get($this->_table)->result();
     }
+
+    public function getID($id)
+    {
+        return $this->db->get_where($this->_table, array("kabkota_provinsi_id" => $id))->result();
+    }
 }
 
 ?>

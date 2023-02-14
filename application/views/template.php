@@ -15,7 +15,12 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
     <script src="<?php echo base_url() ?>assets/Scripts/tether/tether.min.js"></script>
-    <script src="<?php echo base_url() ?>assets/Scripts/jquery-3.1.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <!-- jangan lupa menambahkan script js sweet alert di bawah ini  -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.7/dist/sweetalert2.all.min.js"></script>
     <script src="<?php echo base_url() ?>assets/Scripts/jquery-ui-1.12.1.min.js"></script>
     <script src="<?php echo base_url() ?>assets/Plugins/bootstrap-4.0.0-alpha.6-dist/js/bootstrap.min.js"></script>
     <script src="<?php echo base_url() ?>assets/Plugins/Highcharts-5.0.14/code/highcharts.js"></script>
@@ -25,12 +30,11 @@
     <script src="<?php echo base_url() ?>assets/Scripts/jquery.fancybox.pack.js"></script>
     <script src="<?php echo base_url() ?>assets/Scripts/bootstrap-select.min.js"></script>
     <script src="<?php echo base_url() ?>assets/Scripts/LetterAvatar.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.7.1/sweetalert2.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
     <script type="text/javascript">
         $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
+            $("[data-toggle=tooltip").tooltip();
         })
 
         $(function () {
@@ -89,23 +93,22 @@
         .table-striped tbody tr.pagination-ys {
             background-color: #FFF;
         }
+
+        .bottom-wrapper {
+            margin-top: 1em;
+        }
+
+        div.dataTables_filter > label > input {
+            
+        }
     </style>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.13.2/js/dataTables.bootstrap4.min.js"></script>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous">
-    </script>
-    <!-- jangan lupa menambahkan script js sweet alert di bawah ini  -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.7/dist/sweetalert2.all.min.js"></script>
-
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.2/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.2/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.3.4/css/buttons.dataTables.min.css">
 
-    <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.3.4/js/dataTables.buttons.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
@@ -116,7 +119,7 @@
 <body>
 	<div class="polman-nav-static-top">
 		<div class="float-left">
-			<a href="#">
+			<a href="<?php echo site_url('Admin'); ?>">
 				<img src="<?php echo base_url() ?>assets/Images/IMG_Logo.png" style="height: 50px;" />
 			</a>
 		</div>
@@ -159,7 +162,8 @@
                     <?php echo $title == 'Pertanyaan Kuesioner' ? 'show' : ''; ?>
                     <?php echo $title == 'Jawaban Kuesioner' ? 'show' : ''; ?>
                     <?php echo $title == 'Detail Jenis Periode' ? 'show' : ''; ?>
-                    <?php echo $title == 'Detail Pertanyaan Jawaban' ? 'show' : ''; ?>' 
+                    <?php echo $title == 'Detail Pertanyaan Jawaban' ? 'show' : ''; ?>
+                    <?php echo $title == 'Daftar Urutan Data' ? 'show' : ''; ?>' 
                     role='tabpanel'>  
 
                     <a href='<?php echo site_url('PertanyaanKuesioner'); ?>' class='list-group-item list-group-item-action 
@@ -188,6 +192,13 @@
                         style='border-radius: 0px; border: none; padding-left: 47px; display: inherit;'>
 
                         <i class='fa fa-plus-circle fa-lg fa-pull-left' style="margin-top: 2px;"></i>Detail Pertanyaan Jawaban
+                    </a>
+
+                    <a href='<?php echo site_url('DaftarUrutanData'); ?>' class='list-group-item list-group-item-action 
+                        <?php echo $title == 'Daftar Urutan Data' ? 'polman-menu-active' : ''; ?>'
+                        style='border-radius: 0px; border: none; padding-left: 47px; display: inherit;'>
+
+                        <i class='fa fa-list-ol fa-lg fa-pull-left' style="margin-top: 2px;"></i>Daftar Urutan Data
                     </a>
                 </div>
 
@@ -273,6 +284,7 @@
                 "language": {
                     "emptyTable": "Tidak ada Data <?php echo $title; ?>"
                 },
+                "dom": 'lfrti<"bottom-wrapper"p>',
                 scrollX: true,
                 "bLengthChange": false,
                 "bInfo": false,
@@ -280,6 +292,18 @@
             });
         });
     </script>
+
+    <script language="Javascript" type="text/javascript">
+        function allowAlphaNumericSpace(e) {
+            var code = ('charCode' in e) ? e.charCode : e.keyCode;
+
+            if (!(code > 47 && code < 58) && // numeric (0-9)
+                !(code > 64 && code < 91) && // upper alpha (A-Z)
+                !(code > 96 && code < 123)) { // lower alpha (a-z)
+                    e.preventDefault();
+            }
+        }
+    </script> 
 
     <script type="text/javascript">
         let valueDisplays = document.querySelectorAll(".num");

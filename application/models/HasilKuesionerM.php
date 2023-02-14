@@ -6,7 +6,13 @@ class HasilKuesionerM extends CI_Model
 
 	public function getAll()
     {
-        return $this->db->get($this->_table)->result();
+        return $this->db->query("SELECT djp.*, hk.* FROM ts_hasilkuesioner hk
+                                 INNER JOIN ts_detailjenisperiode djp ON djp.id_detailPeriode = hk.id_detailPeriode")->result();
+    }
+
+    public function getAllCount()
+    {
+        return $this->db->query("SELECT * FROM ts_hasilkuesioner");
     }
 
     public function getCountID()
@@ -28,6 +34,14 @@ class HasilKuesionerM extends CI_Model
         return $query;
 
         // return $this->db->get_where($this->_table, array('nim' => $nim))->result();
+    }
+
+    public function getDetailPeriode() {
+        return $this->db->query("SELECT hk.id_detailPeriode, djp.jenis_kuesioner, djp.periode 
+                                 FROM ts_hasilKuesioner hk
+                                 INNER JOIN ts_detailjenisperiode djp 
+                                 ON hk.id_detailPeriode = djp.id_detailPeriode 
+                                 GROUP BY hk.id_detailPeriode");
     }
 
     public function chartPie()

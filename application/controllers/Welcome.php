@@ -88,6 +88,7 @@ class Welcome extends CI_Controller {
 							$id	 			= $data->id;
 							$nim 			= $data->nim;
 							$nik 	 		= $data->nik;
+							$npwp 	 		= $data->npwp;
 							$nama 	 		= $data->nama;
 							$alamat 	 	= $data->alamat;
 							$tanggal_lahir 	= $data->tanggal_lahir;
@@ -101,6 +102,7 @@ class Welcome extends CI_Controller {
 								'user_id' 				=> $id,	
 								'user_nim'				=> $nim,	
 								'user_nik'				=> $nik,
+								'user_npwp'				=> $npwp,
 								'user_nama'				=> $nama,
 								'user_alamat'			=> $alamat,
 								'user_tanggal_lahir'	=> $tanggal_lahir,

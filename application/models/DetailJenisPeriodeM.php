@@ -12,6 +12,11 @@ class DetailJenisPeriodeM extends CI_Model
                                  ORDER BY id_detailPeriode ASC");
     }
 
+    public function getComboBox()
+    {
+        return $this->db->query("SELECT * FROM ts_detailjenisperiode WHERE status = 'Aktif'");
+    }
+
 	public function getAll()
     {
         return $this->db->query("CALL ts_getDataDetailJenisPeriode");

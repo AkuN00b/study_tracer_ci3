@@ -32,7 +32,8 @@
         	<option value="Radio Button">Radio Button</option>
             <option value="Text Box">Text Box</option>
         	<option value="Text Area">Text Area</option>
-        	<option value="Check Box">Check Box</option>
+            <option value="Check Box">Check Box</option>
+        	<option value="Check Box Value Berurutan">Check Box Value Berurutan</option>
         	<option value="DateTime Picker">DateTime Picker</option>
         </select>
     </div>
@@ -40,12 +41,10 @@
     <div class="form-group">
         <label for="txtkode">
             Kode Pertanyaan
-            <span style="color: red;">*</span>
         </label>
 
         <input type="text" name="txtkode" id="txtkode" class="form-control" required
-                oninvalid="this.setCustomValidity('Kode Pertanyaan Wajib Diisi')"
-                oninput="this.setCustomValidity('')">
+                onkeypress="allowAlphaNumericSpace(event)">
     </div>
 
     <div class="form-group">

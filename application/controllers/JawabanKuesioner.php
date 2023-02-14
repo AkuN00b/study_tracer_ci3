@@ -127,29 +127,22 @@ class JawabanKuesioner extends CI_Controller {
 	public function postUpdate() {
 		$post = $this->input->post();
 
-    	$findJK = $this->JawabanKuesionerM->findJK($post["txtDeskripsiJawaban"], $post["txtJawabanUntukPertanyaan"]);
+		$timestamp = time();
+		$dt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
+		$dt->setTimestamp($timestamp);
 
-    	if ($findJK) {
-    		$this->session->set_flashdata("error", "Jawaban Kuesioner sudah ada, tidak boleh sama !!");
-	        redirect(site_url('JawabanKuesioner'));
-    	} else {
-			$timestamp = time();
-			$dt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
-			$dt->setTimestamp($timestamp);
+    	$result = $this->JawabanKuesionerM->update(
+    			  	$post["txtIdJK"], $this->session->userdata('user_nama'), $post["txtJawabanUntukPertanyaan"],
+					$post["txtDeskripsiJawaban"], $post["txtKodeJawaban"], $post["txtNilaiJawaban"],
+					$post["txtButuhTextbox"], $dt->format('Y-m-d H:i:s'));
+        
+        if ($result) {
+        	$this->session->set_flashdata("success", "Jawaban Kuesioner berhasil Diubah !!");
+        } else {
+        	$this->session->set_flashdata("error", "Jawaban Kuesioner gagal Diubah !!");
+        }
 
-	    	$result = $this->JawabanKuesionerM->update(
-	    			  	$post["txtIdJK"], $this->session->userdata('user_nama'), $post["txtJawabanUntukPertanyaan"],
-						$post["txtDeskripsiJawaban"], $post["txtKodeJawaban"], $post["txtNilaiJawaban"],
-						$post["txtButuhTextbox"], $dt->format('Y-m-d H:i:s'));
-	        
-	        if ($result) {
-	        	$this->session->set_flashdata("success", "Jawaban Kuesioner berhasil Diubah !!");
-	        } else {
-	        	$this->session->set_flashdata("error", "Jawaban Kuesioner gagal Diubah !!");
-	        }
-
-	        redirect(site_url('JawabanKuesioner'));
-	    }
+        redirect(site_url('JawabanKuesioner'));
 	}
 
 	public function postDelete()

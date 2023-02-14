@@ -104,7 +104,7 @@
 <body>
 	<div class="polman-nav-static-top">
 		<div class="float-left">
-			<a href="#">
+			<a href="<?php echo site_url('Alumni'); ?>">
 				<img src="<?php echo base_url() ?>assets/Images/IMG_Logo.png" style="height: 50px;" />
 			</a>
 		</div>

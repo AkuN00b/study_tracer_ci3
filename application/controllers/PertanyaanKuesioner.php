@@ -47,7 +47,7 @@ class PertanyaanKuesioner extends CI_Controller {
 	{
 		$data['title'] = "Pertanyaan Kuesioner";
 		$data['title2'] = "Buat Pertanyaan Kuesioner";
-		$data["getDataPeriodeDanJenisKuesioner"] = $this->DetailJenisPeriodeM->get();
+		$data["getDataPeriodeDanJenisKuesioner"] = $this->DetailJenisPeriodeM->get()->result();
 
 		$id = $this->PertanyaanKuesionerM->getCountID()->num_rows();
 
@@ -126,29 +126,22 @@ class PertanyaanKuesioner extends CI_Controller {
 	public function postUpdate() {
 		$post = $this->input->post();
 
-    	$findPK = $this->PertanyaanKuesionerM->findPK($post["txtkode"], $post["txtid_detailPeriode"]);
+    	$timestamp = time();
+		$dt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
+		$dt->setTimestamp($timestamp);
 
-    	if ($findPK) {
-    		$this->session->set_flashdata("error", "Pertanyaan Kuesioner sudah ada, tidak boleh sama !!");
-	        redirect(site_url('PertanyaanKuesioner'));
-    	} else {
-    		$timestamp = time();
-			$dt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
-			$dt->setTimestamp($timestamp);
+    	$result = $this->PertanyaanKuesionerM->update(
+    			  	$post["txtID"], $this->session->userdata('user_nama'), $post["txtdeskripsiPertanyaan"],
+					$post["txtjenis"], $post["txtkode"], $post["txtid_detailPeriode"],
+					$post["txtpertanyaan_utama"], $dt->format('Y-m-d H:i:s'));
+        
+        if ($result) {
+        	$this->session->set_flashdata("success", "Pertanyaan Kuesioner berhasil Diubah !!");
+        } else {
+        	$this->session->set_flashdata("error", "Pertanyaan Kuesioner gagal Diubah !!");
+        }
 
-	    	$result = $this->PertanyaanKuesionerM->update(
-	    			  	$post["txtID"], $this->session->userdata('user_nama'), $post["txtdeskripsiPertanyaan"],
-						$post["txtjenis"], $post["txtkode"], $post["txtid_detailPeriode"],
-						$post["txtpertanyaan_utama"], $dt->format('Y-m-d H:i:s'));
-	        
-	        if ($result) {
-	        	$this->session->set_flashdata("success", "Pertanyaan Kuesioner berhasil Diubah !!");
-	        } else {
-	        	$this->session->set_flashdata("error", "Pertanyaan Kuesioner gagal Diubah !!");
-	        }
-
-	        redirect(site_url('PertanyaanKuesioner'));
-    	}
+        redirect(site_url('PertanyaanKuesioner'));
 	}
 
 	public function postDelete()

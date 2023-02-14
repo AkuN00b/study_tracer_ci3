@@ -32,7 +32,8 @@
         	<option value="Radio Button" <?php if ($jenis == 'Radio Button') echo "selected" ?>>Radio Button</option>
         	<option value="Text Box" <?php if ($jenis == 'Text Box') echo "selected" ?>>Text Box</option>
             <option value="Text Area" <?php if ($jenis == 'Text Area') echo "selected" ?>>Text Area</option>
-        	<option value="Check Box" <?php if ($jenis == 'Check Box') echo "selected" ?>>Check Box</option>
+            <option value="Check Box" <?php if ($jenis == 'Check Box') echo "selected" ?>>Check Box</option>
+        	<option value="Check Box Value Berurutan" <?php if ($jenis == 'Check Box Value Berurutan') echo "selected" ?>>Check Box Value Berurutan</option>
         	<option value="DateTime Picker" <?php if ($jenis == 'DateTime Picker') echo "selected" ?>>DateTime Picker</option>
         </select>
     </div>
@@ -40,12 +41,10 @@
     <div class="form-group">
         <label for="txtkode">
             Kode Pertanyaan
-            <span style="color: red;">*</span>
         </label>
 
-        <input type="text" value="<?= $kode; ?>" name="txtkode" id="txtkode" class="form-control" required
-                oninvalid="this.setCustomValidity('Kode Pertanyaan Wajib Diisi')"
-                oninput="this.setCustomValidity('')">
+        <input type="text" value="<?= $kode; ?>" name="txtkode" id="txtkode" class="form-control"
+                onkeypress="allowAlphaNumericSpace(event)">
     </div>
 
     <div class="form-group">
@@ -59,7 +58,7 @@
                 oninput="this.setCustomValidity('')">
         	<option disabled="" selected="" value="">-- Pilih Periode dan Jenis Kuesioner --</option>
         	<?php
-                foreach ($getDataPeriodeDanJenisKuesioner as $row) {
+                foreach ($getDataPeriodeDanJenisKuesioner->result() as $row) {
                 	if ($id_detailperiode == $row->id_detailPeriode) {
                 		echo '<option value="' . $row->id_detailPeriode . '" selected="selected">' . $row->jenis_kuesioner . ' - ' . $row->periode . '</option>';
                     } else {

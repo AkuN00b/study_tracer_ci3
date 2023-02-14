@@ -25,7 +25,7 @@
                                 Nomor Induk Mahasiswa (NIM)
                                 <span style="color: red;">*</span>
                             </label>
-                            <input id="txtNIM" type="text" name="txtNIM" maxlength="10" class="form-control" required
+                            <input id="txtNIM" type="number" name="txtNIM" onKeyPress="if(this.value.length == 10) return false;" class="form-control" required
                                     oninvalid="this.setCustomValidity('Nomor Induk Mahasiswa (NIM) Wajib Diisi')"
                                     oninput="this.setCustomValidity('')">
                         </div>
@@ -45,7 +45,7 @@
                                 Nomor Induk Kependudukan (NIK)
                                 <span style="color: red;">*</span>
                             </label>
-                            <input id="txtNIK" type="text" name="txtNIK" maxlength="16" class="form-control" required
+                            <input id="txtNIK" type="number" name="txtNIK" onKeyPress="if(this.value.length == 16) return false;" class="form-control" required
                                     oninvalid="this.setCustomValidity('Nomor Induk Kependudukan (NIK) Wajib Diisi')"
                                     oninput="this.setCustomValidity('')">
                         </div>
@@ -97,7 +97,7 @@
 
                         <div class="form-group">
                             <label for="txtPassword">
-                                Password
+                                Kata Sandi
                                 <span style="color: red;">*</span>
                             </label>
                             <input type="password" maxlength="50" id="txtPassword" name="txtPassword" class="form-control" required
@@ -107,7 +107,7 @@
 
                         <div class="form-group">
                             <label for="txtKonfirmasiPassword">
-                                Konfirmasi Password
+                                Konfirmasi Kata Sandi
                                 <span style="color: red;">*</span><span style="color: red;" id="txtKonfirmasiPasswordMsg"></span>
                             </label>
                             <input type="password" maxlength="50" id="txtKonfirmasiPassword" name="txtKonfirmasiPassword" class="form-control" required

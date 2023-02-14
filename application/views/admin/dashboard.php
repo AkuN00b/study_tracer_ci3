@@ -92,7 +92,13 @@
 			<span style="font-size: Larger; font-weight: bold;">Data Alumni Berdasarkan Tahun</span><br><br>
 		</center>
 
-		<canvas id="myChartBar"></canvas>
+		<?php if ($getCountRA == 0) { ?>
+			<center>
+				<p>Data Alumni Tidak Ada</p>
+			</center>
+		<?php } else { ?>
+			<canvas id="myChartBar"></canvas>
+		<?php } ?>
 	</div>
 
 	<div class="col-lg-6 col-md-12 mb-4 justify-content-center" data-aos="zoom-in-up" data-aos-easing="linear" data-aos-duration="690">
@@ -137,6 +143,12 @@
 							<td><?= $row->tahun_lulus; ?></td>
 						</tr>
 					<?php } ?>
+
+					<?php if ($getData->num_rows() == 0) { ?>
+						<tr style="height: 45px;">
+							<td colspan="4">Semua Mahasiswa Telah Diverifikasi</td>
+						</tr>
+					<?php } ?>
 				</tbody>
 			</table>
 		</div>
@@ -144,18 +156,30 @@
 
 	<div class="col-lg-6 col-md-12 mb-4 justify-content-center" data-aos="zoom-in-up" data-aos-easing="linear" data-aos-duration="690">
 		<center>
-			<span style="font-size: Larger; font-weight: bold;">Data Alumni Besertakan Status</span><br><br>
+			<span style="font-size: Larger; font-weight: bold;">Data Alumni Berdasarkan Status</span><br><br>
 		</center>
 
-		<center><canvas id="myChartDoughnut"></canvas></center>
-	</div>
+		<?php if ($getCountRA == 0) { ?>
+			<center>
+				<p>Data Alumni Tidak Ada</p>
+			</center>
+		<?php } else { ?>
+			<div><center><canvas id="myChartDoughnut"></canvas></center></div>
+		<?php } ?>
+	</div><br><br>
 
 	<div class="col-lg-6 col-md-12 mb-4 justify-content-center" data-aos="zoom-in-up" data-aos-easing="linear" data-aos-duration="690">
 		<center>
 			<span style="font-size: Larger; font-weight: bold;">Data Kuesioner Terisi Berdasarkan Jenis Kuesioner</span><br><br>
 		</center>
 
-		<center><canvas id="myChartPie"></canvas></center>
+		<?php if ($getCountHK == 0) { ?>
+			<center>
+				<p>Data Hasil Kuesioner Tidak Ada</p>
+			</center>
+		<?php } else { ?>
+			<center><canvas id="myChartPie"></canvas></center>
+		<?php } ?>
 	</div>
 </div>
 
@@ -167,90 +191,100 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script type="text/javascript">
-	const ctx = document.getElementById('myChartBar');
+<?php if ($getCountRA != 0) { ?>
+	<script type="text/javascript">
+		const ctx = document.getElementById('myChartBar');
 
-	new Chart(ctx, {
-		type: 'bar',
-		data: {
-			labels: [
-				<?php foreach ($chartBarRA as $row) { 
-					echo "'" . $row->tahun_lulus . "',";
-				} ?>
-			],
-			datasets: [{
-			    label: 'Data Alumni Berdasarkan Tahun',
-			    data: [
-			    	<?php foreach ($chartBarRA as $row) { 
-						echo "'" . $row->hitung . "',";
+		new Chart(ctx, {
+			type: 'bar',
+			data: {
+				labels: [
+					<?php foreach ($chartBarRA as $row) { 
+						echo "'" . $row->tahun_lulus . "',";
 					} ?>
-			    ],
-			    borderWidth: 1
-			}]
-		},
-		options: {
-			scales: {
-			    y: {
-			      beginAtZero: true
-			    }
+				],
+				datasets: [{
+				    label: 'Data Alumni Berdasarkan Tahun',
+				    data: [
+				    	<?php foreach ($chartBarRA as $row) { 
+							echo "'" . $row->hitung . "',";
+						} ?>
+				    ],
+				    borderWidth: 1
+				}]
+			},
+			options: {
+				scales: {
+				    y: {
+				      beginAtZero: true
+				    }
+				}
 			}
-		}
-	});
+		});
+	</script>
+<?php } ?>
 
-	const ctxx = document.getElementById('myChartDoughnut');
+<?php if ($getCountRA != 0) { ?>
+	<script type="text/javascript">
+		const ctxx = document.getElementById('myChartDoughnut');
 
-	new Chart(ctxx, {
-		type: 'doughnut',
-		data: {
-			labels: [
-				<?php foreach ($chartDoughnutRA as $row) { 
-					echo "'" . $row->status . "',";
-				} ?>
-			],
-			datasets: [{
-			    label: 'Jumlah Alumni',
-			    data: [
-			    	<?php foreach ($chartDoughnutRA as $row) { 
-						echo "'" . $row->hitung . "',";
+		new Chart(ctxx, {
+			type: 'doughnut',
+			data: {
+				labels: [
+					<?php foreach ($chartDoughnutRA as $row) { 
+						echo "'" . $row->status . "',";
 					} ?>
-			    ],
-			    backgroundColor: [
-			    	'rgb(255, 99, 132)',
-			    	'rgb(54, 162, 235)',
-			      	'rgb(255, 205, 86)'
-			    ],
-			    hoverOffset: 4
-			}]
-		}
-	});
+				],
+				datasets: [{
+				    label: 'Jumlah Alumni',
+				    data: [
+				    	<?php foreach ($chartDoughnutRA as $row) { 
+							echo "'" . $row->hitung . "',";
+						} ?>
+				    ],
+				    backgroundColor: [
+				    	'rgb(255, 99, 132)',
+				    	'rgb(54, 162, 235)',
+				      	'rgb(255, 205, 86)'
+				    ],
+				    hoverOffset: 4
+				}]
+			}
+		});
+	</script>
+<?php } ?>
 
-	const ctxxx = document.getElementById('myChartPie');
+<?php if ($getCountHK != 0) { ?>
+	<script type="text/javascript">
+		const ctxxx = document.getElementById('myChartPie');
 
-	new Chart(ctxxx, {
-		type: 'pie',
-		data: {
-			labels: [
-				<?php foreach ($chartPieHK as $row) { 
-					echo "'" . $row->jenis_kuesioner . "',";
-				} ?>
-			],
-			datasets: [{
-			    label: 'Jumlah Kuesioner',
-			    data: [
-			    	<?php foreach ($chartPieHK as $row) { 
-						echo "'" . $row->hitung . "',";
+		new Chart(ctxxx, {
+			type: 'pie',
+			data: {
+				labels: [
+					<?php foreach ($chartPieHK as $row) { 
+						echo "'" . $row->jenis_kuesioner . "',";
 					} ?>
-			    ],
-			    backgroundColor: [
-			     	'rgb(255, 99, 132)',
-			      	'rgb(54, 162, 235)',
-			      	'rgb(255, 205, 86)'
-			    ],
-			    hoverOffset: 4
-			}]
-		}
-	});
-</script>
+				],
+				datasets: [{
+				    label: 'Jumlah Kuesioner',
+				    data: [
+				    	<?php foreach ($chartPieHK as $row) { 
+							echo "'" . $row->hitung . "',";
+						} ?>
+				    ],
+				    backgroundColor: [
+				     	'rgb(255, 99, 132)',
+				      	'rgb(54, 162, 235)',
+				      	'rgb(255, 205, 86)'
+				    ],
+				    hoverOffset: 4
+				}]
+			}
+		});
+	</script>
+<?php } ?>
 
 <script type="text/javascript">
     $(".approve").click(function() {

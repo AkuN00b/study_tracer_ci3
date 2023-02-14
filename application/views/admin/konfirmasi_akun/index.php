@@ -5,13 +5,13 @@
 </center><br>
 
 <div style="overflow-x: auto; width: 100%;">
-	<table id="myTable" class="table table-hover table-bordered table-condensed table-striped grid scrollstyle text-center" width="100%">
+	<table id="myTable" class="table table-hover grid scrollstyle text-center" width="100%">
 		<thead>
 			<tr>
 				<th class="align-middle text-center">No.</th>
 				<th class="align-middle text-center">ID Alumni</th>
 				<th class="align-middle text-center">Aksi</th>
-				<th class="align-middle text-center">Reset Password</th>
+				<th class="align-middle text-center">Reset Kata Sandi</th>
 				<th class="align-middle text-center">Update Data</th>
 				<th class="align-middle text-center">Nomor Induk Mahasiswa</th>
 				<th class="align-middle text-center">Nomor Induk Kependudukan</th>

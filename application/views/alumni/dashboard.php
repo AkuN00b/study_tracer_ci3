@@ -1,7 +1,9 @@
 <?php ob_start();?>
 
 <?php if ($getListSudahIsiC == 2 && $getListSudahIsiC + 2 == $getListKuesionerTahunIniC) { ?>
-	Terimakasih Telah Mengisi Kuesioner di Tahun <?php echo date('Y') ?> ini
+	<span style="font-size: Larger; font-weight: bold;">
+		Terimakasih Telah Mengisi Kuesioner di Tahun <?php echo date('Y') ?> ini
+	</span>
 <?php } else { ?>
 	<?php $i = 0; $detail = 'sss'; foreach ($getListKuesionerTahunIni as $row) { 
 		if ($row->periode == date('Y')) {
@@ -82,10 +84,50 @@
 					</div>
 				</div>
 			<?php } else if ($detail == 'lengkap') { ?>
-				Terimakasih Telah Mengisi Kuesioner di Tahun <?php echo date('Y') ?> ini
+				<span style="font-size: Larger; font-weight: bold;">
+					Terimakasih Telah Mengisi Kuesioner di Tahun <?php echo date('Y') ?> ini
+				</span>
 			<?php break; } ?>
 		<?php } ?>
 	<?php } ?>
+<?php } ?>
+
+<?php if ($this->session->userdata('user_npwp') == NULL) { ?>
+	<p><b class="text-danger">Data NPWP belum ada</b>, apakah anda sudah mempunyai data NPWP? Jika ada, <b><a href="#" data-toggle="modal" data-target="#exampleModalCenter">Isi Disini !!</a></b></p>
+
+	<!-- Modal -->
+	<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	  <div class="modal-dialog modal-dialog-centered" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="exampleModalLongTitle">Isi Data NPWP</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+	        <form action="<?php echo site_url('Alumni/postNPWP') ?>" method="POST" autocomplete="off">
+				<div class="form-group">
+			        <label for="txtJenisKuesioner">
+			            NPWP
+			            <span style="color: red;">*</span>
+			        </label>
+			        
+			        <input type="number" name="txtNPWP" id="txtNPWP" class="form-control" required
+			        	onKeyPress="if(this.value.length == 15) return false;"
+		                oninvalid="this.setCustomValidity('NPWP Wajib Diisi')"
+		                oninput="this.setCustomValidity('')"
+		                onkeypress="allowAlphaNumericSpace(event)">
+			    </div>
+
+			    <button type="submit" class="btn btn-primary btn-block mb-1">
+			    	<i class="fa fa-floppy-o"></i> Isi Data NPWP
+			    </button>
+			</form>
+	      </div>
+	    </div>
+	  </div>
+	</div>
 <?php } ?>
 
 <?php

@@ -4,16 +4,16 @@
 	<span style="font-size: Larger; font-weight: bold;">Daftar <?php echo $title; ?></span>
 </center><br>
 
-<div class="row">
+<div class="row mb-3">
 	<div class="col-12">
 		<a href="<?php echo site_url('DetailJenisPeriode/getCreate'); ?>" class="btn btn-primary float-right">
 			<i class="fa fa-plus"></i>&nbsp;Tambah
 		</a>
 	</div>
-</div><br>
+</div>
 
 <div style="overflow-x: auto; width: 100%;">
-	<table id="myTable" class="table table-hover table-bordered table-condensed table-striped grid scrollstyle text-center" width="100%">
+	<table id="myTable" class="table table-hover grid scrollstyle text-center" width="100%">
 		<thead>
 			<tr>
 				<th class="align-middle text-center">No.</th>

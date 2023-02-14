@@ -53,6 +53,9 @@ class Admin extends CI_Controller {
 		$data['chartDoughnutRA'] = $this->RegistrasiAlumniM->chartDoughnut();
 		$data['chartPieHK'] = $this->HasilKuesionerM->chartPie();
 
+		$data['getCountRA'] = $this->RegistrasiAlumniM->getAllCount()->num_rows();
+		$data['getCountHK'] = $this->HasilKuesionerM->getAllCount()->num_rows();
+
 		$this->load->view('admin/dashboard.php', $data);
 	}
 

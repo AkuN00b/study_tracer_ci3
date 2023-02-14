@@ -49,7 +49,8 @@
             Kode Jawaban
         </label>
 
-		<input type="text" name="txtKodeJawaban" id="txtKodeJawaban" value="<?= $kode; ?>" class="form-control">
+		<input type="text" name="txtKodeJawaban" id="txtKodeJawaban" value="<?= $kode; ?>" class="form-control" 
+                onkeypress="allowAlphaNumericSpace(event)">
     </div>
 
     <div class="form-group">

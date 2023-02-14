@@ -9,6 +9,11 @@ class RegistrasiAlumniM extends CI_Model
         return $this->db->get($this->_table)->result();
     }
 
+    public function getAllCount()
+    {
+        return $this->db->query("SELECT * FROM ts_registrasialumni");
+    }
+
 	public function getAll()
     {
         return $this->db->query("CALL ts_getDataAlumni");
@@ -41,6 +46,27 @@ class RegistrasiAlumniM extends CI_Model
       } else {
         return false;
       }
+    }
+
+    public function findNPWP($npwp)
+    {
+      $query = $this->db->query("SELECT * FROM ts_registrasialumni WHERE (status = 'Diterima') AND (npwp = '$npwp')");
+
+      if ($query->result()) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    public function saveNPWP($nama, $id, $npwp, $tanggalSekarang) {
+        return $this->db->query("
+            UPDATE ts_registrasialumni
+            SET npwp = $npwp,
+            modified_by = '$nama',
+            modified_date = '$tanggalSekarang'
+            WHERE id = $id
+        ");
     }
 
     public function chartBar()

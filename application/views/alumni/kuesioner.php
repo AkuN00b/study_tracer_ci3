@@ -11,65 +11,68 @@
 	<input type="hidden" name="txtid_DetailPeriode" id="idDetailPeriode" value="<?php echo $idDetailPeriode; ?>">
 
 	<div class="form-group">
-		<span class="mb-1">NIM Mahasiswa</span>
-		<input type="text" class="form-control" value="<?= $this->session->userdata('user_nim'); ?>" readonly="" name="jawabanKuesioner[]">
-		<input type="hidden" value="nimhsmsmh" name="kode[]">
-    </div>
-
-    <div class="form-group">
 		<span class="mb-1">Kode PT</span>
-		<input type="text" class="form-control" value="35003" readonly="" name="jawabanKuesioner[]">
-		<input type="hidden" value="kdptimsmh" name="kode[]">
-    </div>
-
-    <div class="form-group">
-		<span class="mb-1">Tahun Lulus</span>
-		<input type="text" class="form-control" value="<?= $this->session->userdata('user_tahun_lulus'); ?>" readonly="" name="jawabanKuesioner[]">
-		<input type="hidden" value="tahun_lulus" name="kode[]">
+		<input type="text" class="form-control" value="35003" readonly="" name="jawabanKuesioner[0]">
+		<input type="hidden" value="kdptimsmh" name="kode[0]">
     </div>
 
     <div class="form-group">
 		<span class="mb-1">Kode Prodi</span>
-		<input type="text" class="form-control" value="57401" readonly="" name="jawabanKuesioner[]">
-		<input type="hidden" value="kdpstmsmh" name="kode[]">
+		<input type="text" class="form-control" value="57401" readonly="" name="jawabanKuesioner[1]">
+		<input type="hidden" value="kdpstmsmh" name="kode[1]">
+    </div>
+
+	<div class="form-group">
+		<span class="mb-1">NIM Mahasiswa</span>
+		<input type="text" class="form-control" value="<?= $this->session->userdata('user_nim'); ?>" readonly="" name="jawabanKuesioner[2]">
+		<input type="hidden" value="nimhsmsmh" name="kode[2]">
     </div>
 
     <div class="form-group">
 		<span class="mb-1">Nama Mahasiswa</span>
-		<input type="text" class="form-control" value="<?= $this->session->userdata('user_nama'); ?>" readonly="" name="jawabanKuesioner[]">
-		<input type="hidden" value="nmmhsmsmh" name="kode[]">
+		<input type="text" class="form-control" value="<?= $this->session->userdata('user_nama'); ?>" readonly="" name="jawabanKuesioner[3]">
+		<input type="hidden" value="nmmhsmsmh" name="kode[3]">
     </div>
 
     <div class="form-group">
 		<span class="mb-1">Nomor Telepon</span>
-		<input type="text" class="form-control" value="<?= $this->session->userdata('user_telepon'); ?>" readonly="" name="jawabanKuesioner[]">
-		<input type="hidden" value="telpomsmh" name="kode[]">
+		<input type="text" class="form-control" value="<?= $this->session->userdata('user_telepon'); ?>" readonly="" name="jawabanKuesioner[4]">
+		<input type="hidden" value="telpomsmh" name="kode[4]">
     </div>
 
     <div class="form-group">
 		<span class="mb-1">Alamat Email</span>
-		<input type="text" class="form-control" value="<?= $this->session->userdata('user_email'); ?>" readonly="" name="jawabanKuesioner[]">
-		<input type="hidden" value="emailmsmh" name="kode[]">
+		<input type="text" class="form-control" value="<?= $this->session->userdata('user_email'); ?>" readonly="" name="jawabanKuesioner[5]">
+		<input type="hidden" value="emailmsmh" name="kode[5]">
+    </div>
+
+    <div class="form-group">
+		<span class="mb-1">Tahun Lulus</span>
+		<input type="text" class="form-control" value="<?= $this->session->userdata('user_tahun_lulus'); ?>" readonly="" name="jawabanKuesioner[6]">
+		<input type="hidden" value="tahun_lulus" name="kode[6]">
     </div>
 
     <div class="form-group">
 		<span class="mb-1">NIK Mahasiswa</span>
-		<input type="text" class="form-control" value="<?= $this->session->userdata('user_nik'); ?>" readonly="" name="jawabanKuesioner[]">
-		<input type="hidden" value="nik" name="kode[]">
+		<input type="text" class="form-control" value="<?= $this->session->userdata('user_nik'); ?>" readonly="" name="jawabanKuesioner[7]">
+		<input type="hidden" value="nik" name="kode[7]">
     </div>
+
+    <div class="form-group">
+		<span class="mb-1">NPWP Alumni</span>
+		<input type="text" class="form-control" value="<?= $this->session->userdata('user_npwp'); ?>" readonly="" name="jawabanKuesioner[8]">
+		<input type="hidden" value="npwp" name="kode[8]">
+    </div>
+
+    <br>
+    <span style="font-size: Larger; font-weight: bold;">Kuesioner Wajib</span><br><br>
+
+	<div id="pertanyaan"></div><br><br>
 
     <button type="submit" class="btn btn-primary btn-block mb-1">
     	<i class="fa fa-floppy-o"></i> Input <?php echo $title2; ?>
     </button>
 </form><br><br>
-
-<span style="font-size: Larger; font-weight: bold;">Kuesioner Wajib</span><br><br>
-
-<div id="pertanyaan"></div><br><br>
-
-<span style="font-size: Larger; font-weight: bold;">Kuesioner Tambahan</span><br><br>
-
-<div id="pertanyaanTurunan"></div>
 
 <?php
 	$data = ob_get_clean();
@@ -81,6 +84,26 @@
 	// get value periode dan jenis kuesioner yang dipilih
 	const idDetailPeriode = document.getElementById("idDetailPeriode").value;
 
+	function loadKabupaten() {
+	 	var id_provinsi = $('#provinsi').val();
+
+	 	if (id_provinsi) {
+	    	$.ajax({
+	      		type: 'GET',
+	      		url: SITEURL + "Alumni/getKabupatenKota/" + id_provinsi,
+	     		dataType: 'json',
+	      		success: function(res) {
+	        		$('#kabupaten').find('option').not(':first').remove();
+			        $.each(res, function(index, kabupaten) {
+			          	$('#kabupaten').append('<option value="' + kabupaten.kabkota_id + '">' + kabupaten.kabkota_deskripsi + '</option>');
+			        });
+	      		}
+	    	});
+		} else {
+		    $('#kabupaten').find('option').not(':first').remove();
+		}
+	}
+
 	// untuk load otomatis saat form diakses
 	$(document).ready(function () {
 		$.ajax({
@@ -89,38 +112,24 @@
 			dataType: "json",
 			success: function (res) {
 				// get jumlah data pertanyaan utama
-				console.log('data pertanyaan: ', res.length);
+				console.log(res);
 
 				// deklarasi
 				let temp;
 				let temp2;
-				let temp3;
-
+				let helpIncrement;
+				let helper = 8;
 
 				const tanya = document.getElementById("pertanyaan");
-				const tanya2 = document.getElementById("pertanyaanTurunan");
 
-
-				const ask = document.createElement("p");
-				const ask2 = document.createElement("p");
-				const ask3 = document.createElement("p");
-
+				const ask = document.createElement("label");
 
 				const inputHiddenKodeValue = document.createElement("input");
 				const inputHiddenKodeValueJawaban = document.createElement("input");
+				const inputHiddenKodeValueJawabann = document.createElement("input");
 				const inputLainnya = document.createElement("input");
 
-				const inputHiddenKodeValue2 = document.createElement("input");
-				const inputHiddenKodeValueJawaban2 = document.createElement("input");
-				const inputLainnya2 = document.createElement("input");
-
-				const inputHiddenKodeValue3 = document.createElement("input");
-				const inputHiddenKodeValueJawaban3 = document.createElement("input");
-				const inputLainnya3 = document.createElement("input");
-
-
 				const enter = document.createElement("br");
-
 
 				// get pertanyaan utama
 				for (let i = 0; i < res.length; i++) {
@@ -128,396 +137,263 @@
 					const formGroup = document.createElement("div");
 					formGroup.setAttribute("class", "form-group");
 
-					const select = document.createElement('select');
-					select.setAttribute("name", "jawabanKuesioner[]");
-					select.setAttribute("class", "form-control");
+					helper++;
 
-					// get kode pertanyaan
-					inputHiddenKodeValue.setAttribute("type", "hidden");
-					inputHiddenKodeValue.setAttribute("name", "kode[]");
-					inputHiddenKodeValue.setAttribute("value", res[i].kode);
+					if (res[i].kode == "f5a1") {
+						// get pertanyaan
+						ask.setAttribute("class", "mb-1");
+						ask.setAttribute("for", "provinsi")
+						ask.innerHTML = res[i].pertanyaan;
+						formGroup.innerHTML += ask.outerHTML + enter.outerHTML;
 
-					formGroup.innerHTML += inputHiddenKodeValue.outerHTML;
-
-					// get pertanyaan
-					ask.setAttribute("class", "mb-1");
-					ask.innerHTML = res[i].pertanyaan;
-					formGroup.innerHTML += ask.outerHTML;
-
-					// menentukan jenis jawaban
-					if (res[i].jenis == "Radio Button") {
-						temp = "radio";
-					} else if (res[i].jenis == "Combo Box") {
-						temp = "select";
+						const selectProv = document.createElement('select');
+						selectProv.setAttribute("name", "jawabanKuesioner[" + helper + "]");
+						selectProv.setAttribute("class", "form-control");
+						selectProv.setAttribute("onchange", "loadKabupaten()");
 
 						const option = document.createElement("option");   						
 
 						option.value = "";
 						option.text = "-- Pilih " + res[i].pertanyaan + " --";
 
-						select.appendChild(option);
-					} else if (res[i].jenis == "Text Box") {
-						temp = "text";
+						selectProv.appendChild(option);
+						selectProv.setAttribute("id", "provinsi");
 
-						const askTB = document.createElement("input");
+						formGroup.innerHTML += selectProv.outerHTML;
+					} else if (res[i].kode == "f5a2") {
+						// get pertanyaan
+						ask.setAttribute("class", "mb-1");
+						ask.setAttribute("for", "kabupaten")
+						ask.innerHTML = res[i].pertanyaan;
+						formGroup.innerHTML += ask.outerHTML + enter.outerHTML;
 
-						askTB.setAttribute("name", "jawabanKuesioner[]");
-						askTB.setAttribute("type", temp);
-						askTB.setAttribute("class", "form-control");
+						const selectKab = document.createElement('select');
+						selectKab.setAttribute("name", "jawabanKuesioner[" + helper + "]");
+						selectKab.setAttribute("class", "form-control");
 
-						formGroup.innerHTML += askTB.outerHTML;
-					} else if (res[i].jenis == "Text Area") {
-						temp = "textarea";
+						const option = document.createElement("option");   						
 
-						const textArea = document.createElement(temp);
+						option.value = "";
+						option.text = "-- Pilih " + res[i].pertanyaan + " --";
 
-						textArea.setAttribute("name", "jawabanKuesioner[]");
-						textArea.setAttribute("rows", "7");
-						textArea.setAttribute("class", "form-control");
+						selectKab.appendChild(option);
+						selectKab.setAttribute("id", "kabupaten");
 
-						formGroup.innerHTML += textArea.outerHTML;
-					} else if (res[i].jenis == "Check Box") {
-						temp = "checkbox";
-					} else if (res[i].jenis == "DateTime Picker") {
-						temp = "date";
-					}
+						formGroup.innerHTML += selectKab.outerHTML;
+					} else {
+						const select = document.createElement('select');
+						select.setAttribute("name", "jawabanKuesioner[" + helper + "]");
+						select.setAttribute("class", "form-control");
 
-					// get opsi jawaban dari pertanyaan utama
-					for (let j = 0; j < res[i].jawaban.length; j++) {
-						const ask1 = document.createElement("input");
-						const label = document.createElement("label");
+						// get pertanyaan
+						ask.setAttribute("class", "mb-1");
+						ask.setAttribute("for", "jawabanKuesioner[" + i + "]ID")
+						ask.innerHTML = res[i].pertanyaan;
+						formGroup.innerHTML += ask.outerHTML + enter.outerHTML;
 
-						// yang sudah ditentukan tadi di generate elemen-elemen jawabannya
-						if (temp == "radio") {
-							ask1.setAttribute("name", "jawabanKuesioner[" + i + "]");
-							ask1.setAttribute("value", res[i].jawaban[j].nilaiJawaban);
-							ask1.setAttribute("type", temp);
-							ask1.setAttribute("class", "mr-1");
-							ask1.setAttribute("id", "jawabanKuesioner[" + i + "]" + res[i].jawaban[j].nilaiJawaban);
+						// get kode pertanyaan
+						if (res[i].jenis != "Check Box" || res[i].jenis != "Check Box Value Berurutan") {
+							inputHiddenKodeValue.setAttribute("type", "hidden");
+							inputHiddenKodeValue.setAttribute("name", "kode[" + helper + "]");
+							inputHiddenKodeValue.setAttribute("value", res[i].kode);
 
-							label.setAttribute("for", "jawabanKuesioner[" + i + "]" + res[i].jawaban[j].nilaiJawaban);
-							label.innerHTML = res[i].jawaban[j].deskripsiJawaban;
-							// console.log("jawaban : "+ res[i].jawaban[j].deskripsiJawaban);
-						} else if (temp == "select") {
-    						const option = document.createElement("option");   						
+							formGroup.innerHTML += inputHiddenKodeValue.outerHTML;
+						}
 
-    						option.value = res[i].jawaban[j].nilaiJawaban;
-    						option.text = res[i].jawaban[j].deskripsiJawaban;
+						// menentukan jenis jawaban
+						if (res[i].jenis == "Radio Button") {
+							temp = "radio";
+						} else if (res[i].jenis == "Combo Box") {
+							temp = "select";
+
+							const option = document.createElement("option");   						
+
+							option.value = "";
+							option.text = "-- Pilih " + res[i].pertanyaan + " --";
 
 							select.appendChild(option);
+							select.setAttribute("id", "jawabanKuesioner[" + i + "]ID");
+						} else if (res[i].jenis == "Text Box") {
+							temp = "text";
+
+							const askTB = document.createElement("input");
+
+							askTB.setAttribute("name", "jawabanKuesioner[" + helper + "]");
+							askTB.setAttribute("type", temp);
+							askTB.setAttribute("id", "jawabanKuesioner[" + i + "]ID");
+							askTB.setAttribute("class", "form-control");
+
+							formGroup.innerHTML += askTB.outerHTML;
+						} else if (res[i].jenis == "Text Area") {
+							temp = "textarea";
+
+							const textArea = document.createElement(temp);
+
+							textArea.setAttribute("name", "jawabanKuesioner[" + helper + "]");
+							textArea.setAttribute("rows", "7");
+							textArea.setAttribute("class", "form-control");
+							textArea.setAttribute("id", "jawabanKuesioner[" + i + "]ID");
+
+							formGroup.innerHTML += textArea.outerHTML;
+						} else if (res[i].jenis == "Check Box" || res[i].jenis == "Check Box Value Berurutan") {
+							temp = "checkbox";
+
+							if (res[i].jenis == "Check Box Value Berurutan") {
+								temp2 = "increment";
+								helpIncrement = 0;
+							}
+						} else if (res[i].jenis == "DateTime Picker") {
+							temp = "date";
+
+							const askTB2 = document.createElement("input");
+
+							askTB2.setAttribute("name", "jawabanKuesioner[" + helper + "]");
+							askTB2.setAttribute("type", temp);
+							askTB2.setAttribute("class", "form-control");
+							askTB2.setAttribute("id", "jawabanKuesioner[" + i + "]ID");
+
+							formGroup.innerHTML += askTB2.outerHTML;
 						}
 
-						// validasi menentukan apakah jawaban butuh text box
-						if (res[i].jawaban[j].textbox == "Ya") {
-							inputHiddenKodeValueJawaban.setAttribute("type", "hidden");
-							inputHiddenKodeValueJawaban.setAttribute("name", "kode[]");
-							inputHiddenKodeValueJawaban.setAttribute("value", res[i].jawaban[j].kode);
-							formGroup.innerHTML += inputHiddenKodeValueJawaban.outerHTML;
+						let fixArray = helper;
 
-							inputLainnya.setAttribute("class", "ml-1");
-							inputLainnya.setAttribute("type", "textbox");
-							inputLainnya.setAttribute("placeholder", "Tulis Keterangan di sini ...");
-							inputLainnya.setAttribute("name", "jawabanKuesioner[" + i + "]");
+						if (res[i].jenis == "Check Box" || res[i].jenis == "Check Box Value Berurutan") {
+							helper--;
 						}
 
-						if (temp == "radio") {
-							formGroup.innerHTML += ask1.outerHTML;
+						var idLoopCB = 0;
+
+						if (temp == "radio") 
+						{
+							const inputHiddenIfNULL = document.createElement("input");
+
+							inputHiddenIfNULL.setAttribute("name", "jawabanKuesioner[" + fixArray + "]");
+							inputHiddenIfNULL.setAttribute("type", "hidden");
+							inputHiddenIfNULL.setAttribute("value", " ");
+
+							formGroup.innerHTML += inputHiddenIfNULL.outerHTML;
 						}
 
-						// di lempar textbox nya ke view
-						if (res[i].jawaban[j].textbox == "Ya") {
-							formGroup.innerHTML += label.outerHTML;
-							formGroup.innerHTML += inputLainnya.outerHTML + enter.outerHTML;
-						} else {
+						// get opsi jawaban dari pertanyaan utama
+						for (let j = 0; j < res[i].jawaban.length; j++) {
+
+							const ask1 = document.createElement("input");
+							const ask12 = document.createElement("input");
+
+							const label = document.createElement("label");
+							const label2 = document.createElement("label");
+
+							const inputHiddenIfNULL = document.createElement("input");
+
+							// yang sudah ditentukan tadi di generate elemen-elemen jawabannya
 							if (temp == "radio") {
-								formGroup.innerHTML += label.outerHTML + enter.outerHTML;
-							}
-						}
+								ask1.setAttribute("name", "jawabanKuesioner[" + fixArray + "]");
+								ask1.setAttribute("value", res[i].jawaban[j].nilaiJawaban);
+								ask1.setAttribute("type", temp);
+								ask1.setAttribute("class", "mr-1");
+								ask1.setAttribute("id", "jawabanKuesioner[" + i + "]" + res[i].jawaban[j].nilaiJawaban);
 
-						// get pertanyaan turunan dari opsi jawaban pertanyaan utama
-						for (let k = 0; k < res[i].jawaban[j].pertanyaan_turunan.length; k++) {
-							// deklarasi
-							const select2 = document.createElement('select');
-							select2.setAttribute("name", "jawabanKuesioner[]");
-							select2.setAttribute("class", "form-control");
+								label.setAttribute("for", "jawabanKuesioner[" + i + "]" + res[i].jawaban[j].nilaiJawaban);
+								label.innerHTML = res[i].jawaban[j].deskripsiJawaban;
+								// console.log("jawaban : "+ res[i].jawaban[j].deskripsiJawaban);
+							} else if (temp == "select") {
+	    						const option = document.createElement("option");   						
 
-							const formGroup2 = document.createElement("div");
-							formGroup2.setAttribute("class", "form-group");
+	    						option.value = res[i].jawaban[j].nilaiJawaban;
+	    						option.text = res[i].jawaban[j].deskripsiJawaban;
 
-							// get kode pertanyaan turunan
-							inputHiddenKodeValue2.setAttribute("type", "hidden");
-							inputHiddenKodeValue2.setAttribute("name", "kode[]");
-							inputHiddenKodeValue2.setAttribute("value", res[i].jawaban[j].pertanyaan_turunan[k].kode);
-							formGroup2.innerHTML += inputHiddenKodeValue2.outerHTML;
+								select.appendChild(option);
+							} else if (temp == "checkbox") {
+								inputHiddenIfNULL.setAttribute("name", "jawabanKuesioner[" + ++helper + "]");
+								inputHiddenIfNULL.setAttribute("type", "hidden");
+								inputHiddenIfNULL.setAttribute("value", " ");
 
-							// get pertanyaan turunan
-							ask2.setAttribute("class", "mb-1");
-							ask2.innerHTML = res[i].jawaban[j].pertanyaan_turunan[k].pertanyaan;
-							formGroup2.innerHTML += ask2.outerHTML;
+								inputHiddenKodeValueJawaban.setAttribute("type", "hidden");
+								inputHiddenKodeValueJawaban.setAttribute("name", "kode[" + helper + "]");
+								inputHiddenKodeValueJawaban.setAttribute("value", res[i].jawaban[j].kode);
 
-							// menentukan jenis jawaban pertanyaan turunan
-							if (res[i].jawaban[j].pertanyaan_turunan[k].jenis == "Radio Button") {
-								temp2 = "radio";
-							} else if (res[i].jawaban[j].pertanyaan_turunan[k].jenis == "Combo Box") {
-								temp2 = "select";
+								++idLoopCB;
 
-								const option2 = document.createElement("option");   						
+								ask12.setAttribute("name", "jawabanKuesioner[" + helper + "]");
 
-								option2.value = "";
-								option2.text = "-- Pilih " + res[i].jawaban[j].pertanyaan_turunan[k].pertanyaan + " --";
-
-								select2.appendChild(option2);
-							} else if (res[i].jawaban[j].pertanyaan_turunan[k].jenis == "Text Box") {
-								temp2 = "text";
-
-								const askTB2 = document.createElement("input");
-
-								askTB2.setAttribute("name", "jawabanKuesioner[]");
-								askTB2.setAttribute("type", temp2);
-								askTB2.setAttribute("class", "form-control");
-
-								formGroup2.innerHTML += askTB2.outerHTML;
-							} else if (res[i].jawaban[j].pertanyaan_turunan[k].jenis == "Text Area") {
-								temp2 = "textarea";
-
-								const textArea2 = document.createElement(temp2);
-
-								textArea2.setAttribute("name", "jawabanKuesioner[]");
-								textArea2.setAttribute("rows", "7");
-								textArea2.setAttribute("class", "form-control");
-
-								formGroup2.innerHTML += textArea2.outerHTML;
-							} else if (res[i].jawaban[j].pertanyaan_turunan[k].jenis == "Check Box") {
-								temp2 = "checkbox";
-							} else if (res[i].jawaban[j].pertanyaan_turunan[k].jenis == "DateTime Picker") {
-								temp2 = "date";
-
-								const askTB2 = document.createElement("input");
-
-								askTB2.setAttribute("name", "jawabanKuesioner[]");
-								askTB2.setAttribute("type", temp2);
-								askTB2.setAttribute("class", "form-control");
-
-								formGroup2.innerHTML += askTB2.outerHTML;
-							}
-
-							// get opsi jawaban dari pertanyaan turunan
-							for (let l = 0; l < res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan.length; l++) {
-								const ask12 = document.createElement("input");
-								const ask22 = document.createElement("input");
-								const label2 = document.createElement("label");
-
-								// yang sudah ditentukan tadi di generate elemen-elemen jawabannya
-								if (temp2 == "radio") {
-									ask12.setAttribute("name", "jawabanKuesioner[" + k + i + "]");
-									ask12.setAttribute("value", res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].nilaiJawaban);
-									ask12.setAttribute("type", temp2);
-									ask12.setAttribute("class", "mr-1");
-									ask12.setAttribute("id", "jawabanKuesioner[" + k + i + "]" + res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].nilaiJawaban);
-									label2.setAttribute("for", "jawabanKuesioner[" + k + i + "]" + res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].nilaiJawaban);
-									label2.innerHTML = res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].deskripsiJawaban;
-									// console.log("jawaban : "+ res[i].jawaban[j].deskripsiJawaban);
-								} else if (temp2 == "select") {
-		    						const option3 = document.createElement("option");   						
-
-		    						option3.value = res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].nilaiJawaban;
-		    						option3.text = res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].deskripsiJawaban;
-
-									select2.appendChild(option3);
-								} else if (temp2 == "checkbox") {
-									ask22.setAttribute("name", "jawabanKuesioner[]");
-									ask12.setAttribute("value", res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].nilaiJawaban);
-									ask22.setAttribute("type", temp2);
-									ask22.setAttribute("class", "mr-1");
-									ask22.setAttribute("id", "jawabanKuesioner[" + k + i + "]" + res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].nilaiJawaban + l);
-									label2.setAttribute("for", "jawabanKuesioner[" + k + i + "]" + res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].nilaiJawaban + l);
-									label2.innerHTML = res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].deskripsiJawaban;
-								}
-
-								// validasi menentukan apakah jawaban butuh text box
-								if (res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].textbox == "Ya") {
-									inputHiddenKodeValueJawaban2.setAttribute("type", "hidden");
-									inputHiddenKodeValueJawaban2.setAttribute("name", "kode[]");
-									inputHiddenKodeValueJawaban2.setAttribute("value", res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].kode);
-									formGroup2.innerHTML += inputHiddenKodeValueJawaban2.outerHTML;
-
-									inputLainnya2.setAttribute("class", "ml-1");
-									inputLainnya2.setAttribute("type", "textbox");
-									inputLainnya2.setAttribute("placeholder", "Tulis Keterangan di sini ...");
-									inputLainnya2.setAttribute("name", "jawabanKuesioner[" + l + "]");
-								}
-
-								if (temp2 == "radio") {
-									formGroup2.innerHTML += ask12.outerHTML;
-								} else if (temp2 == "checkbox") {
-									formGroup2.innerHTML += ask22.outerHTML;
-								}
-
-								// di lempar textbox nya ke view
-								if (res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].textbox == "Ya") {
-									formGroup2.innerHTML += label2.outerHTML;
-									formGroup2.innerHTML += inputLainnya2.outerHTML + enter.outerHTML;
+								if (temp2 == "increment") {
+									ask12.setAttribute("value", ++helpIncrement);
 								} else {
-									if (temp2 == "radio") {
-										formGroup2.innerHTML += label2.outerHTML + enter.outerHTML;
-									} else if (temp2 == "checkbox") {
-										formGroup2.innerHTML += label2.outerHTML + enter.outerHTML;
-									}
+									ask12.setAttribute("value", "1");
 								}
 
-								if (res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].pertanyaan_turunan_2.length > 0) {
+								ask12.setAttribute("type", temp);
+								ask12.setAttribute("class", "mr-1");
+								ask12.setAttribute("id", "jawabanKuesioner[" + helper + "]" + idLoopCB + i + "");
 
-									// get pertanyaan turunan 2 dari opsi jawaban pertanyaan turunan
-									for (let m = 0; m < res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].pertanyaan_turunan_2.length; m++) {
-										// deklarasi
-										const select3 = document.createElement('select');
-										select3.setAttribute("name", "jawabanKuesioner[]");
-										select3.setAttribute("class", "form-control");
+								label2.setAttribute("for", "jawabanKuesioner[" + helper + "]" + idLoopCB + i + "");
+								label2.innerHTML = res[i].jawaban[j].deskripsiJawaban;
+							}
 
-										const formGroup3 = document.createElement("div");
-										formGroup3.setAttribute("class", "form-group");
+							var xyz = helper;
+							var xyza = xyz++;
 
-										// get kode pertanyaan turunan 2
-										inputHiddenKodeValue3.setAttribute("type", "hidden");
-										inputHiddenKodeValue3.setAttribute("name", "kode[]");
-										inputHiddenKodeValue3.setAttribute("value", res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].pertanyaan_turunan_2[m].kode);
-										formGroup3.innerHTML += inputHiddenKodeValue3.outerHTML;
-
-										// get pertanyaan turunan 2
-										ask3.setAttribute("class", "mb-1");
-										ask3.innerHTML = res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].pertanyaan_turunan_2[m].pertanyaan;
-										formGroup3.innerHTML += ask3.outerHTML;
-
-										// menentukan jenis jawaban pertanyaan turunan 2
-										if (res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].pertanyaan_turunan_2[m].jenis == "Radio Button") {
-											temp3 = "radio";
-										} else if (res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].pertanyaan_turunan_2[m].jenis == "Combo Box") {
-											temp3 = "select";
-
-											const option3 = document.createElement("option");   						
-
-											option3.value = "";
-											option3.text = "-- Pilih " + res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].pertanyaan_turunan_2[m].pertanyaan + " --";
-
-											select3.appendChild(option3);
-										} else if (res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].pertanyaan_turunan_2[m].jenis == "Text Box") {
-											temp3 = "text";
-
-											const askTB3 = document.createElement("input");
-
-											askTB3.setAttribute("name", "jawabanKuesioner[]");
-											askTB3.setAttribute("type", temp3);
-											askTB3.setAttribute("class", "form-control");
-
-											formGroup3.innerHTML += askTB3.outerHTML;
-										} else if (res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].pertanyaan_turunan_2[m].jenis == "Text Area") {
-											temp3 = "textarea";
-
-											const textArea3 = document.createElement(temp3);
-
-											textArea3.setAttribute("name", "jawabanKuesioner[]");
-											textArea3.setAttribute("rows", "7");
-											textArea3.setAttribute("class", "form-control");
-
-											formGroup3.innerHTML += textArea3.outerHTML;
-										} else if (res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].pertanyaan_turunan_2[m].jenis == "Check Box") {
-											temp3 = "checkbox";
-										} else if (res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].pertanyaan_turunan_2[m].jenis == "DateTime Picker") {
-											temp3 = "date";
-
-											const askTB3 = document.createElement("input");
-
-											askTB3.setAttribute("name", "jawabanKuesioner[]");
-											askTB3.setAttribute("type", temp3);
-											askTB3.setAttribute("class", "form-control");
-
-											formGroup3.innerHTML += askTB3.outerHTML;
-										}
-
-										// get opsi jawaban dari pertanyaan turunan 2
-										for (let n = 0; n < res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].pertanyaan_turunan_2[m].jawaban_pertanyaan_turunan_2.length; n++) {
-											const ask13 = document.createElement("input");
-											const ask23 = document.createElement("input");
-											const label3 = document.createElement("label");
-
-											// yang sudah ditentukan tadi di generate elemen-elemen jawabannya
-											if (temp3 == "radio") {
-												ask13.setAttribute("name", "jawabanKuesioner[" + k + i + l + "]");
-												ask13.setAttribute("value", res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].pertanyaan_turunan_2[m].jawaban_pertanyaan_turunan_2[n].nilaiJawaban);
-												ask13.setAttribute("type", temp3);
-												ask13.setAttribute("class", "mr-1");
-												ask13.setAttribute("id", "jawabanKuesioner[" + k + i + l + "]" + res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].pertanyaan_turunan_2[m].jawaban_pertanyaan_turunan_2[n].nilaiJawaban);
-												label3.setAttribute("for", "jawabanKuesioner[" + k + i + l + "]" + res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].nilaiJawaban);
-												label3.innerHTML = res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].pertanyaan_turunan_2[m].jawaban_pertanyaan_turunan_2[n].deskripsiJawaban;
-												// console.log("jawaban : "+ res[i].jawaban[j].deskripsiJawaban);
-											} else if (temp3 == "select") {
-					    						const option3 = document.createElement("option");   						
-
-					    						option3.value = res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].pertanyaan_turunan_2[m].jawaban_pertanyaan_turunan_2[n].nilaiJawaban;
-					    						option3.text = res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].pertanyaan_turunan_2[m].jawaban_pertanyaan_turunan_2[n].deskripsiJawaban;
-
-												select3.appendChild(option3);
-											} else if (temp3 == "checkbox") {
-												ask23.setAttribute("name", "jawabanKuesioner[]");
-												ask13.setAttribute("value", res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].pertanyaan_turunan_2[m].jawaban_pertanyaan_turunan_2[n].nilaiJawaban);
-												ask23.setAttribute("type", temp3);
-												ask23.setAttribute("class", "mr-1");
-												ask23.setAttribute("id", "jawabanKuesioner[" + k + i + l + "]" + res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].pertanyaan_turunan_2[m].jawaban_pertanyaan_turunan_2[n].nilaiJawaban + l);
-												label3.setAttribute("for", "jawabanKuesioner[" + k + i + l + "]" + res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].pertanyaan_turunan_2[m].jawaban_pertanyaan_turunan_2[n].nilaiJawaban + l);
-												label3.innerHTML = res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].pertanyaan_turunan_2[m].jawaban_pertanyaan_turunan_2[n].deskripsiJawaban;
-											}
-
-											// validasi menentukan apakah jawaban butuh text box
-											if (res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].pertanyaan_turunan_2[m].jawaban_pertanyaan_turunan_2[n].textbox == "Ya") {
-												inputHiddenKodeValueJawaban3.setAttribute("type", "hidden");
-												inputHiddenKodeValueJawaban3.setAttribute("name", "kode[]");
-												inputHiddenKodeValueJawaban3.setAttribute("value", res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].pertanyaan_turunan_2[m].jawaban_pertanyaan_turunan_2[n].kode);
-												formGroup2.innerHTML += inputHiddenKodeValueJawaban3.outerHTML;
-
-												inputLainnya3.setAttribute("class", "ml-1");
-												inputLainnya3.setAttribute("type", "textbox");
-												inputLainnya3.setAttribute("placeholder", "Tulis Keterangan di sini ...");
-												inputLainnya3.setAttribute("name", "jawabanKuesioner[" + n + "]");
-											}
-
-											if (temp3 == "radio") {
-												formGroup2.innerHTML += ask13.outerHTML;
-											} else if (temp3 == "checkbox") {
-												formGroup2.innerHTML += ask23.outerHTML;
-											}
-
-											// di lempar textbox nya ke view
-											if (res[i].jawaban[j].pertanyaan_turunan[k].jawaban_pertanyaan_turunan[l].pertanyaan_turunan_2[m].jawaban_pertanyaan_turunan_2[n].textbox == "Ya") {
-												formGroup2.innerHTML += label3.outerHTML;
-												formGroup2.innerHTML += inputLainnya3.outerHTML + enter.outerHTML;
-											} else {
-												if (temp3 == "radio") {
-													formGroup2.innerHTML += label3.outerHTML + enter.outerHTML;
-												} else if (temp3 == "checkbox") {
-													formGroup2.innerHTML += label3.outerHTML + enter.outerHTML;
-												}
-											}
-										}
-
-										if (temp3 == "select") {
-											formGroup3.innerHTML += select3.outerHTML;
-										}
-
-										tanya2.innerHTML += formGroup3.outerHTML;
+							// validasi menentukan apakah jawaban butuh text box
+							if (res[i].jawaban[j].textbox == "Ya") {
+								if (res[i].jenis == "Check Box" || res[i].jenis == "Check Box Value Berurutan") {
+									if (res[i].jawaban[j].kode.length == 4) {
+										var lastDigit = res[i].jawaban[j].kode.slice(-3);
+									} else if (res[i].jawaban[j].kode.length == 5) {
+										var lastDigit = res[i].jawaban[j].kode.slice(-4);
 									}
+
+									var firstDigit = res[i].jawaban[j].kode;
+									firstDigit = firstDigit[0];
+									lastDigit++;
+
+									var result = firstDigit + lastDigit;
+									inputHiddenKodeValueJawabann.setAttribute("type", "hidden");
+									inputHiddenKodeValueJawabann.setAttribute("name", "kode[" + ++xyza + "]");
+									inputHiddenKodeValueJawabann.setAttribute("value", result);
+
+									inputLainnya.setAttribute("class", "ml-1");
+									inputLainnya.setAttribute("type", "textbox");
+									inputLainnya.setAttribute("placeholder", "Tulis Keterangan di sini ...");
+									inputLainnya.setAttribute("name", "jawabanKuesioner[" + ++helper + "]");
+								} else {
+									inputHiddenKodeValueJawaban.setAttribute("type", "hidden");
+									inputHiddenKodeValueJawaban.setAttribute("name", "kode[" + ++helper + "]");
+									inputHiddenKodeValueJawaban.setAttribute("value", res[i].jawaban[j].kode);
+
+									inputLainnya.setAttribute("class", "ml-1");
+									inputLainnya.setAttribute("type", "textbox");
+									inputLainnya.setAttribute("placeholder", "Tulis Keterangan di sini ...");
+									inputLainnya.setAttribute("name", "jawabanKuesioner[" + helper + "]");
 								}
 							}
 
-							if (temp2 == "select") {
-								formGroup2.innerHTML += select2.outerHTML;
+							if (temp == "radio") {
+								formGroup.innerHTML += ask1.outerHTML;
+							} else if (temp == "checkbox") {
+								formGroup.innerHTML += inputHiddenIfNULL.outerHTML + inputHiddenKodeValueJawaban.outerHTML + ask12.outerHTML;
 							}
 
-							tanya2.innerHTML += formGroup2.outerHTML;
+							// di lempar textbox nya ke view
+							if (res[i].jawaban[j].textbox == "Ya") {
+								if (temp == "checkbox") {
+									formGroup.innerHTML += label2.outerHTML;
+									formGroup.innerHTML += inputHiddenKodeValueJawabann.outerHTML + inputLainnya.outerHTML + enter.outerHTML;
+								} else if (temp == "radio") {
+									formGroup.innerHTML += label.outerHTML;
+									formGroup.innerHTML += inputHiddenKodeValueJawaban.outerHTML + inputLainnya.outerHTML + enter.outerHTML;
+								}
+							} else {
+								if (temp == "radio") {
+									formGroup.innerHTML += label.outerHTML + enter.outerHTML;
+								} else if (temp == "checkbox") {
+									formGroup.innerHTML += label2.outerHTML + enter.outerHTML;
+								}
+							}
 						}
-					}
 
-					if (temp == "select") {
-						formGroup.innerHTML += select.outerHTML;
+						if (temp == "select") {
+							formGroup.innerHTML += select.outerHTML;
+						}
 					}				
 
 					tanya.innerHTML += formGroup.outerHTML;
@@ -527,6 +403,18 @@
 				console.log('Error: ', data);
 			}
 		});
+
+		$.ajax({
+	        type: "GET",
+	        url: SITEURL + "Alumni/getProvinsi",
+	        dataType: "json",
+	        success: function(res) {
+	            // Tambahkan setiap opsi ke elemen select
+	            for (var i = 0; i < res.length; i++) {
+	                $("#provinsi").append("<option value='" + res[i].provinsi_id + "'>" + res[i].provinsi_deskripsi + "</option>");
+	            }
+	        }
+	    });
 	});
 </script>
 
