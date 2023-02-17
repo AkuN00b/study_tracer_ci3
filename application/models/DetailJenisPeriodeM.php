@@ -27,11 +27,6 @@ class DetailJenisPeriodeM extends CI_Model
         return $this->db->get_where($this->_table, array('status' => 'Aktif'));
     }
 
-    public function get_id($id) 
-    {
-    	return $this->db->get_where($this->_table, array('id_detailPeriode' => $id));
-    }
-
     public function findDJP($jenis_kuesioner, $periode)
     {
       $query = $this->db->query("SELECT * FROM ts_detailjenisperiode WHERE status = 'Aktif' AND jenis_kuesioner = '$jenis_kuesioner' AND periode = '$periode'");
@@ -41,6 +36,11 @@ class DetailJenisPeriodeM extends CI_Model
       } else {
         return false;
       }
+    }
+
+    public function get_id($id) 
+    {
+        return $this->db->get_where($this->_table, array('id_detailPeriode' => $id));
     }
 
     public function save($nama, $jenis_kuesioner, $periode, $tanggal_sekarang)

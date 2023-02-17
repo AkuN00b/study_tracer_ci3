@@ -141,6 +141,13 @@
 
 					if (res[i].kode == "f5a1") {
 						// get pertanyaan
+
+						inputHiddenKodeValue.setAttribute("type", "hidden");
+						inputHiddenKodeValue.setAttribute("name", "kode[" + helper + "]");
+						inputHiddenKodeValue.setAttribute("value", res[i].kode);
+
+						formGroup.innerHTML += inputHiddenKodeValue.outerHTML;
+
 						ask.setAttribute("class", "mb-1");
 						ask.setAttribute("for", "provinsi")
 						ask.innerHTML = res[i].pertanyaan;
@@ -162,6 +169,13 @@
 						formGroup.innerHTML += selectProv.outerHTML;
 					} else if (res[i].kode == "f5a2") {
 						// get pertanyaan
+
+						inputHiddenKodeValue.setAttribute("type", "hidden");
+						inputHiddenKodeValue.setAttribute("name", "kode[" + helper + "]");
+						inputHiddenKodeValue.setAttribute("value", res[i].kode);
+
+						formGroup.innerHTML += inputHiddenKodeValue.outerHTML;
+
 						ask.setAttribute("class", "mb-1");
 						ask.setAttribute("for", "kabupaten")
 						ask.innerHTML = res[i].pertanyaan;
@@ -191,20 +205,23 @@
 						ask.innerHTML = res[i].pertanyaan;
 						formGroup.innerHTML += ask.outerHTML + enter.outerHTML;
 
-						// get kode pertanyaan
-						if (res[i].jenis != "Check Box" || res[i].jenis != "Check Box Value Berurutan") {
+						// menentukan jenis jawaban
+						if (res[i].jenis == "Radio Button") {
+							temp = "radio";
+
 							inputHiddenKodeValue.setAttribute("type", "hidden");
 							inputHiddenKodeValue.setAttribute("name", "kode[" + helper + "]");
 							inputHiddenKodeValue.setAttribute("value", res[i].kode);
 
 							formGroup.innerHTML += inputHiddenKodeValue.outerHTML;
-						}
-
-						// menentukan jenis jawaban
-						if (res[i].jenis == "Radio Button") {
-							temp = "radio";
 						} else if (res[i].jenis == "Combo Box") {
 							temp = "select";
+
+							inputHiddenKodeValue.setAttribute("type", "hidden");
+							inputHiddenKodeValue.setAttribute("name", "kode[" + helper + "]");
+							inputHiddenKodeValue.setAttribute("value", res[i].kode);
+
+							formGroup.innerHTML += inputHiddenKodeValue.outerHTML;
 
 							const option = document.createElement("option");   						
 
@@ -216,6 +233,12 @@
 						} else if (res[i].jenis == "Text Box") {
 							temp = "text";
 
+							inputHiddenKodeValue.setAttribute("type", "hidden");
+							inputHiddenKodeValue.setAttribute("name", "kode[" + helper + "]");
+							inputHiddenKodeValue.setAttribute("value", res[i].kode);
+
+							formGroup.innerHTML += inputHiddenKodeValue.outerHTML;
+
 							const askTB = document.createElement("input");
 
 							askTB.setAttribute("name", "jawabanKuesioner[" + helper + "]");
@@ -226,6 +249,12 @@
 							formGroup.innerHTML += askTB.outerHTML;
 						} else if (res[i].jenis == "Text Area") {
 							temp = "textarea";
+
+							inputHiddenKodeValue.setAttribute("type", "hidden");
+							inputHiddenKodeValue.setAttribute("name", "kode[" + helper + "]");
+							inputHiddenKodeValue.setAttribute("value", res[i].kode);
+
+							formGroup.innerHTML += inputHiddenKodeValue.outerHTML;
 
 							const textArea = document.createElement(temp);
 
@@ -244,6 +273,12 @@
 							}
 						} else if (res[i].jenis == "DateTime Picker") {
 							temp = "date";
+
+							inputHiddenKodeValue.setAttribute("type", "hidden");
+							inputHiddenKodeValue.setAttribute("name", "kode[" + helper + "]");
+							inputHiddenKodeValue.setAttribute("value", res[i].kode);
+
+							formGroup.innerHTML += inputHiddenKodeValue.outerHTML;
 
 							const askTB2 = document.createElement("input");
 
