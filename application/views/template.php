@@ -101,6 +101,10 @@
         div.dataTables_filter > label > input {
             
         }
+
+        .btn:hover {
+          cursor: pointer;
+        }
     </style>
 
     <script type="text/javascript" src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
@@ -166,6 +170,13 @@
                     <?php echo $title == 'Daftar Urutan Data' ? 'show' : ''; ?>' 
                     role='tabpanel'>  
 
+                    <a href='<?php echo site_url('DetailJenisPeriode'); ?>' class='list-group-item list-group-item-action 
+                        <?php echo $title == 'Detail Jenis Periode' ? 'polman-menu-active' : ''; ?>'
+                        style='border-radius: 0px; border: none; padding-left: 47px; display: inherit;'>
+
+                        <i class='fa fa-calendar-check-o fa-lg fa-pull-left' style="margin-top: 2px;"></i>Detail Jenis Periode
+                    </a>
+
                     <a href='<?php echo site_url('PertanyaanKuesioner'); ?>' class='list-group-item list-group-item-action 
                         <?php echo $title == 'Pertanyaan Kuesioner' ? 'polman-menu-active' : ''; ?>'
                         style='border-radius: 0px; border: none; padding-left: 47px; display: inherit;'>
@@ -178,13 +189,6 @@
                         style='border-radius: 0px; border: none; padding-left: 47px; display: inherit;'>
 
                         <i class='fa fa-info-circle fa-lg fa-pull-left' style="margin-top: 2px;"></i>Jawaban Kuesioner
-                    </a>
-
-                    <a href='<?php echo site_url('DetailJenisPeriode'); ?>' class='list-group-item list-group-item-action 
-                        <?php echo $title == 'Detail Jenis Periode' ? 'polman-menu-active' : ''; ?>'
-                        style='border-radius: 0px; border: none; padding-left: 47px; display: inherit;'>
-
-                        <i class='fa fa-calendar-check-o fa-lg fa-pull-left' style="margin-top: 2px;"></i>Detail Jenis Periode
                     </a>
 
                     <a href='<?php echo site_url('DetailPertanyaanJawaban'); ?>' class='list-group-item list-group-item-action 
@@ -222,8 +226,6 @@
 
                     <i class='fa fa-check-circle fa-lg fa-pull-left'></i>Konfirmasi Akun
                 </a>
-
-                <a href="https://sia.polman.astra.ac.id/sso" class="list-group-item list-group-item-action" style="border-radius: 0px; border: none; padding-left: 23px;"><i class='fa fa-external-link fa-lg fa-pull-left'></i>Halaman SSO</a>
             </div>
         </div>
     </div>

@@ -15,7 +15,7 @@
                 oninvalid="this.setCustomValidity('Jenis Kuesioner Wajib Diisi')"
                 oninput="this.setCustomValidity('')">
         	<option disabled="" selected="" value="">-- Pilih Jenis Kuesioner --</option>
-        	<option value="Polman">Polman</option>
+        	<option value="Politeknik Astra">Politeknik Astra</option>
         	<option value="Dikti">Dikti</option>
         </select>
     </div>

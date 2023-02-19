@@ -16,10 +16,10 @@
 	<table id="myTable" class="table table-hover grid scrollstyle text-center" width="100%">
 		<thead>
 			<tr>
-				<th class="align-middle text-center">No.</th>
-				<th class="align-middle text-center">ID Daftar Urutan Data</th>
 				<th class="align-middle text-center">Aksi</th>
+				<th class="align-middle text-center">No.</th>
 				<th class="align-middle text-center">Kode</th>
+				<th class="align-middle text-center">Alias</th>
 				<th class="align-middle text-center">Jenis - Periode Kuesioner</th>
 			</tr>
 		</thead>
@@ -29,8 +29,6 @@
 
 			<?php foreach ($getData->result() as $row) { ?>
 				<tr style="height: 45px;">
-					<td><?= $no++; ?></td>
-					<td><?= $row->id; ?></td>
 					<td>
 						<?php if ($row->status == 'Tidak Aktif') { ?>
 							Status Tidak Aktif
@@ -45,7 +43,15 @@
 	                        </a>
 						<?php } ?>
 					</td>
+					<td><?= $no++; ?></td>
 					<td><?= $row->kode; ?></td>
+					<td>
+						<?php if ($row->alias == '') { ?>
+							-
+						<?php } else { ?>
+							<?= $row->alias; ?>
+						<?php } ?>
+					</td>
 					<td><?= $row->jenis_kuesioner; ?> - <?= $row->periode; ?></td>
 				</tr>
 			<?php } ?>

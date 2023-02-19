@@ -67,7 +67,7 @@ class DaftarUrutanData extends CI_Controller {
 			$dt->setTimestamp($timestamp);
 
 	    	$result = $this->DaftarUrutanDataM->save(
-	    			  	$this->session->userdata('user_nama'), $post["txtKode"], 
+	    			  	$this->session->userdata('user_nama'), $post["txtKode"], $post["txtAlias"], 
 						$post["txtid_detailPeriode"], $dt->format('Y-m-d H:i:s'));
 	        
 	        if ($result) {
@@ -94,6 +94,7 @@ class DaftarUrutanData extends CI_Controller {
 	        } else {
 	        	$data["id"] = $id;
 	        	$data["kode"] = $i['kode'];
+	        	$data["alias"] = $i['alias'];
 	        	$data["id_detailPeriode"] = $i['id_detailPeriode'];
 	        	$data["title"] = "Daftar Urutan Data";
 	        	$data["title2"] = "Ubah Daftar Urutan Data";
@@ -110,28 +111,21 @@ class DaftarUrutanData extends CI_Controller {
 	public function postUpdate() {
 		$post = $this->input->post();
 
-    	$findDUD = $this->DaftarUrutanDataM->findDUD($post["txtKode"], $post["txtid_detailPeriode"]);
+		$timestamp = time();
+		$dt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
+		$dt->setTimestamp($timestamp);
 
-    	if ($findDUD) {
-    		$this->session->set_flashdata("error", "Daftar Urutan Data sudah ada, tidak boleh sama !!");
-	        redirect(site_url('DaftarUrutanData'));
-    	} else {
-			$timestamp = time();
-			$dt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
-			$dt->setTimestamp($timestamp);
+    	$result = $this->DaftarUrutanDataM->update(
+    			  	$post["txtID"], $this->session->userdata('user_nama'), $post["txtKode"], $post["txtAlias"],
+					$post["txtid_detailPeriode"], $dt->format('Y-m-d H:i:s'));
+        
+        if ($result) {
+        	$this->session->set_flashdata("success", "Daftar Urutan Data berhasil Diubah !!");
+        } else {
+        	$this->session->set_flashdata("error", "Daftar Urutan Data gagal Diubah !!");
+        }
 
-	    	$result = $this->DaftarUrutanDataM->update(
-	    			  	$post["txtID"], $this->session->userdata('user_nama'), $post["txtKode"], 
-						$post["txtid_detailPeriode"], $dt->format('Y-m-d H:i:s'));
-	        
-	        if ($result) {
-	        	$this->session->set_flashdata("success", "Daftar Urutan Data berhasil Diubah !!");
-	        } else {
-	        	$this->session->set_flashdata("error", "Daftar Urutan Data gagal Diubah !!");
-	        }
-
-	        redirect(site_url('DaftarUrutanData'));
-	    }
+        redirect(site_url('DaftarUrutanData'));
 	}
 
 	public function postDelete()

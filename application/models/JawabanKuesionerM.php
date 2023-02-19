@@ -95,6 +95,29 @@ class JawabanKuesionerM extends CI_Model
 
       	return $this->db->query($sp, $data);
     }
+
+    public function postCopy($id_pkuAsal, $id_pkuKe, $nama, $tanggal_sekarang)
+    {
+      $result = $this->db->query("INSERT INTO ts_jawabankuesioner (deskripsiJawaban, id_pku, kode, textbox, nilaiJawaban,   
+                                  created_by, created_date, modified_by, modified_date, status)
+                                  SELECT deskripsiJawaban, '$id_pkuKe', kode, textbox, nilaiJawaban, '$nama', '$tanggal_sekarang', '$nama', '$tanggal_sekarang', 'Aktif'
+                                  FROM ts_jawabankuesioner jk
+                                  WHERE jk.status = 'Aktif' AND jk.id_pku = '$id_pkuAsal'
+                                  ORDER BY jk.id_jawabanKuesioner ASC;");
+
+      if ($result) {
+          return $result;
+      } else {
+          return false;
+      }
+    }
+
+    public function getIDCopy($deskripsiJawaban, $id_detailPeriodeKe) 
+    {
+      return $this->db->query("SELECT jk.id_jawabanKuesioner FROM ts_jawabankuesioner jk
+                        INNER JOIN ts_pertanyaanKuesioner pk ON pk.id_pku = jk.id_pku
+                        WHERE pk.id_detailPeriode = '$id_detailPeriodeKe' AND jk.deskripsiJawaban = '$deskripsiJawaban'");
+    }
 }
 
 ?>

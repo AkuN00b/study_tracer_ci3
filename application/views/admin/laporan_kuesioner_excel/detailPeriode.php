@@ -10,7 +10,11 @@
 			<thead>
 				<tr>
 					<?php foreach ($getHeaderLaporan->result() as $row): ?>
-				    	<th class="align-middle text-center"><?= $row->kode; ?></th>
+						<?php if ($row->alias == ''): ?>
+				    		<th class="align-middle text-center"><?= $row->kode; ?></th>
+				    	<?php else : ?>
+				    		<th class="align-middle text-center"><?= $row->alias; ?></th>
+				    	<?php endif; ?>
 				    <?php endforeach; ?>				
 				</tr>
 			</thead>

@@ -17,7 +17,7 @@
                 oninvalid="this.setCustomValidity('Jenis Kuesioner Wajib Diisi')"
                 oninput="this.setCustomValidity('')">
         	<option disabled="" value="">-- Pilih Jenis Kuesioner --</option>
-        	<option value="Polman" <?php if ($jenis_kuesioner == 'Polman') echo "selected" ?>>Polman</option>
+        	<option value="Politeknik Astra" <?php if ($jenis_kuesioner == 'Politeknik Astra') echo "selected" ?>>Politeknik Astra</option>
         	<option value="Dikti" <?php if ($jenis_kuesioner == 'Dikti') echo "selected" ?>>Dikti</option>
         </select>
     </div>

@@ -24,6 +24,10 @@ class DetailJenisPeriode extends CI_Controller {
 		parent::__construct();
 
 		$this->load->model("DetailJenisPeriodeM");
+		$this->load->model("DaftarUrutanDataM");
+		$this->load->model("DetailPertanyaanJawabanM");
+		$this->load->model("JawabanKuesionerM");
+		$this->load->model("PertanyaanKuesionerM");
 
 		if (!$this->session->userdata('logged_in')) {
 			$this->session->set_flashdata('warning', 'Anda belum login atau session habis !!');
@@ -38,6 +42,8 @@ class DetailJenisPeriode extends CI_Controller {
 	{
 		$data['title'] = "Detail Jenis Periode";
 		$data['getData'] = $this->DetailJenisPeriodeM->getAll();
+		$data['getDataAda'] = $this->DetailJenisPeriodeM->getAllAda();
+		$data['getDataKosong'] = $this->DetailJenisPeriodeM->getAllKosong();
 
 		$this->load->view('admin/detail_jenis_periode/index', $data);
 	}
@@ -152,4 +158,71 @@ class DetailJenisPeriode extends CI_Controller {
 
         redirect(site_url('DetailJenisPeriode'));
 	}
+
+	public function copyKuesioner()
+    {
+    	$post = $this->input->post();
+
+    	$timestamp = time();
+		$dt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
+		$dt->setTimestamp($timestamp);
+
+		// copy Daftar Urutan Data
+		$this->DaftarUrutanDataM->postCopy($post["txtid_detailPeriodeAsal"], $post["txtid_detailPeriodeKe"], 
+						$this->session->userdata('user_nama'), $dt->format('Y-m-d H:i:s'));
+
+		// copy Pertanyaan Kuesioner
+		$this->PertanyaanKuesionerM->postCopy($post["txtid_detailPeriodeAsal"], $post["txtid_detailPeriodeKe"], 
+						$this->session->userdata('user_nama'), $dt->format('Y-m-d H:i:s'));
+
+		// copy Jawaban Kuesioner
+		$getUtamaAsal = $this->PertanyaanKuesionerM->getUtamaCopy($post["txtid_detailPeriodeAsal"])->result();
+		$getUtamaAsalCount = $this->PertanyaanKuesionerM->getUtamaCopy($post["txtid_detailPeriodeAsal"])->num_rows();
+		
+		$getUtamaKe = $this->PertanyaanKuesionerM->getUtamaCopy($post["txtid_detailPeriodeKe"])->result();
+		$getUtamaKeCount = $this->PertanyaanKuesionerM->getUtamaCopy($post["txtid_detailPeriodeKe"])->num_rows();
+
+		for ($i = 0; $i < $getUtamaKeCount; $i++) {
+	    	$this->JawabanKuesionerM->postCopy($getUtamaAsal[$i]->id_pku, $getUtamaKe[$i]->id_pku, 
+	    									   $this->session->userdata('user_nama'), $dt->format('Y-m-d H:i:s'));
+	    }
+
+	    // copy Detail Pertanyaan Jawaban
+	    $getDPJ = $this->DetailPertanyaanJawabanM->getDPJwithDJP($post["txtid_detailPeriodeAsal"])->result();
+	    $getDPJCount = $this->DetailPertanyaanJawabanM->getDPJwithDJP($post["txtid_detailPeriodeAsal"])->num_rows();
+
+	    if ($getDPJCount > 0) {
+	    	// copy Pertanyaan Kuesioner Tidak Utama
+			for ($i = 0; $i < $getDPJCount; $i++) {
+			   	$this->PertanyaanKuesionerM->postCopyTurunan($getDPJ[$i]->id_pku_answer, $post["txtid_detailPeriodeKe"],
+			   			$this->session->userdata('user_nama'), $dt->format('Y-m-d H:i:s'));
+			}
+
+			// copy Jawaban Kuesioner Tidak Utama
+			$getTurunanAsal = $this->PertanyaanKuesionerM->getTurunanCopy($post["txtid_detailPeriodeAsal"])->result();
+			$getTurunanAsalCount = $this->PertanyaanKuesionerM->getTurunanCopy($post["txtid_detailPeriodeAsal"])->num_rows();
+			
+			$getTurunanKe = $this->PertanyaanKuesionerM->getTurunanCopy($post["txtid_detailPeriodeKe"])->result();
+			$getTurunanKeCount = $this->PertanyaanKuesionerM->getTurunanCopy($post["txtid_detailPeriodeKe"])->num_rows();
+
+			for ($i = 0; $i < $getTurunanKeCount; $i++) {
+		    	$this->JawabanKuesionerM->postCopy($getTurunanAsal[$i]->id_pku, $getTurunanKe[$i]->id_pku, 
+		    									   $this->session->userdata('user_nama'), $dt->format('Y-m-d H:i:s'));
+		    }
+
+			for ($i = 0; $i < $getDPJCount; $i++) {
+			    $id_jawabanKuesioner = $this->JawabanKuesionerM->getIDCopy($getDPJ[$i]->deskripsiJawaban, 
+			    						$post["txtid_detailPeriodeKe"])->row_array();
+
+			    $id_pku_answer = $this->PertanyaanKuesionerM->getIDCopy($getDPJ[$i]->deskripsiPertanyaan, $post["txtid_detailPeriodeKe"])->row_array();
+
+			    $this->DetailPertanyaanJawabanM->postCopy($id_jawabanKuesioner['id_jawabanKuesioner'], $id_pku_answer['id_pku'], 
+		    									   $this->session->userdata('user_nama'), $dt->format('Y-m-d H:i:s'));
+			}
+	    }
+
+    	$this->session->set_flashdata("success", "Kuesioner berhasil di salin !!");
+
+        redirect(site_url('DetailJenisPeriode'));
+    }
 }

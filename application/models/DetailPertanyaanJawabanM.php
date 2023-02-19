@@ -84,6 +84,23 @@ class DetailPertanyaanJawabanM extends CI_Model
 
       	return $this->db->query($sp, $data);
     }
+
+    public function getDPJwithDJP($id)
+    {
+      return $this->db->query("SELECT jk.deskripsiJawaban, dpj.id_pku_answer, pk.deskripsiPertanyaan FROM ts_detailpertanyaanjawaban dpj
+                               INNER JOIN ts_jawabankuesioner jk ON dpj.id_jawabankuesioner = jk.id_jawabankuesioner
+                               INNER JOIN ts_pertanyaankuesioner pk ON dpj.id_pku_answer = pk.id_pku
+                               WHERE pk.id_detailPeriode = '$id' AND dpj.status = 'Aktif'");
+    }
+
+    public function postCopy($id_jawabanKuesioner, $id_pku_answer, $nama, $tanggal_sekarang)
+    {
+      return $this->db->query("INSERT INTO ts_detailpertanyaanjawaban 
+                                (id_jawabanKuesioner, id_pku_answer, created_by, created_date, modified_by, 
+                                modified_date, status)
+                                VALUES ('$id_jawabanKuesioner', '$id_pku_answer', '$nama', '$tanggal_sekarang', '$nama', 
+                                '$tanggal_sekarang', 'Aktif')");
+    }
 }
 
 ?>

@@ -19,7 +19,18 @@ class DetailJenisPeriodeM extends CI_Model
 
 	public function getAll()
     {
-        return $this->db->query("CALL ts_getDataDetailJenisPeriode");
+        return $this->db->query("SELECT * FROM ts_detailjenisperiode WHERE status = 'Aktif' ORDER BY id_detailPeriode ASC");
+    }
+
+    public function getAllAda()
+    {
+        return $this->db->query("SELECT djp.id_detailPeriode, djp.jenis_kuesioner, djp.periode FROM ts_detailjenisperiode djp INNER JOIN ts_pertanyaankuesioner pk ON pk.id_detailPeriode = djp.id_detailPeriode WHERE djp.status = 'Aktif' AND pk.status = 'Aktif' GROUP BY djp.id_detailPeriode");
+    }
+
+    public function getAllKosong()
+    {
+        return $this->db->query("SELECT * FROM ts_detailjenisperiode 
+WHERE NOT EXISTS (SELECT * FROM ts_pertanyaankuesioner WHERE ts_detailjenisperiode.id_detailPeriode = ts_pertanyaankuesioner.id_detailPeriode AND ts_pertanyaankuesioner.status = 'Aktif') AND ts_detailjenisperiode.status = 'Aktif'");
     }
 
     public function getCountAktif() 

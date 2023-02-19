@@ -16,7 +16,6 @@
 	<table id="myTable" class="table table-hover grid scrollstyle text-center" width="100%">
 		<thead>
 			<tr>
-				<th class="align-middle text-center">No.</th>
 				<th class="align-middle text-center">ID Hasil Kuesioner</th>
 				<th class="align-middle text-center">Jenis - Periode Kuesioner</th>
 				<th class="align-middle text-center">NIM</th>
@@ -26,11 +25,8 @@
 		</thead>
 
 		<tbody>
-			<?php $no = 1; ?>
-
 			<?php foreach ($getDataHK as $row) { ?>
 				<tr style="height: 45px;">
-					<td><?= $no++; ?></td>
 					<td><?= $row->id_hasilKuesioner; ?></td>
 					<td><?= $row->jenis_kuesioner; ?> - <?= $row->periode; ?></td>
 					<td><?= $row->nim; ?></td>
@@ -44,27 +40,58 @@
 
 <?php
     function tgl_indo($tanggal){
-        $bulan = array (
-            1 =>   'Januari',
-            'Februari',
-            'Maret',
-            'April',
-            'Mei',
-            'Juni',
-            'Juli',
-            'Agustus',
-            'September',
-            'Oktober',
-            'November',
-            'Desember'
-        );
-        $pecahkan = explode('-', $tanggal);
-        
-        // variabel pecahkan 0 = tanggal
-        // variabel pecahkan 1 = bulan
-        // variabel pecahkan 2 = tahun
-     
-        return $pecahkan[2] . ' ' . $bulan[ (int)$pecahkan[1] ] . ' ' . $pecahkan[0];
+        $tanggal_unix = strtotime($tanggal);
+
+		// Format tanggal ke dalam format yang diinginkan
+		$tanggal = date("d", $tanggal_unix);
+		$bulan = strftime("%B", $tanggal_unix);
+		$tahun = date("Y", $tanggal_unix);
+		$jam = date("H", $tanggal_unix);
+		$menit = date("i", $tanggal_unix);
+		$detik = date("s", $tanggal_unix);
+
+		// Konversi bulan ke dalam bahasa Indonesia
+		switch ($bulan) {
+		    case "January":
+		        $bulan = "Januari";
+		        break;
+		    case "February":
+		        $bulan = "Februari";
+		        break;
+		    case "March":
+		        $bulan = "Maret";
+		        break;
+		    case "April":
+		        $bulan = "April";
+		        break;
+		    case "May":
+		        $bulan = "Mei";
+		        break;
+		    case "June":
+		        $bulan = "Juni";
+		        break;
+		    case "July":
+		        $bulan = "Juli";
+		        break;
+		    case "August":
+		        $bulan = "Agustus";
+		        break;
+		    case "September":
+		        $bulan = "September";
+		        break;
+		    case "October":
+		        $bulan = "Oktober";
+		        break;
+		    case "November":
+		        $bulan = "November";
+		        break;
+		    case "December":
+		        $bulan = "Desember";
+		        break;
+		}
+
+		// Tampilkan hasil format tanggal
+		return $tanggal . " " . $bulan . " " . $tahun . " " . $jam . ":" . $menit . ":" . $detik;
     }
 ?>
 

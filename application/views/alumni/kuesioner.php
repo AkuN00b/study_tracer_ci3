@@ -67,9 +67,9 @@
     <br>
     <span style="font-size: Larger; font-weight: bold;">Kuesioner Wajib</span><br><br>
 
-	<div id="pertanyaan"></div><br><br>
+	<div id="pertanyaan"></div><br>
 
-    <button type="submit" class="btn btn-primary btn-block mb-1">
+    <button type="submit" class="btn btn-primary mb-1">
     	<i class="fa fa-floppy-o"></i> Input <?php echo $title2; ?>
     </button>
 </form><br><br>
@@ -199,11 +199,13 @@
 						select.setAttribute("name", "jawabanKuesioner[" + helper + "]");
 						select.setAttribute("class", "form-control");
 
-						// get pertanyaan
-						ask.setAttribute("class", "mb-1");
-						ask.setAttribute("for", "jawabanKuesioner[" + i + "]ID")
-						ask.innerHTML = res[i].pertanyaan;
-						formGroup.innerHTML += ask.outerHTML + enter.outerHTML;
+						if (res[i].jenis != "Hidden") {
+							// get pertanyaan
+							ask.setAttribute("class", "mb-1");
+							ask.setAttribute("for", "jawabanKuesioner[" + i + "]ID")
+							ask.innerHTML = res[i].pertanyaan;
+							formGroup.innerHTML += ask.outerHTML + enter.outerHTML;
+						}
 
 						// menentukan jenis jawaban
 						if (res[i].jenis == "Radio Button") {
@@ -230,8 +232,12 @@
 
 							select.appendChild(option);
 							select.setAttribute("id", "jawabanKuesioner[" + i + "]ID");
-						} else if (res[i].jenis == "Text Box") {
-							temp = "text";
+						} else if (res[i].jenis == "Text Box" || res[i].jenis == "Hidden") {
+							if (res[i].jenis == "Text Box") {
+								temp = "text";
+							} else if (res[i].jenis == "Hidden") {
+								temp = "hidden";
+							}
 
 							inputHiddenKodeValue.setAttribute("type", "hidden");
 							inputHiddenKodeValue.setAttribute("name", "kode[" + helper + "]");

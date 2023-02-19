@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Generation Time: Feb 17, 2023 at 05:11 AM
+-- Generation Time: Feb 19, 2023 at 11:54 PM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.1
 
@@ -68,7 +68,8 @@ END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataAlumni` ()  BEGIN
 	SELECT *
-	FROM ts_registrasialumni;
+	FROM ts_registrasialumni
+    ORDER BY status ASC;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataAlumniTOP5` ()  BEGIN
@@ -80,7 +81,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataAlumniTOP5` ()  BEGIN
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataDetailJenisPeriode` ()  BEGIN 
-	SELECT * FROM ts_detailjenisperiode;
+	SELECT * FROM ts_detailjenisperiode WHERE status = "Aktif" ORDER BY id_detailPeriode ASC;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataDetailPertanyaanJawaban` ()  BEGIN 
@@ -91,7 +92,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataDetailPertanyaanJawaban` 
 	INNER JOIN ts_pertanyaankuesioner pku ON 
     	pku.id_pku = dpj.id_pku_answer
 	INNER JOIN ts_pertanyaankuesioner pkuu ON 
-    	pkuu.id_pku = jk.id_pku;
+    	pkuu.id_pku = jk.id_pku
+WHERE dpj.status = "Aktif"
+ORDER BY dpj.id_detailpertanyaanjawaban ASC;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataForUpdateAlumni` (IN `Pid` INT)  BEGIN
@@ -127,14 +130,18 @@ END$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataJawabanKuesioner` ()  BEGIN
 	SELECT jk.id_jawabankuesioner, pku.kode AS kodepertanyaan, pku.deskripsipertanyaan, jk.deskripsijawaban, jk.kode, jk.nilaijawaban, jk.textbox, jk.created_by, jk.created_date, jk.modified_by, jk.modified_date, pku.id_pku, jk.status
     FROM ts_jawabankuesioner jk
-    INNER JOIN ts_pertanyaankuesioner pku ON jk.id_pku = pku.id_pku;
+    INNER JOIN ts_pertanyaankuesioner pku ON jk.id_pku = pku.id_pku
+WHERE jk.status = "Aktif"
+ORDER BY id_jawabankuesioner ASC;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataPertanyaanKuesioner` ()  BEGIN
 	SELECT pku.id_pku, pku.deskripsiPertanyaan, pku.jenis, pku.kode, dp.jenis_kuesioner, dp.periode, pku.pertanyaan_utama, pku.created_by, pku.created_date, pku.modified_by, pku.modified_date, pku.status
     FROM ts_pertanyaanKuesioner pku
 	INNER JOIN ts_detailJenisPeriode dp 
-    	ON dp.id_detailPeriode = pku.id_detailPeriode;
+    	ON dp.id_detailPeriode = pku.id_detailPeriode
+WHERE pku.status = "Aktif"
+ORDER BY id_pku ASC;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getLaporanPivot` ()  NO SQL
@@ -158,10 +165,10 @@ SET @sql = NULL;
 			DEALLOCATE PREPARE stmt;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_InsertDaftarUrutanData` (IN `Pnama` VARCHAR(50), IN `Pkode` VARCHAR(255), IN `Pid_detailPeriode` INT(11), IN `Ptanggal_sekarang` DATETIME)  BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_InsertDaftarUrutanData` (IN `Pnama` VARCHAR(50), IN `Pkode` VARCHAR(255), IN `Pid_detailPeriode` INT(11), IN `Ptanggal_sekarang` DATETIME, IN `Palias` VARCHAR(255))  BEGIN
 	INSERT INTO ts_daftarurutandata
-    	(kode, id_detailPeriode, created_by, created_date, modified_by, modified_date, status)
-    	VALUES (Pkode, Pid_detailPeriode, Pnama, Ptanggal_sekarang, Pnama, Ptanggal_sekarang, 'Aktif');
+    	(kode, alias, id_detailPeriode, created_by, created_date, modified_by, modified_date, status)
+    	VALUES (Pkode, Palias, Pid_detailPeriode, Pnama, Ptanggal_sekarang, Pnama, Ptanggal_sekarang, 'Aktif');
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_InsertDetailJenisPeriode` (IN `Pnama` VARCHAR(50), IN `Pjenis_kuesioner` VARCHAR(30), IN `Pperiode` INT(11), IN `Ptanggal_sekarang` DATETIME)  BEGIN
@@ -230,7 +237,8 @@ END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataAlumni` ()  BEGIN
 	SELECT *
-	FROM ts_registrasialumni;
+	FROM ts_registrasialumni
+    ORDER BY status ASC;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataAlumniTOP5` ()  BEGIN
@@ -242,18 +250,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataAlumniTOP5` ()  BEGIN
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataDetailJenisPeriode` ()  BEGIN 
-	SELECT * FROM ts_detailjenisperiode;
+	SELECT * FROM ts_detailjenisperiode WHERE status = "Aktif" ORDER BY id_detailPeriode ASC;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataDetailPertanyaanJawaban` ()  BEGIN 
-	SELECT dpj.id_detailpertanyaanjawaban, pkuu.kode AS kodee, jk.nilaiJawaban, jk.deskripsiJawaban, pku.kode, pku.deskripsiPertanyaan, dpj.created_by, dpj.created_date, dpj.modified_by, dpj.modified_date, dpj.status
-    FROM ts_detailpertanyaanjawaban dpj
-    INNER JOIN ts_jawabankuesioner jk ON 
-    	jk.id_jawabankuesioner = dpj.id_jawabankuesioner
-	INNER JOIN ts_pertanyaankuesioner pku ON 
-    	pku.id_pku = dpj.id_pku_answer
-	INNER JOIN ts_pertanyaankuesioner pkuu ON 
-    	pkuu.id_pku = jk.id_pku;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_InsertDaftarUrutanData` (IN `Pnama` VARCHAR(50), IN `Pkode` VARCHAR(255), IN `Pid_detailPeriode` INT(11), IN `Ptanggal_sekarang` DATETIME, IN `Palias` VARCHAR(255))  BEGIN
+	INSERT INTO ts_daftarurutandata
+    	(kode, alias, id_detailPeriode, created_by, created_date, modified_by, modified_date, status)
+    	VALUES (Pkode, Palias, Pid_detailPeriode, Pnama, Ptanggal_sekarang, Pnama, Ptanggal_sekarang, 'Aktif');
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataForUpdateAlumni` (IN `Pid` INT)  BEGIN
@@ -284,51 +287,6 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataForUpdatePertanyaanKuesio
 	SELECT deskripsipertanyaan, jenis, kode, id_detailperiode, pertanyaan_utama
 	FROM ts_pertanyaankuesioner
 	WHERE id_pku = Pid;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataJawabanKuesioner` ()  BEGIN
-	SELECT jk.id_jawabankuesioner, pku.kode AS kodepertanyaan, pku.deskripsipertanyaan, jk.deskripsijawaban, jk.kode, jk.nilaijawaban, jk.textbox, jk.created_by, jk.created_date, jk.modified_by, jk.modified_date, pku.id_pku, jk.status
-    FROM ts_jawabankuesioner jk
-    INNER JOIN ts_pertanyaankuesioner pku ON jk.id_pku = pku.id_pku;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_getDataPertanyaanKuesioner` ()  BEGIN
-	SELECT pku.id_pku, pku.deskripsiPertanyaan, pku.jenis, pku.kode, dp.jenis_kuesioner, dp.periode, pku.pertanyaan_utama, pku.created_by, pku.created_date, pku.modified_by, pku.modified_date, pku.status
-    FROM ts_pertanyaanKuesioner pku
-	INNER JOIN ts_detailJenisPeriode dp 
-    	ON dp.id_detailPeriode = pku.id_detailPeriode;
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_InsertDetailJenisPeriode` (IN `Pnama` VARCHAR(50), IN `Pjenis_kuesioner` VARCHAR(30), IN `Pperiode` INT(11), IN `Ptanggal_sekarang` DATETIME)  BEGIN
-	INSERT INTO ts_detailjenisperiode
-    	(jenis_kuesioner, periode, created_by, created_date, modified_by, modified_date, status)
-    	VALUES (Pjenis_kuesioner, Pperiode, Pnama, Ptanggal_sekarang, Pnama, Ptanggal_sekarang, 'Aktif');
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_InsertDetailPertanyaanJawaban` (IN `Pnama` VARCHAR(50), IN `Pid_jawabanKuesioner` VARCHAR(10), IN `Pid_pku_answer` VARCHAR(10), IN `Ptanggal_sekarang` DATETIME)  BEGIN
-	INSERT INTO ts_detailpertanyaanjawaban
-    	(id_jawabankuesioner, id_pku_answer, created_by, created_date, modified_by, modified_date, status)
-        VALUES
-        	(Pid_jawabanKuesioner, Pid_pku_answer, Pnama, Ptanggal_sekarang, Pnama, Ptanggal_sekarang, 'Aktif');
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_InsertJawabanKuesioner` (IN `Pid` VARCHAR(10), IN `Pid_pku` VARCHAR(10), IN `PdeskripsiJawaban` TEXT, IN `Pkode` VARCHAR(10), IN `PnilaiJawaban` TEXT, IN `Ptextbox` VARCHAR(11), IN `Pnama` VARCHAR(50), IN `Ptanggal_sekarang` DATETIME)  BEGIN
-	INSERT INTO ts_jawabankuesioner
-    VALUES
-    	(PdeskripsiJawaban, Pid, Pid_pku, Pkode, Ptextbox, PnilaiJawaban, Pnama, Ptanggal_sekarang, Pnama, Ptanggal_sekarang, 'Aktif');
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_InsertPertanyaanKuesioner` (IN `Pid_pku` VARCHAR(10), IN `PdeskripsiPertanyaan` TEXT, IN `Pjenis` VARCHAR(30), IN `Pkode` TEXT, IN `Pid_detailPeriode` INT(11), IN `Ppertanyaan_utama` VARCHAR(11), IN `Pnama` VARCHAR(50), IN `Ptanggal_sekarang` DATETIME)  BEGIN
-	INSERT INTO ts_pertanyaankuesioner
-    VALUES
-		(PdeskripsiPertanyaan, Pid_pku, Pkode, Pid_detailPeriode, Ppertanyaan_utama, Pjenis, Pnama, Ptanggal_sekarang, Pnama, Ptanggal_sekarang, 'Aktif');
-END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ts_InsertRegistrasiAlumni` (IN `Pnim` VARCHAR(10), IN `Pnik` VARCHAR(16), IN `Pnama` VARCHAR(100), IN `Palamat` TEXT, IN `Ptanggal_lahir` DATE, IN `Ptahun_lulus` VARCHAR(4), IN `Pemail` VARCHAR(100), IN `Ppassword` VARCHAR(200), IN `Ptelepon` VARCHAR(13), IN `Pstatus` VARCHAR(30), IN `Ptanggal_sekarang` DATETIME)  BEGIN
-	INSERT INTO ts_registrasialumni
-	(nim, nik, nama, alamat, tanggal_lahir, tahun_lulus, email, password, status, telepon, created_by, created_date, modified_by, modified_date)
-    VALUES
-    (Pnim, Pnik, Pnama, Palamat, Ptanggal_lahir, Ptahun_lulus, Pemail, Ppassword, Pstatus, Ptelepon, Pnama, Ptanggal_sekarang, Pnama, Ptanggal_sekarang);
 END$$
 
 DELIMITER ;
@@ -364,6 +322,7 @@ INSERT INTO `ts_admin` (`email`, `id_admin`, `jenis_kelamin`, `nama`, `password`
 CREATE TABLE `ts_daftarurutandata` (
   `id` int(11) NOT NULL,
   `kode` varchar(255) NOT NULL,
+  `alias` varchar(255) DEFAULT NULL,
   `id_detailPeriode` int(11) NOT NULL,
   `created_by` varchar(50) NOT NULL,
   `created_date` datetime NOT NULL,
@@ -376,118 +335,137 @@ CREATE TABLE `ts_daftarurutandata` (
 -- Dumping data for table `ts_daftarurutandata`
 --
 
-INSERT INTO `ts_daftarurutandata` (`id`, `kode`, `id_detailPeriode`, `created_by`, `created_date`, `modified_by`, `modified_date`, `status`) VALUES
-(1, 'kdptimsmh', 4, 'nama1', '2023-02-14 11:41:37', 'nama1', '2023-02-14 11:41:37', 'Aktif'),
-(2, 'kdpstmsmh', 4, 'nama1', '2023-02-14 11:44:34', 'nama1', '2023-02-14 11:44:34', 'Aktif'),
-(3, 'nimhsmsmh', 4, 'nama1', '2023-02-14 11:44:42', 'nama1', '2023-02-14 11:44:42', 'Aktif'),
-(4, 'nmmhsmsmh', 4, 'nama1', '2023-02-14 11:44:55', 'nama1', '2023-02-14 11:44:55', 'Aktif'),
-(5, 'telpomsmh', 4, 'nama1', '2023-02-14 11:45:05', 'nama1', '2023-02-14 11:45:05', 'Aktif'),
-(6, 'emailmsmh', 4, 'nama1', '2023-02-14 11:45:13', 'nama1', '2023-02-14 11:45:13', 'Aktif'),
-(7, 'tahun_lulus', 4, 'nama1', '2023-02-14 11:45:20', 'nama1', '2023-02-14 11:45:20', 'Aktif'),
-(8, 'nik', 4, 'nama1', '2023-02-14 11:45:30', 'nama1', '2023-02-14 11:45:30', 'Aktif'),
-(9, 'npwp', 4, 'nama1', '2023-02-14 11:45:38', 'nama1', '2023-02-14 11:45:38', 'Aktif'),
-(10, 'f8', 4, 'nama1', '2023-02-14 11:45:45', 'nama1', '2023-02-14 11:45:45', 'Aktif'),
-(11, 'f504', 4, 'nama1', '2023-02-14 11:45:54', 'nama1', '2023-02-14 11:45:54', 'Aktif'),
-(12, 'f502', 4, 'nama1', '2023-02-14 11:46:00', 'nama1', '2023-02-14 11:46:00', 'Aktif'),
-(13, 'f505', 4, 'nama1', '2023-02-14 11:46:07', 'nama1', '2023-02-14 11:46:07', 'Aktif'),
-(14, 'f506', 4, 'nama1', '2023-02-14 11:46:15', 'nama1', '2023-02-14 11:46:15', 'Aktif'),
-(15, 'f5a1', 4, 'nama1', '2023-02-14 11:46:27', 'nama1', '2023-02-14 11:46:27', 'Aktif'),
-(16, 'f5a2', 4, 'nama1', '2023-02-14 11:46:33', 'nama1', '2023-02-14 11:46:33', 'Aktif'),
-(17, 'f1101', 4, 'nama1', '2023-02-14 11:46:40', 'nama1', '2023-02-14 11:46:40', 'Aktif'),
-(18, 'f1102', 4, 'nama1', '2023-02-14 11:46:47', 'nama1', '2023-02-14 11:46:47', 'Aktif'),
-(19, 'f5b', 4, 'nama1', '2023-02-14 11:46:54', 'nama1', '2023-02-14 11:46:54', 'Aktif'),
-(20, 'f5c', 4, 'nama1', '2023-02-14 11:47:00', 'nama1', '2023-02-14 11:47:00', 'Aktif'),
-(21, 'f5d', 4, 'nama1', '2023-02-14 11:47:07', 'nama1', '2023-02-14 11:47:07', 'Aktif'),
-(22, 'f18a', 4, 'nama1', '2023-02-14 11:47:15', 'nama1', '2023-02-14 11:47:15', 'Aktif'),
-(23, 'f18b', 4, 'nama1', '2023-02-14 11:47:32', 'nama1', '2023-02-14 11:47:32', 'Aktif'),
-(24, 'f18c', 4, 'nama1', '2023-02-14 11:47:41', 'nama1', '2023-02-14 11:47:41', 'Aktif'),
-(25, 'f18d', 4, 'nama1', '2023-02-14 11:47:47', 'nama1', '2023-02-14 11:47:47', 'Aktif'),
-(26, 'f1201', 4, 'nama1', '2023-02-14 11:47:53', 'nama1', '2023-02-14 11:47:53', 'Aktif'),
-(27, 'f1202', 4, 'nama1', '2023-02-14 11:47:58', 'nama1', '2023-02-14 11:47:58', 'Aktif'),
-(28, 'f14', 4, 'nama1', '2023-02-14 11:48:04', 'nama1', '2023-02-14 11:48:04', 'Aktif'),
-(29, 'f15', 4, 'nama1', '2023-02-14 11:48:10', 'nama1', '2023-02-14 11:48:10', 'Aktif'),
-(30, 'f1761', 4, 'nama1', '2023-02-14 11:48:16', 'nama1', '2023-02-14 11:48:16', 'Aktif'),
-(31, 'f1762', 4, 'nama1', '2023-02-14 11:48:22', 'nama1', '2023-02-14 11:48:22', 'Aktif'),
-(32, 'f1763', 4, 'nama1', '2023-02-14 11:48:31', 'nama1', '2023-02-14 11:54:23', 'Aktif'),
-(33, 'f1764', 4, 'nama1', '2023-02-14 11:54:40', 'nama1', '2023-02-14 11:54:40', 'Aktif'),
-(34, 'f1765', 4, 'nama1', '2023-02-14 11:54:48', 'nama1', '2023-02-14 11:54:48', 'Aktif'),
-(35, 'f1766', 4, 'nama1', '2023-02-14 11:54:55', 'nama1', '2023-02-14 11:54:55', 'Aktif'),
-(36, 'f1767', 4, 'nama1', '2023-02-14 11:55:02', 'nama1', '2023-02-14 11:55:02', 'Aktif'),
-(37, 'f1768', 4, 'nama1', '2023-02-14 11:55:09', 'nama1', '2023-02-14 11:55:09', 'Aktif'),
-(38, 'f1769', 4, 'nama1', '2023-02-14 11:55:16', 'nama1', '2023-02-14 11:55:16', 'Aktif'),
-(39, 'f1770', 4, 'nama1', '2023-02-14 11:55:22', 'nama1', '2023-02-14 11:55:22', 'Aktif'),
-(40, 'f1771', 4, 'nama1', '2023-02-14 11:55:30', 'nama1', '2023-02-14 11:55:30', 'Aktif'),
-(41, 'f1772', 4, 'nama1', '2023-02-14 11:55:38', 'nama1', '2023-02-14 11:55:38', 'Aktif'),
-(42, 'f1773', 4, 'nama1', '2023-02-14 11:55:44', 'nama1', '2023-02-14 11:55:44', 'Aktif'),
-(43, 'f1774', 4, 'nama1', '2023-02-14 11:55:50', 'nama1', '2023-02-14 11:55:50', 'Aktif'),
-(44, 'f21', 4, 'nama1', '2023-02-14 11:55:56', 'nama1', '2023-02-14 11:55:56', 'Aktif'),
-(45, 'f22', 4, 'nama1', '2023-02-14 11:56:02', 'nama1', '2023-02-14 11:56:02', 'Aktif'),
-(46, 'f23', 4, 'nama1', '2023-02-14 11:56:08', 'nama1', '2023-02-14 11:56:08', 'Aktif'),
-(47, 'f24', 4, 'nama1', '2023-02-14 11:59:40', 'nama1', '2023-02-14 11:59:40', 'Aktif'),
-(48, 'f25', 4, 'nama1', '2023-02-14 11:59:47', 'nama1', '2023-02-14 11:59:47', 'Aktif'),
-(49, 'f26', 4, 'nama1', '2023-02-14 11:59:56', 'nama1', '2023-02-14 11:59:56', 'Aktif'),
-(50, 'f27', 4, 'nama1', '2023-02-14 12:00:02', 'nama1', '2023-02-14 12:00:02', 'Aktif'),
-(51, 'f301', 4, 'nama1', '2023-02-14 12:00:09', 'nama1', '2023-02-14 12:00:09', 'Aktif'),
-(52, 'f302', 4, 'nama1', '2023-02-14 12:00:15', 'nama1', '2023-02-14 12:00:15', 'Aktif'),
-(53, 'f303', 4, 'nama1', '2023-02-14 12:00:35', 'nama1', '2023-02-14 12:00:35', 'Aktif'),
-(54, 'f401', 4, 'nama1', '2023-02-14 12:00:41', 'nama1', '2023-02-14 12:00:41', 'Aktif'),
-(55, 'f402', 4, 'nama1', '2023-02-14 12:00:47', 'nama1', '2023-02-14 12:00:47', 'Aktif'),
-(56, 'f403', 4, 'nama1', '2023-02-14 12:00:53', 'nama1', '2023-02-14 12:00:53', 'Aktif'),
-(57, 'f404', 4, 'nama1', '2023-02-14 12:00:58', 'nama1', '2023-02-14 12:00:58', 'Aktif'),
-(58, 'f405', 4, 'nama1', '2023-02-14 12:01:04', 'nama1', '2023-02-14 12:01:04', 'Aktif'),
-(59, 'f406', 4, 'nama1', '2023-02-14 12:01:23', 'nama1', '2023-02-14 12:01:23', 'Aktif'),
-(60, 'f407', 4, 'nama1', '2023-02-14 12:01:31', 'nama1', '2023-02-14 12:01:31', 'Aktif'),
-(61, 'f408', 4, 'nama1', '2023-02-14 12:01:39', 'nama1', '2023-02-14 12:01:39', 'Aktif'),
-(62, 'f409', 4, 'nama1', '2023-02-14 12:01:45', 'nama1', '2023-02-14 12:01:45', 'Aktif'),
-(63, 'f410', 4, 'nama1', '2023-02-14 12:01:53', 'nama1', '2023-02-14 12:01:53', 'Aktif'),
-(64, 'f411', 4, 'nama1', '2023-02-14 12:01:59', 'nama1', '2023-02-14 12:01:59', 'Aktif'),
-(65, 'f412', 4, 'nama1', '2023-02-14 12:02:05', 'nama1', '2023-02-14 12:02:05', 'Aktif'),
-(66, 'f413', 4, 'nama1', '2023-02-14 12:02:11', 'nama1', '2023-02-14 12:02:11', 'Aktif'),
-(67, 'f414', 4, 'nama1', '2023-02-14 12:02:24', 'nama1', '2023-02-14 12:02:24', 'Aktif'),
-(68, 'f415', 4, 'nama1', '2023-02-14 12:02:31', 'nama1', '2023-02-14 12:02:31', 'Aktif'),
-(69, 'f416', 4, 'nama1', '2023-02-14 12:02:38', 'nama1', '2023-02-14 12:02:38', 'Aktif'),
-(70, 'f6', 4, 'nama1', '2023-02-14 12:02:46', 'nama1', '2023-02-14 12:02:46', 'Aktif'),
-(71, 'f7', 4, 'nama1', '2023-02-14 12:02:52', 'nama1', '2023-02-14 12:02:52', 'Aktif'),
-(72, 'f7a', 4, 'nama1', '2023-02-14 12:02:57', 'nama1', '2023-02-14 12:02:57', 'Aktif'),
-(73, 'f1001', 4, 'nama1', '2023-02-14 12:03:03', 'nama1', '2023-02-14 12:03:03', 'Aktif'),
-(74, 'f1002', 4, 'nama1', '2023-02-14 12:03:09', 'nama1', '2023-02-14 12:03:09', 'Aktif'),
-(75, 'f1601', 4, 'nama1', '2023-02-14 12:03:14', 'nama1', '2023-02-14 12:03:14', 'Aktif'),
-(76, 'f1602', 4, 'nama1', '2023-02-14 12:03:21', 'nama1', '2023-02-14 12:03:21', 'Aktif'),
-(77, 'f1603', 4, 'nama1', '2023-02-14 12:03:29', 'nama1', '2023-02-14 12:03:29', 'Aktif'),
-(78, 'f1604', 4, 'nama1', '2023-02-14 12:03:35', 'nama1', '2023-02-14 12:03:35', 'Aktif'),
-(79, 'f1605', 4, 'nama1', '2023-02-14 12:03:40', 'nama1', '2023-02-14 12:03:40', 'Aktif'),
-(80, 'f1606', 4, 'nama1', '2023-02-14 12:04:13', 'nama1', '2023-02-14 12:04:13', 'Aktif'),
-(81, 'f1607', 4, 'nama1', '2023-02-14 12:04:19', 'nama1', '2023-02-14 12:04:19', 'Aktif'),
-(82, 'f1608', 4, 'nama1', '2023-02-14 12:04:26', 'nama1', '2023-02-14 12:04:26', 'Aktif'),
-(83, 'f1609', 4, 'nama1', '2023-02-14 12:04:34', 'nama1', '2023-02-14 12:04:34', 'Aktif'),
-(84, 'f1610', 4, 'nama1', '2023-02-14 12:04:41', 'nama1', '2023-02-14 12:04:41', 'Aktif'),
-(85, 'f1611', 4, 'nama1', '2023-02-14 12:04:47', 'nama1', '2023-02-14 12:04:47', 'Aktif'),
-(86, 'f1612', 4, 'nama1', '2023-02-14 12:04:54', 'nama1', '2023-02-14 12:04:54', 'Aktif'),
-(87, 'f1613', 4, 'nama1', '2023-02-14 12:05:21', 'nama1', '2023-02-14 12:05:21', 'Aktif'),
-(88, 'f1614', 4, 'nama1', '2023-02-14 12:05:28', 'nama1', '2023-02-14 12:05:28', 'Aktif'),
-(89, 'AlamatPerusahaanandabekerja', 3, 'nama1', '2023-02-14 12:06:17', 'nama1', '2023-02-14 12:06:17', 'Aktif'),
-(90, 'ApakahandabekerjadigroupperusahaanAstra', 3, 'nama1', '2023-02-14 12:06:24', 'nama1', '2023-02-14 12:06:24', 'Aktif'),
-(91, 'ApasarandarialumniuntukPolmanAstra', 3, 'nama1', '2023-02-14 12:06:30', 'nama1', '2023-02-14 12:06:30', 'Aktif'),
-(92, 'Dalamduatahunsetelahlulussudahberapakalipindahperusahaan', 3, 'nama1', '2023-02-14 12:06:37', 'nama1', '2023-02-14 12:06:37', 'Aktif'),
-(93, 'Dalamlimatahunsetelahlulussudahberapakalipindahperusahaan', 3, 'nama1', '2023-02-14 12:06:43', 'nama1', '2023-02-14 12:06:43', 'Aktif'),
-(94, 'DeskripsiPekerjaan', 3, 'nama1', '2023-02-14 12:06:49', 'nama1', '2023-02-14 12:06:49', 'Aktif'),
-(95, 'emailmsmh', 3, 'nama1', '2023-02-14 12:06:56', 'nama1', '2023-02-14 12:06:56', 'Aktif'),
-(96, 'kdpstmsmh', 3, 'nama1', '2023-02-14 12:07:15', 'nama1', '2023-02-14 12:07:15', 'Aktif'),
-(97, 'kdptimsmh', 3, 'nama1', '2023-02-14 12:07:37', 'nama1', '2023-02-14 12:07:37', 'Aktif'),
-(98, 'NamaDepartemenBagian', 3, 'nama1', '2023-02-14 12:07:43', 'nama1', '2023-02-14 12:07:43', 'Aktif'),
-(99, 'namaperusahaanbekerja', 3, 'nama1', '2023-02-14 12:07:49', 'nama1', '2023-02-14 12:07:49', 'Aktif'),
-(100, 'nik', 3, 'nama1', '2023-02-14 12:07:56', 'nama1', '2023-02-14 12:07:56', 'Aktif'),
-(101, 'nimhsmsmh', 3, 'nama1', '2023-02-14 12:08:02', 'nama1', '2023-02-14 12:08:02', 'Aktif'),
-(102, 'nmmhsmsmh', 3, 'nama1', '2023-02-14 12:08:08', 'nama1', '2023-02-14 12:08:08', 'Aktif'),
-(103, 'Nomortelponperusahaanyangbisadihubungi', 3, 'nama1', '2023-02-14 12:08:16', 'nama1', '2023-02-14 12:08:16', 'Aktif'),
-(104, 'npwp', 3, 'nama1', '2023-02-14 12:08:23', 'nama1', '2023-02-14 12:08:23', 'Aktif'),
-(105, 'OrganisasiKemahasiswaanyangpernahAndaikutiselamakuliahdiPolmanAstrabolehlebihdarisatu', 3, 'nama1', '2023-02-14 12:08:30', 'nama1', '2023-02-14 12:08:30', 'Aktif'),
-(106, 'Pilihlahhadiahyangmenarikbagialumni', 3, 'nama1', '2023-02-14 12:08:37', 'nama1', '2023-02-14 12:08:37', 'Aktif'),
-(107, 'Posisiandadiperusahaandisaatandapertamakalimendapatpekerjaan', 3, 'nama1', '2023-02-14 12:08:43', 'nama1', '2023-02-14 12:08:43', 'Aktif'),
-(108, 'tahun_lulus', 3, 'nama1', '2023-02-14 12:08:50', 'nama1', '2023-02-14 12:08:50', 'Aktif'),
-(109, 'telpomsmh', 3, 'nama1', '2023-02-14 12:08:56', 'nama1', '2023-02-14 12:08:56', 'Aktif'),
-(110, 'Tempatandabekerjasaatinibergerakdibidangapa', 3, 'nama1', '2023-02-14 12:09:02', 'nama1', '2023-02-14 12:09:02', 'Aktif'),
-(111, 'Apapekerjaananda', 4, 'nama1', '2023-02-16 14:32:17', 'nama1', '2023-02-16 14:32:47', 'Tidak Aktif');
+INSERT INTO `ts_daftarurutandata` (`id`, `kode`, `alias`, `id_detailPeriode`, `created_by`, `created_date`, `modified_by`, `modified_date`, `status`) VALUES
+(1, 'kdptimsmh', '', 4, 'nama1', '2023-02-14 11:41:37', 'nama1', '2023-02-14 11:41:37', 'Aktif'),
+(2, 'kdpstmsmh', '', 4, 'nama1', '2023-02-14 11:44:34', 'nama1', '2023-02-14 11:44:34', 'Aktif'),
+(3, 'nimhsmsmh', '', 4, 'nama1', '2023-02-14 11:44:42', 'nama1', '2023-02-14 11:44:42', 'Aktif'),
+(4, 'nmmhsmsmh', '', 4, 'nama1', '2023-02-14 11:44:55', 'nama1', '2023-02-14 11:44:55', 'Aktif'),
+(5, 'telpomsmh', '', 4, 'nama1', '2023-02-14 11:45:05', 'nama1', '2023-02-14 11:45:05', 'Aktif'),
+(6, 'emailmsmh', '', 4, 'nama1', '2023-02-14 11:45:13', 'nama1', '2023-02-14 11:45:13', 'Aktif'),
+(7, 'tahun_lulus', '', 4, 'nama1', '2023-02-14 11:45:20', 'nama1', '2023-02-14 11:45:20', 'Aktif'),
+(8, 'nik', '', 4, 'nama1', '2023-02-14 11:45:30', 'nama1', '2023-02-14 11:45:30', 'Aktif'),
+(9, 'npwp', '', 4, 'nama1', '2023-02-14 11:45:38', 'nama1', '2023-02-14 11:45:38', 'Aktif'),
+(10, 'f8', '', 4, 'nama1', '2023-02-14 11:45:45', 'nama1', '2023-02-14 11:45:45', 'Aktif'),
+(11, 'f504', '', 4, 'nama1', '2023-02-14 11:45:54', 'nama1', '2023-02-14 11:45:54', 'Aktif'),
+(12, 'f502', '', 4, 'nama1', '2023-02-14 11:46:00', 'nama1', '2023-02-14 11:46:00', 'Aktif'),
+(13, 'f505', '', 4, 'nama1', '2023-02-14 11:46:07', 'nama1', '2023-02-14 11:46:07', 'Aktif'),
+(14, 'f506', '', 4, 'nama1', '2023-02-14 11:46:15', 'nama1', '2023-02-14 11:46:15', 'Aktif'),
+(15, 'f5a1', '', 4, 'nama1', '2023-02-14 11:46:27', 'nama1', '2023-02-14 11:46:27', 'Aktif'),
+(16, 'f5a2', '', 4, 'nama1', '2023-02-14 11:46:33', 'nama1', '2023-02-14 11:46:33', 'Aktif'),
+(17, 'f1101', '', 4, 'nama1', '2023-02-14 11:46:40', 'nama1', '2023-02-14 11:46:40', 'Aktif'),
+(18, 'f1102', '', 4, 'nama1', '2023-02-14 11:46:47', 'nama1', '2023-02-14 11:46:47', 'Aktif'),
+(19, 'f5b', '', 4, 'nama1', '2023-02-14 11:46:54', 'nama1', '2023-02-14 11:46:54', 'Aktif'),
+(20, 'f5c', '', 4, 'nama1', '2023-02-14 11:47:00', 'nama1', '2023-02-14 11:47:00', 'Aktif'),
+(21, 'f5d', '', 4, 'nama1', '2023-02-14 11:47:07', 'nama1', '2023-02-14 11:47:07', 'Aktif'),
+(22, 'f18a', '', 4, 'nama1', '2023-02-14 11:47:15', 'nama1', '2023-02-14 11:47:15', 'Aktif'),
+(23, 'f18b', '', 4, 'nama1', '2023-02-14 11:47:32', 'nama1', '2023-02-14 11:47:32', 'Aktif'),
+(24, 'f18c', '', 4, 'nama1', '2023-02-14 11:47:41', 'nama1', '2023-02-14 11:47:41', 'Aktif'),
+(25, 'f18d', '', 4, 'nama1', '2023-02-14 11:47:47', 'nama1', '2023-02-14 11:47:47', 'Aktif'),
+(26, 'f1201', '', 4, 'nama1', '2023-02-14 11:47:53', 'nama1', '2023-02-14 11:47:53', 'Aktif'),
+(27, 'f1202', '', 4, 'nama1', '2023-02-14 11:47:58', 'nama1', '2023-02-14 11:47:58', 'Aktif'),
+(28, 'f14', '', 4, 'nama1', '2023-02-14 11:48:04', 'nama1', '2023-02-14 11:48:04', 'Aktif'),
+(29, 'f15', '', 4, 'nama1', '2023-02-14 11:48:10', 'nama1', '2023-02-14 11:48:10', 'Aktif'),
+(30, 'f1761', '', 4, 'nama1', '2023-02-14 11:48:16', 'nama1', '2023-02-14 11:48:16', 'Aktif'),
+(31, 'f1762', '', 4, 'nama1', '2023-02-14 11:48:22', 'nama1', '2023-02-14 11:48:22', 'Aktif'),
+(32, 'f1763', '', 4, 'nama1', '2023-02-14 11:48:31', 'nama1', '2023-02-14 11:54:23', 'Aktif'),
+(33, 'f1764', '', 4, 'nama1', '2023-02-14 11:54:40', 'nama1', '2023-02-14 11:54:40', 'Aktif'),
+(34, 'f1765', '', 4, 'nama1', '2023-02-14 11:54:48', 'nama1', '2023-02-14 11:54:48', 'Aktif'),
+(35, 'f1766', '', 4, 'nama1', '2023-02-14 11:54:55', 'nama1', '2023-02-14 11:54:55', 'Aktif'),
+(36, 'f1767', '', 4, 'nama1', '2023-02-14 11:55:02', 'nama1', '2023-02-14 11:55:02', 'Aktif'),
+(37, 'f1768', '', 4, 'nama1', '2023-02-14 11:55:09', 'nama1', '2023-02-14 11:55:09', 'Aktif'),
+(38, 'f1769', '', 4, 'nama1', '2023-02-14 11:55:16', 'nama1', '2023-02-14 11:55:16', 'Aktif'),
+(39, 'f1770', '', 4, 'nama1', '2023-02-14 11:55:22', 'nama1', '2023-02-14 11:55:22', 'Aktif'),
+(40, 'f1771', '', 4, 'nama1', '2023-02-14 11:55:30', 'nama1', '2023-02-14 11:55:30', 'Aktif'),
+(41, 'f1772', '', 4, 'nama1', '2023-02-14 11:55:38', 'nama1', '2023-02-14 11:55:38', 'Aktif'),
+(42, 'f1773', '', 4, 'nama1', '2023-02-14 11:55:44', 'nama1', '2023-02-14 11:55:44', 'Aktif'),
+(43, 'f1774', '', 4, 'nama1', '2023-02-14 11:55:50', 'nama1', '2023-02-14 11:55:50', 'Aktif'),
+(44, 'f21', '', 4, 'nama1', '2023-02-14 11:55:56', 'nama1', '2023-02-14 11:55:56', 'Aktif'),
+(45, 'f22', '', 4, 'nama1', '2023-02-14 11:56:02', 'nama1', '2023-02-14 11:56:02', 'Aktif'),
+(46, 'f23', '', 4, 'nama1', '2023-02-14 11:56:08', 'nama1', '2023-02-14 11:56:08', 'Aktif'),
+(47, 'f24', '', 4, 'nama1', '2023-02-14 11:59:40', 'nama1', '2023-02-14 11:59:40', 'Aktif'),
+(48, 'f25', '', 4, 'nama1', '2023-02-14 11:59:47', 'nama1', '2023-02-14 11:59:47', 'Aktif'),
+(49, 'f26', '', 4, 'nama1', '2023-02-14 11:59:56', 'nama1', '2023-02-14 11:59:56', 'Aktif'),
+(50, 'f27', '', 4, 'nama1', '2023-02-14 12:00:02', 'nama1', '2023-02-14 12:00:02', 'Aktif'),
+(51, 'f301', '', 4, 'nama1', '2023-02-14 12:00:09', 'nama1', '2023-02-14 12:00:09', 'Aktif'),
+(52, 'f302', '', 4, 'nama1', '2023-02-14 12:00:15', 'nama1', '2023-02-14 12:00:15', 'Aktif'),
+(53, 'f303', '', 4, 'nama1', '2023-02-14 12:00:35', 'nama1', '2023-02-14 12:00:35', 'Aktif'),
+(54, 'f401', '', 4, 'nama1', '2023-02-14 12:00:41', 'nama1', '2023-02-14 12:00:41', 'Aktif'),
+(55, 'f402', '', 4, 'nama1', '2023-02-14 12:00:47', 'nama1', '2023-02-14 12:00:47', 'Aktif'),
+(56, 'f403', '', 4, 'nama1', '2023-02-14 12:00:53', 'nama1', '2023-02-14 12:00:53', 'Aktif'),
+(57, 'f404', '', 4, 'nama1', '2023-02-14 12:00:58', 'nama1', '2023-02-14 12:00:58', 'Aktif'),
+(58, 'f405', '', 4, 'nama1', '2023-02-14 12:01:04', 'nama1', '2023-02-14 12:01:04', 'Aktif'),
+(59, 'f406', '', 4, 'nama1', '2023-02-14 12:01:23', 'nama1', '2023-02-14 12:01:23', 'Aktif'),
+(60, 'f407', '', 4, 'nama1', '2023-02-14 12:01:31', 'nama1', '2023-02-14 12:01:31', 'Aktif'),
+(61, 'f408', '', 4, 'nama1', '2023-02-14 12:01:39', 'nama1', '2023-02-14 12:01:39', 'Aktif'),
+(62, 'f409', '', 4, 'nama1', '2023-02-14 12:01:45', 'nama1', '2023-02-14 12:01:45', 'Aktif'),
+(63, 'f410', '', 4, 'nama1', '2023-02-14 12:01:53', 'nama1', '2023-02-14 12:01:53', 'Aktif'),
+(64, 'f411', '', 4, 'nama1', '2023-02-14 12:01:59', 'nama1', '2023-02-14 12:01:59', 'Aktif'),
+(65, 'f412', '', 4, 'nama1', '2023-02-14 12:02:05', 'nama1', '2023-02-14 12:02:05', 'Aktif'),
+(66, 'f413', '', 4, 'nama1', '2023-02-14 12:02:11', 'nama1', '2023-02-14 12:02:11', 'Aktif'),
+(67, 'f414', '', 4, 'nama1', '2023-02-14 12:02:24', 'nama1', '2023-02-14 12:02:24', 'Aktif'),
+(68, 'f415', '', 4, 'nama1', '2023-02-14 12:02:31', 'nama1', '2023-02-14 12:02:31', 'Aktif'),
+(69, 'f416', '', 4, 'nama1', '2023-02-14 12:02:38', 'nama1', '2023-02-14 12:02:38', 'Aktif'),
+(70, 'f6', '', 4, 'nama1', '2023-02-14 12:02:46', 'nama1', '2023-02-14 12:02:46', 'Aktif'),
+(71, 'f7', '', 4, 'nama1', '2023-02-14 12:02:52', 'nama1', '2023-02-14 12:02:52', 'Aktif'),
+(72, 'f7a', '', 4, 'nama1', '2023-02-14 12:02:57', 'nama1', '2023-02-14 12:02:57', 'Aktif'),
+(73, 'f1001', '', 4, 'nama1', '2023-02-14 12:03:03', 'nama1', '2023-02-14 12:03:03', 'Aktif'),
+(74, 'f1002', '', 4, 'nama1', '2023-02-14 12:03:09', 'nama1', '2023-02-14 12:03:09', 'Aktif'),
+(75, 'f1601', '', 4, 'nama1', '2023-02-14 12:03:14', 'nama1', '2023-02-14 12:03:14', 'Aktif'),
+(76, 'f1602', '', 4, 'nama1', '2023-02-14 12:03:21', 'nama1', '2023-02-14 12:03:21', 'Aktif'),
+(77, 'f1603', '', 4, 'nama1', '2023-02-14 12:03:29', 'nama1', '2023-02-14 12:03:29', 'Aktif'),
+(78, 'f1604', '', 4, 'nama1', '2023-02-14 12:03:35', 'nama1', '2023-02-14 12:03:35', 'Aktif'),
+(79, 'f1605', '', 4, 'nama1', '2023-02-14 12:03:40', 'nama1', '2023-02-14 12:03:40', 'Aktif'),
+(80, 'f1606', '', 4, 'nama1', '2023-02-14 12:04:13', 'nama1', '2023-02-14 12:04:13', 'Aktif'),
+(81, 'f1607', '', 4, 'nama1', '2023-02-14 12:04:19', 'nama1', '2023-02-14 12:04:19', 'Aktif'),
+(82, 'f1608', '', 4, 'nama1', '2023-02-14 12:04:26', 'nama1', '2023-02-14 12:04:26', 'Aktif'),
+(83, 'f1609', '', 4, 'nama1', '2023-02-14 12:04:34', 'nama1', '2023-02-14 12:04:34', 'Aktif'),
+(84, 'f1610', '', 4, 'nama1', '2023-02-14 12:04:41', 'nama1', '2023-02-14 12:04:41', 'Aktif'),
+(85, 'f1611', '', 4, 'nama1', '2023-02-14 12:04:47', 'nama1', '2023-02-14 12:04:47', 'Aktif'),
+(86, 'f1612', '', 4, 'nama1', '2023-02-14 12:04:54', 'nama1', '2023-02-14 12:04:54', 'Aktif'),
+(87, 'f1613', '', 4, 'nama1', '2023-02-14 12:05:21', 'nama1', '2023-02-14 12:05:21', 'Aktif'),
+(88, 'f1614', '', 4, 'nama1', '2023-02-14 12:05:28', 'nama1', '2023-02-14 12:05:28', 'Aktif'),
+(89, 'AlamatPerusahaanandabekerja', '', 3, 'nama1', '2023-02-14 12:06:17', 'nama1', '2023-02-19 18:15:29', 'Tidak Aktif'),
+(90, 'ApakahandabekerjadigroupperusahaanAstra', '', 3, 'nama1', '2023-02-14 12:06:24', 'nama1', '2023-02-19 18:15:31', 'Tidak Aktif'),
+(91, 'ApasarandarialumniuntukPolmanAstra', '', 3, 'nama1', '2023-02-14 12:06:30', 'nama1', '2023-02-19 18:15:33', 'Tidak Aktif'),
+(92, 'Dalamduatahunsetelahlulussudahberapakalipindahperusahaan', '', 3, 'nama1', '2023-02-14 12:06:37', 'nama1', '2023-02-19 18:15:35', 'Tidak Aktif'),
+(93, 'Dalamlimatahunsetelahlulussudahberapakalipindahperusahaan', '', 3, 'nama1', '2023-02-14 12:06:43', 'nama1', '2023-02-19 18:15:37', 'Tidak Aktif'),
+(94, 'DeskripsiPekerjaan', '', 3, 'nama1', '2023-02-14 12:06:49', 'nama1', '2023-02-19 18:15:39', 'Tidak Aktif'),
+(95, 'emailmsmh', '', 3, 'nama1', '2023-02-14 12:06:56', 'nama1', '2023-02-19 18:15:41', 'Tidak Aktif'),
+(96, 'kdpstmsmh', '', 3, 'nama1', '2023-02-14 12:07:15', 'nama1', '2023-02-19 18:15:44', 'Tidak Aktif'),
+(97, 'kdptimsmh', '', 3, 'nama1', '2023-02-14 12:07:37', 'nama1', '2023-02-19 18:15:47', 'Tidak Aktif'),
+(98, 'NamaDepartemenBagian', '', 3, 'nama1', '2023-02-14 12:07:43', 'nama1', '2023-02-19 18:15:49', 'Tidak Aktif'),
+(99, 'namaperusahaanbekerja', '', 3, 'nama1', '2023-02-14 12:07:49', 'nama1', '2023-02-19 18:15:51', 'Tidak Aktif'),
+(100, 'nik', '', 3, 'nama1', '2023-02-14 12:07:56', 'nama1', '2023-02-19 18:15:54', 'Tidak Aktif'),
+(101, 'nimhsmsmh', '', 3, 'nama1', '2023-02-14 12:08:02', 'nama1', '2023-02-19 18:15:56', 'Tidak Aktif'),
+(102, 'nmmhsmsmh', '', 3, 'nama1', '2023-02-14 12:08:08', 'nama1', '2023-02-19 18:15:59', 'Tidak Aktif'),
+(103, 'Nomortelponperusahaanyangbisadihubungi', '', 3, 'nama1', '2023-02-14 12:08:16', 'nama1', '2023-02-19 18:16:01', 'Tidak Aktif'),
+(104, 'npwp', '', 3, 'nama1', '2023-02-14 12:08:23', 'nama1', '2023-02-19 18:16:03', 'Tidak Aktif'),
+(105, 'OrganisasiKemahasiswaanyangpernahAndaikutiselamakuliahdiPolmanAstrabolehlebihdarisatu', '', 3, 'nama1', '2023-02-14 12:08:30', 'nama1', '2023-02-19 18:16:05', 'Tidak Aktif'),
+(106, 'Pilihlahhadiahyangmenarikbagialumni', '', 3, 'nama1', '2023-02-14 12:08:37', 'nama1', '2023-02-19 18:16:09', 'Tidak Aktif'),
+(107, 'Posisiandadiperusahaandisaatandapertamakalimendapatpekerjaan', '', 3, 'nama1', '2023-02-14 12:08:43', 'nama1', '2023-02-19 18:16:12', 'Tidak Aktif'),
+(108, 'tahun_lulus', '', 3, 'nama1', '2023-02-14 12:08:50', 'nama1', '2023-02-19 18:16:15', 'Tidak Aktif'),
+(109, 'telpomsmh', '', 3, 'nama1', '2023-02-14 12:08:56', 'nama1', '2023-02-19 18:16:18', 'Tidak Aktif'),
+(110, 'Tempatandabekerjasaatinibergerakdibidangapa', '', 3, 'nama1', '2023-02-14 12:09:02', 'nama1', '2023-02-19 18:16:21', 'Tidak Aktif'),
+(111, 'Apapekerjaananda', '', 4, 'nama1', '2023-02-16 14:32:17', 'nama1', '2023-02-16 14:32:47', 'Tidak Aktif'),
+(112, 'tes', 'tes', 3, 'nama1', '2023-02-19 18:04:26', 'nama1', '2023-02-19 18:04:42', 'Tidak Aktif'),
+(113, 'nimhsmsmh', 'NIM', 3, 'nama1', '2023-02-19 18:16:53', 'nama1', '2023-02-19 18:16:53', 'Aktif'),
+(114, 'nmmhsmsmh', 'NAMA', 3, 'nama1', '2023-02-19 18:26:52', 'nama1', '2023-02-19 18:26:52', 'Aktif'),
+(115, 'telpomsmh', 'TELP', 3, 'nama1', '2023-02-19 18:27:04', 'nama1', '2023-02-19 18:27:04', 'Aktif'),
+(116, 'emailmsmh', 'EMAIL', 3, 'nama1', '2023-02-19 18:27:20', 'nama1', '2023-02-19 18:27:20', 'Aktif'),
+(117, 'tahun_lulus', 'LULUS', 3, 'nama1', '2023-02-19 18:27:33', 'nama1', '2023-02-19 18:27:33', 'Aktif'),
+(118, 'namaperusahaanbekerja', 'Nama Perusahaan bekerja?', 3, 'nama1', '2023-02-19 18:27:49', 'nama1', '2023-02-19 18:27:49', 'Aktif'),
+(119, 'Dalamlimatahunsetelahlulussudahberapakalipindahperusahaan', 'Dalam 5 tahun setelah lulus sudah berapa kali pindah perusahaan? (Deskripsikan)', 3, 'nama1', '2023-02-19 18:28:07', 'nama1', '2023-02-19 18:28:07', 'Aktif'),
+(120, 'AlamatPerusahaanandabekerja', 'Alamat Perusahaan anda bekerja?', 3, 'nama1', '2023-02-19 18:28:23', 'nama1', '2023-02-19 18:28:23', 'Aktif'),
+(121, 'OrganisasiKemahasiswaanyangpernahAndaikutiselamakuliahdiPolmanAstrabolehlebihdarisatu', 'Organisasi Kemahasiswaan yang pernah Anda ikuti selama kuliah di Polman Astra (boleh lebih dari satu)', 3, 'nama1', '2023-02-19 18:28:37', 'nama1', '2023-02-19 18:28:37', 'Aktif'),
+(122, 'Nomortelponperusahaanyangbisadihubungi', 'Nomor telpon perusahaan yang bisa dihubungi ? (masukkan kode daerah 021xxxxxxxxxx)', 3, 'nama1', '2023-02-19 18:28:49', 'nama1', '2023-02-19 18:28:49', 'Aktif'),
+(123, 'ApakahandabekerjadigroupperusahaanAstra', 'Apakah anda bekerja di group perusahaan Astra?', 3, 'nama1', '2023-02-19 18:29:12', 'nama1', '2023-02-19 18:29:12', 'Aktif'),
+(124, 'Tempatandabekerjasaatinibergerakdibidangapa', 'Tempat anda bekerja saat ini bergerak di bidang apa?', 3, 'nama1', '2023-02-19 18:29:24', 'nama1', '2023-02-19 18:29:24', 'Aktif'),
+(125, 'ApasarandarialumniuntukPolmanAstra', 'Apa saran dari alumni untuk Polman Astra?', 3, 'nama1', '2023-02-19 18:29:37', 'nama1', '2023-02-19 18:29:37', 'Aktif'),
+(126, 'NamaDepartemenBagian', 'Nama Departemen/Bagian', 3, 'nama1', '2023-02-19 18:29:54', 'nama1', '2023-02-19 18:29:54', 'Aktif'),
+(127, 'Dalamduatahunsetelahlulussudahberapakalipindahperusahaan', 'Dalam 2 tahun setelah lulus sudah berapa kali pindah perusahaan? (Deskripsikan)', 3, 'nama1', '2023-02-19 18:30:24', 'nama1', '2023-02-19 18:30:24', 'Aktif'),
+(128, 'Pilihlahhadiahyangmenarikbagialumni', 'Pilihlah hadiah yang menarik bagi alumni ! (Lucky Draw)', 3, 'nama1', '2023-02-19 18:30:38', 'nama1', '2023-02-19 18:36:02', 'Aktif'),
+(129, 'Posisiandadiperusahaandisaatandapertamakalimendapatpekerjaan', 'Posisi anda di perusahaan disaat anda pertama kali mendapat pekerjaan?', 3, 'nama1', '2023-02-19 18:30:49', 'nama1', '2023-02-19 18:30:49', 'Aktif'),
+(130, 'DeskripsiPekerjaan', 'Deskripsi Pekerjaan', 3, 'nama1', '2023-02-19 18:31:06', 'nama1', '2023-02-19 18:31:06', 'Aktif');
 
 -- --------------------------------------------------------
 
@@ -513,13 +491,13 @@ CREATE TABLE `ts_detailjenisperiode` (
 INSERT INTO `ts_detailjenisperiode` (`id_detailPeriode`, `jenis_kuesioner`, `periode`, `created_by`, `created_date`, `modified_by`, `modified_date`, `status`) VALUES
 (1, 'Polman', 2023, 'nama1', '2023-01-29 10:53:41', 'nama1', '2023-01-29 19:12:11', 'Tidak Aktif'),
 (2, 'Polman', 2025, 'nama1', '2023-01-29 18:20:45', 'nama1', '2023-01-29 19:11:52', 'Tidak Aktif'),
-(3, 'Polman', 2023, 'nama1', '2023-01-29 20:00:46', 'nama1', '2023-01-29 20:00:46', 'Aktif'),
+(3, 'Politeknik Astra', 2023, 'nama1', '2023-01-29 20:00:46', 'nama1', '2023-02-20 05:12:47', 'Aktif'),
 (4, 'Dikti', 2023, 'nama1', '2023-01-29 20:00:53', 'nama1', '2023-01-29 20:00:53', 'Aktif'),
 (5, 'Dikti', 112, 'nama1', '2023-02-03 01:28:57', 'nama1', '2023-02-03 01:29:06', 'Tidak Aktif'),
 (6, 'Dikti', 11, 'nama1', '2023-02-05 22:03:40', 'nama1', '2023-02-05 22:04:08', 'Tidak Aktif'),
 (7, 'Dikti', 22, 'nama1', '2023-02-06 22:47:12', 'nama1', '2023-02-06 22:49:27', 'Tidak Aktif'),
 (8, 'Dikti', 22, 'nama1', '2023-02-06 22:49:18', 'nama1', '2023-02-06 22:49:30', 'Tidak Aktif'),
-(9, 'Polman', 2024, 'nama1', '2023-02-07 09:02:42', 'nama1', '2023-02-07 09:02:42', 'Aktif'),
+(9, 'Politeknik Astra', 2024, 'nama1', '2023-02-07 09:02:42', 'nama1', '2023-02-20 05:12:52', 'Aktif'),
 (10, 'Dikti', 2024, 'nama1', '2023-02-07 09:04:45', 'nama1', '2023-02-07 09:04:45', 'Aktif'),
 (11, 'Polman', 402, 'nama1', '2023-02-09 03:03:17', 'nama1', '2023-02-09 03:03:40', 'Tidak Aktif'),
 (12, 'Dikti', 2025, 'nama1', '2023-02-10 10:10:16', 'nama1', '2023-02-10 10:10:55', 'Tidak Aktif'),
@@ -584,7 +562,7 @@ CREATE TABLE `ts_hasilkuesioner` (
   `id_hasilKuesioner` varchar(10) NOT NULL,
   `id_detailPeriode` int(11) NOT NULL,
   `nim` varchar(10) NOT NULL,
-  `tanggal_pengisian` date NOT NULL,
+  `tanggal_pengisian` datetime NOT NULL,
   `created_by` varchar(50) NOT NULL,
   `created_date` datetime NOT NULL,
   `modified_by` varchar(50) NOT NULL,
@@ -596,11 +574,11 @@ CREATE TABLE `ts_hasilkuesioner` (
 --
 
 INSERT INTO `ts_hasilkuesioner` (`id_hasilKuesioner`, `id_detailPeriode`, `nim`, `tanggal_pengisian`, `created_by`, `created_date`, `modified_by`, `modified_date`) VALUES
-('HKU001', 3, '0320170002', '2023-02-16', 'Doni Septrian', '2023-02-16 07:49:23', 'Doni Septrian', '2023-02-16 07:49:23'),
-('HKU002', 4, '0320170002', '2023-02-16', 'Doni Septrian', '2023-02-16 07:59:31', 'Doni Septrian', '2023-02-16 07:59:31'),
-('HKU003', 4, '0320170007', '2023-02-16', 'RACHMAD RIZKY WIDODO', '2023-02-16 13:57:02', 'RACHMAD RIZKY WIDODO', '2023-02-16 13:57:02'),
-('HKU004', 3, '0320180011', '2023-02-16', 'Siti Nurlaeli', '2023-02-16 14:46:27', 'Siti Nurlaeli', '2023-02-16 14:46:27'),
-('HKU005', 4, '0320180011', '2023-02-16', 'Siti Nurlaeli', '2023-02-16 14:50:08', 'Siti Nurlaeli', '2023-02-16 14:50:08');
+('HKU001', 3, '0320170002', '2023-02-16 07:49:23', 'Doni Septrian', '2023-02-16 07:49:23', 'Doni Septrian', '2023-02-16 07:49:23'),
+('HKU002', 4, '0320170002', '2023-02-16 07:59:31', 'Doni Septrian', '2023-02-16 07:59:31', 'Doni Septrian', '2023-02-16 07:59:31'),
+('HKU003', 4, '0320170007', '2023-02-16 13:57:02', 'RACHMAD RIZKY WIDODO', '2023-02-16 13:57:02', 'RACHMAD RIZKY WIDODO', '2023-02-16 13:57:02'),
+('HKU004', 3, '0320180011', '2023-02-16 14:46:27', 'Siti Nurlaeli', '2023-02-16 14:46:27', 'Siti Nurlaeli', '2023-02-16 14:46:27'),
+('HKU005', 4, '0320180011', '2023-02-16 14:50:08', 'Siti Nurlaeli', '2023-02-16 14:50:08', 'Siti Nurlaeli', '2023-02-16 14:50:08');
 
 -- --------------------------------------------------------
 
@@ -838,6 +816,22 @@ INSERT INTO `ts_jawabankuesioner` (`deskripsiJawaban`, `id_jawabanKuesioner`, `i
 ('Freelance', 'JK209', 'PKU005', '', 'Tidak', '6', 'nama1', '2023-02-10 10:08:22', 'nama1', '2023-02-10 10:09:34', 'Tidak Aktif'),
 ('Freelance/Kerja Lepas', 'JK210', 'PKU013', '', 'Tidak', '4', 'nama1', '2023-02-11 17:53:46', 'nama1', '2023-02-11 17:53:46', 'Aktif'),
 ('Freelance', 'JK211', 'PKU005', '', 'Tidak', '6', 'nama1', '2023-02-16 14:28:26', 'nama1', '2023-02-16 14:29:16', 'Tidak Aktif');
+
+--
+-- Triggers `ts_jawabankuesioner`
+--
+DELIMITER $$
+CREATE TRIGGER `auto_generate_idJK` BEFORE INSERT ON `ts_jawabankuesioner` FOR EACH ROW BEGIN
+    DECLARE last_id int;
+    SET last_id = (SELECT COUNT(*) FROM ts_jawabankuesioner);
+    IF last_id IS NULL THEN
+        SET new.id_jawabanKuesioner = 'JK001';
+    ELSE
+        SET new.id_jawabanKuesioner = CONCAT('JK', LPAD(last_id+1, 3, '0'));
+    END IF;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -1787,7 +1781,7 @@ INSERT INTO `ts_pertanyaankuesioner` (`deskripsiPertanyaan`, `id_pku`, `kode`, `
 ('Berapa banyak perusahaan/instansi/institusi yang merespons lamaran anda?', 'PKU046', 'f7', 4, 'Tidak', 'Text Box', 'nama1', '2023-01-31 10:21:49', 'nama1', '2023-01-31 10:21:49', 'Aktif'),
 ('Berapa banyak perusahaan/instansi/institusi yang mengundang anda untuk wawancara?', 'PKU047', 'f7a', 4, 'Tidak', 'Text Box', 'nama1', '2023-01-31 10:22:10', 'nama1', '2023-01-31 10:22:10', 'Aktif'),
 ('Apakah anda aktif mencari pekerjaan dalam 4 minggu terakhir? Pilihlah satu jawaban', 'PKU048', 'f1001', 4, 'Ya', 'Radio Button', 'nama1', '2023-01-31 10:22:25', 'nama1', '2023-01-31 10:22:25', 'Aktif'),
-('Jika menurut anda pekerjaan anda saat ini tidak sesuai dengan : pendidikan anda, mengapa anda mengambilnya? Jawaban bisa lebih dari satu', 'PKU049', '', 4, 'Tidak', 'Check Box Value Berurutan', 'nama1', '2023-01-31 10:22:42', 'nama1', '2023-02-15 14:21:36', 'Aktif'),
+('Jika menurut anda pekerjaan anda saat ini tidak sesuai dengan : pendidikan anda, mengapa anda mengambilnya? Jawaban bisa lebih dari satu', 'PKU049', '', 4, 'Tidak', 'Check Box Value Berurutan', 'nama1', '2023-01-31 10:22:42', 'nama1', '2023-02-19 19:11:28', 'Aktif'),
 ('Nama perusahaan bekerja?', 'PKU050', 'namaperusahaanbekerja', 3, 'Ya', 'Text Box', 'nama1', '2023-02-01 06:03:56', 'nama1', '2023-02-01 06:09:21', 'Aktif'),
 ('Dalam 5 tahun setelah lulus sudah berapa kali pindah perusahaan? (Deskripsikan)', 'PKU051', 'Dalamlimatahunsetelahlulussudahberapakalipindahperusahaan', 3, 'Ya', 'Text Area', 'nama1', '2023-02-01 06:06:03', 'nama1', '2023-02-01 06:09:59', 'Aktif'),
 ('Alamat Perusahaan anda bekerja?', 'PKU052', 'AlamatPerusahaanandabekerja', 3, 'Ya', 'Text Box', 'nama1', '2023-02-01 06:11:06', 'nama1', '2023-02-01 06:11:06', 'Aktif'),
@@ -1806,8 +1800,24 @@ INSERT INTO `ts_pertanyaankuesioner` (`deskripsiPertanyaan`, `id_pku`, `kode`, `
 ('tes hapus', 'PKU065', 'tes hapus', 3, 'Ya', 'Combo Box', 'nama1', '2023-02-05 20:14:50', 'nama1', '2023-02-05 20:22:07', 'Tidak Aktif'),
 ('tesy', 'PKU066', 'tesy', 4, 'Tidak', 'Radio Button', 'nama1', '2023-02-09 03:00:58', 'nama1', '2023-02-09 03:01:37', 'Tidak Aktif'),
 ('Dimanakah Anda bekerja?', 'PKU067', 'Dimanakah Anda bekerja?', 3, 'Tidak', 'Combo Box', 'nama1', '2023-02-10 10:06:19', 'nama1', '2023-02-10 10:07:17', 'Tidak Aktif'),
-('Pertanyaan f506', 'PKU068', 'f506', 4, 'Ya', 'Text Box', 'nama1', '2023-02-12 01:18:15', 'nama1', '2023-02-12 01:18:15', 'Aktif'),
+('Pertanyaan f506', 'PKU068', 'f506', 4, 'Ya', 'Hidden', 'nama1', '2023-02-12 01:18:15', 'nama1', '2023-02-19 18:43:19', 'Aktif'),
 ('Dimanakah anda bekerja?', 'PKU069', 'Dimanakahandabekerja', 3, 'Tidak', 'Combo Box', 'nama1', '2023-02-16 14:26:16', 'nama1', '2023-02-16 14:27:38', 'Tidak Aktif');
+
+--
+-- Triggers `ts_pertanyaankuesioner`
+--
+DELIMITER $$
+CREATE TRIGGER `auto_generate_id` BEFORE INSERT ON `ts_pertanyaankuesioner` FOR EACH ROW BEGIN
+    DECLARE last_id int;
+    SET last_id = (SELECT COUNT(*) FROM ts_pertanyaankuesioner);
+    IF last_id IS NULL THEN
+        SET new.id_pku = 'PKU001';
+    ELSE
+        SET new.id_pku = CONCAT('PKU', LPAD(last_id+1, 3, '0'));
+    END IF;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -1995,7 +2005,7 @@ ALTER TABLE `ts_registrasialumni`
 -- AUTO_INCREMENT for table `ts_daftarurutandata`
 --
 ALTER TABLE `ts_daftarurutandata`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=112;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=542;
 
 --
 -- AUTO_INCREMENT for table `ts_detailjenisperiode`
@@ -2007,7 +2017,7 @@ ALTER TABLE `ts_detailjenisperiode`
 -- AUTO_INCREMENT for table `ts_detailpertanyaanjawaban`
 --
 ALTER TABLE `ts_detailpertanyaanjawaban`
-  MODIFY `id_detailPertanyaanJawaban` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id_detailPertanyaanJawaban` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 
 --
 -- AUTO_INCREMENT for table `ts_registrasialumni`

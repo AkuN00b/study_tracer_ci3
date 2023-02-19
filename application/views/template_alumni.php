@@ -86,6 +86,10 @@
         .table-striped tbody tr.pagination-ys {
             background-color: #FFF;
         }
+
+        .btn:hover {
+          cursor: pointer;
+        }
     </style>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -138,8 +142,6 @@
                     style='border-radius: 0px; border: none; padding-left: 22px; display: inherit;'>
                     <i class='fa fa-home fa-lg fa-pull-left'></i>Dashboard
                 </a>
-
-                <a href="https://sia.polman.astra.ac.id/sso" class="list-group-item list-group-item-action" style="border-radius: 0px; border: none; padding-left: 23px;"><i class='fa fa-external-link fa-lg fa-pull-left'></i>Halaman SSO</a>
             </div>
         </div>
     </div>

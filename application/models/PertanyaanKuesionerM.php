@@ -41,6 +41,22 @@ class PertanyaanKuesionerM extends CI_Model
                                  WHERE pku.pertanyaan_utama = 'Tidak' AND pku.status = 'Aktif'");
     }
 
+    public function getUtamaCopy($id)
+    {
+      return $this->db->query("SELECT pku.id_pku
+                                 FROM ts_pertanyaanKuesioner pku
+                                 WHERE pku.status = 'Aktif' AND pku.pertanyaan_utama = 'Ya' AND pku.id_detailPeriode = $id
+                                 ORDER BY pku.id_pku");
+    }
+
+    public function getTurunanCopy($id)
+    {
+      return $this->db->query("SELECT pku.id_pku
+                                 FROM ts_pertanyaanKuesioner pku
+                                 WHERE pku.status = 'Aktif' AND pku.pertanyaan_utama = 'Tidak' AND pku.id_detailPeriode = $id
+                                 ORDER BY pku.id_pku");
+    }
+
 	public function getAll()
     {
         return $this->db->query("CALL ts_getDataPertanyaanKuesioner");
@@ -100,6 +116,44 @@ class PertanyaanKuesionerM extends CI_Model
     	$data = array('Pid' => $id, 'Pnama' => $nama, 'Ptanggal_sekarang' => $tanggal_sekarang);
 
       	return $this->db->query($sp, $data);
+    }
+
+    public function postCopy($id_detailPeriodeAsal, $id_detailPeriodeKe, $nama, $tanggal_sekarang)
+    {
+      $result = $this->db->query("INSERT INTO ts_pertanyaankuesioner (deskripsiPertanyaan, kode, id_detailPeriode, 
+                                  pertanyaan_utama, jenis, created_by, created_date, modified_by, modified_date, status)
+                                  SELECT deskripsiPertanyaan, kode, '$id_detailPeriodeKe', pertanyaan_utama, jenis, '$nama', '$tanggal_sekarang', '$nama', '$tanggal_sekarang', 'Aktif'
+                                  FROM ts_pertanyaankuesioner
+                                  WHERE id_detailPeriode = $id_detailPeriodeAsal AND status = 'Aktif' AND pertanyaan_utama = 'Ya';
+                                ");
+
+      if ($result) {
+          return $result;
+      } else {
+          return false;
+      }
+    }
+
+    public function postCopyTurunan($id_pku, $id_detailPeriodeKe, $nama, $tanggal_sekarang)
+    {
+      $result = $this->db->query("INSERT INTO ts_pertanyaankuesioner (deskripsiPertanyaan, kode, id_detailPeriode, 
+                                  pertanyaan_utama, jenis, created_by, created_date, modified_by, modified_date, status)
+                                  SELECT deskripsiPertanyaan, kode, '$id_detailPeriodeKe', pertanyaan_utama, jenis, '$nama', '$tanggal_sekarang', '$nama', '$tanggal_sekarang', 'Aktif'
+                                  FROM ts_pertanyaankuesioner
+                                  WHERE id_pku = '$id_pku' AND status = 'Aktif';
+                                ");
+
+      if ($result) {
+          return $result;
+      } else {
+          return false;
+      }
+    }
+
+    public function getIDCopy($deskripsiPertanyaan, $id_detailPeriodeKe) 
+    {
+      return $this->db->query("SELECT pk.id_pku FROM ts_pertanyaanKuesioner pk
+                        WHERE pk.id_detailPeriode = '$id_detailPeriodeKe' AND pk.deskripsiPertanyaan = '$deskripsiPertanyaan'");
     }
 }
 

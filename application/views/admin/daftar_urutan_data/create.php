@@ -17,6 +17,17 @@
     </div>
 
     <div class="form-group">
+        <label for="txtAlias">
+            Alias
+            <span style="color: red;">*</span>
+        </label>
+        
+        <input type="text" name="txtAlias" class="form-control" id="txtAlias" required
+                oninvalid="this.setCustomValidity('Alias Wajib Diisi')"
+                oninput="this.setCustomValidity('')">
+    </div>
+
+    <div class="form-group">
         <label for="txtid_detailPeriode">
             Periode dan Jenis Kuesioner
             <span style="color: red;">*</span>

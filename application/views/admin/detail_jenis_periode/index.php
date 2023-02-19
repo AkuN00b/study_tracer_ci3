@@ -16,9 +16,8 @@
 	<table id="myTable" class="table table-hover grid scrollstyle text-center" width="100%">
 		<thead>
 			<tr>
-				<th class="align-middle text-center">No.</th>
-				<th class="align-middle text-center">ID Detail Jenis Periode</th>
 				<th class="align-middle text-center">Aksi</th>
+				<th class="align-middle text-center">No.</th>
 				<th class="align-middle text-center">Jenis Kuesioner</th>
 				<th class="align-middle text-center">Periode (Tahun)</th>
 			</tr>
@@ -29,8 +28,6 @@
 
 			<?php foreach ($getData->result() as $row) { ?>
 				<tr style="height: 45px;">
-					<td><?= $no++; ?></td>
-					<td><?= $row->id_detailPeriode; ?></td>
 					<td>
 						<?php if ($row->status == 'Tidak Aktif') { ?>
 							Status Tidak Aktif
@@ -45,6 +42,7 @@
 	                        </a>
 						<?php } ?>
 					</td>
+					<td><?= $no++; ?></td>
 					<td><?= $row->jenis_kuesioner; ?></td>
 					<td><?= $row->periode; ?></td>
 				</tr>
@@ -52,6 +50,60 @@
 		</tbody>
 	</table>
 </div>
+
+<form action="<?php echo site_url('DetailJenisPeriode/copyKuesioner') ?>" method="POST" autocomplete="off">
+	<div class="row mb-3 mt-4 text-center">
+		<div class="col-md-3">
+			<div class="form-group">
+		        <label for="txtid_detailPeriodeAsal">
+		            Periode dan Jenis Kuesioner Asal
+		            <span style="color: red;">*</span>
+		        </label>
+
+				<select class="form-control" name="txtid_detailPeriodeAsal" id="txtid_detailPeriodeAsal" required
+		                oninvalid="this.setCustomValidity('Periode dan Jenis Kuesioner Asal Wajib Diisi')"
+		                oninput="this.setCustomValidity('')">
+		        	<option disabled="" selected="" value="">-- Pilih Periode dan Jenis Kuesioner Asal --</option>
+		        	<?php
+		                foreach ($getDataAda->result() as $row) {
+		                    echo '<option value="' . $row->id_detailPeriode . '">' . $row->jenis_kuesioner . ' - ' . $row->periode . '</option>';
+		                }
+		            ?>
+		        </select>
+		    </div>
+		</div>
+
+		<div class="col-md-2 mb-3" style="padding-top: 32px;">
+			<h4>di-salin</h4>
+		</div>
+
+		<div class="col-md-3">
+			<div class="form-group">
+		        <label for="txtid_detailPeriodeKe">
+		            Ke Periode dan Jenis Kuesioner
+		            <span style="color: red;">*</span>
+		        </label>
+
+				<select class="form-control" name="txtid_detailPeriodeKe" id="txtid_detailPeriodeKe" required
+		                oninvalid="this.setCustomValidity('Ke Periode dan Jenis Kuesioner Wajib Diisi')"
+		                oninput="this.setCustomValidity('')">
+		        	<option disabled="" selected="" value="">-- Pilih Ke Periode dan Jenis Kuesioner --</option>
+		        	<?php
+		                foreach ($getDataKosong->result() as $row) {
+		                    echo '<option value="' . $row->id_detailPeriode . '">' . $row->jenis_kuesioner . ' - ' . $row->periode . '</option>';
+		                }
+		            ?>
+		        </select>
+		    </div>
+		</div>
+
+		<div class="col-md-4" style="padding-top: 27px;">
+			<button type="submit" class="btn btn-primary btn-block">
+		    	<i class="fa fa-copy"></i> Copy Pertanyaan dan Jawaban
+		    </button>
+		</div>
+	</div>
+</form>
 
 <?php
 	$data = ob_get_clean();

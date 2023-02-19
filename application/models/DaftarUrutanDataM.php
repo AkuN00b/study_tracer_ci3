@@ -18,9 +18,11 @@ class DaftarUrutanDataM extends CI_Model
 
 	public function getAll()
     {
-        return $this->db->query("SELECT dud.id, dud.kode, dud.status, djp.jenis_kuesioner, djp.periode
+        return $this->db->query("SELECT dud.id, dud.kode, dud.alias, dud.status, djp.jenis_kuesioner, djp.periode
                                  FROM ts_daftarurutandata dud
-                                 INNER JOIN ts_detailjenisperiode djp ON dud.id_detailPeriode = djp.id_detailPeriode");
+                                 INNER JOIN ts_detailjenisperiode djp ON dud.id_detailPeriode = djp.id_detailPeriode
+                                 WHERE dud.status = 'Aktif'
+                                 ORDER BY dud.id ASC");
     }
 
     public function get_id($id) 
@@ -39,11 +41,11 @@ class DaftarUrutanDataM extends CI_Model
       }
     }
 
-    public function save($nama, $kode, $id_detailPeriode, $tanggal_sekarang)
+    public function save($nama, $kode, $alias, $id_detailPeriode, $tanggal_sekarang)
     {
-      	$sp = "CALL ts_InsertDaftarUrutanData(?, ?, ?, ?)";
+      	$sp = "CALL ts_InsertDaftarUrutanData(?, ?, ?, ?, ?)";
 		$data = array('Pnama' => $nama, 'Pkode' => $kode, 'Pid_detailPeriode' => $id_detailPeriode,
-					  'Ptanggal_sekarang' => $tanggal_sekarang);
+					  'Ptanggal_sekarang' => $tanggal_sekarang, 'Palias' => $alias);
 
         $result = $this->db->query($sp, $data);
 
@@ -54,10 +56,11 @@ class DaftarUrutanDataM extends CI_Model
         }
     }
 
-    public function update($id, $nama, $kode, $id_detailPeriode, $tanggal_sekarang)
+    public function update($id, $nama, $kode, $alias, $id_detailPeriode, $tanggal_sekarang)
     {
         $result = $this->db->query("UPDATE ts_daftarurutandata
                                     SET kode = '$kode',
+                                        alias = '$alias',
                                         id_detailPeriode = $id_detailPeriode,
                                         modified_by = '$nama',
                                         modified_date = '$tanggal_sekarang'
@@ -76,6 +79,20 @@ class DaftarUrutanDataM extends CI_Model
     	$data = array('Pid' => $id, 'Pnama' => $nama, 'Ptanggal_sekarang' => $tanggal_sekarang);
 
       	return $this->db->query($sp, $data);
+    }
+
+    public function postCopy($id_detailPeriodeAsal, $id_detailPeriodeKe, $nama, $tanggal_sekarang)
+    {
+        $result = $this->db->query("INSERT INTO ts_daftarurutandata (kode, alias, id_detailPeriode, created_by, created_date, modified_by, modified_date, status)
+                                    SELECT kode, alias, '$id_detailPeriodeKe', '$nama', '$tanggal_sekarang', '$nama', '$tanggal_sekarang', 'Aktif'
+                                    FROM ts_daftarurutandata
+                                    WHERE id_detailPeriode = $id_detailPeriodeAsal AND status = 'Aktif'");
+
+        if ($result) {
+            return $result;
+        } else {
+            return false;
+        }
     }
 }
 

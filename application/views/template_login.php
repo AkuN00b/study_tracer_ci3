@@ -33,6 +33,12 @@
     </script>
     <!-- jangan lupa menambahkan script js sweet alert di bawah ini  -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.7/dist/sweetalert2.all.min.js"></script>
+
+    <style type="text/css">
+        .btn:hover {
+          cursor: pointer;
+        }
+    </style>
 </head>
 
 <body style="background-image: url('<?php echo base_url() ?>assets/Images/IMG_Background.jpg'); background-repeat: no-repeat; background-size: cover;">
@@ -51,7 +57,7 @@
 	<div class="mt-5" style="background-color: white; width: 100%; position: fixed; left: 0; bottom: 0;">
         <div class="container-fluid">
             <footer class="d-flex flex-wrap pt-3 pb-3 border-top">
-                Copyright &copy; <?php echo date('Y'); ?> - MIS Politeknik Manufaktur Astra
+                Copyright &copy; <?php echo date('Y'); ?> - MIS Politeknik Astra
             </footer>
         </div>
     </div>

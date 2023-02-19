@@ -30,7 +30,8 @@
         	<option disabled="" value="">-- Pilih Bentuk Jawaban --</option>
         	<option value="Combo Box" <?php if ($jenis == 'Combo Box') echo "selected" ?>>Combo Box</option>
         	<option value="Radio Button" <?php if ($jenis == 'Radio Button') echo "selected" ?>>Radio Button</option>
-        	<option value="Text Box" <?php if ($jenis == 'Text Box') echo "selected" ?>>Text Box</option>
+            <option value="Text Box" <?php if ($jenis == 'Text Box') echo "selected" ?>>Text Box</option>
+        	<option value="Hidden" <?php if ($jenis == 'Hidden') echo "selected" ?>>Hidden</option>
             <option value="Text Area" <?php if ($jenis == 'Text Area') echo "selected" ?>>Text Area</option>
             <option value="Check Box" <?php if ($jenis == 'Check Box') echo "selected" ?>>Check Box</option>
         	<option value="Check Box Value Berurutan" <?php if ($jenis == 'Check Box Value Berurutan') echo "selected" ?>>Check Box Value Berurutan</option>

@@ -8,11 +8,10 @@
 	<table id="myTable" class="table table-hover grid scrollstyle text-center" width="100%">
 		<thead>
 			<tr>
+                <th class="align-middle text-center">Aksi</th>
+                <th class="align-middle text-center">Reset Kata Sandi</th>
+                <th class="align-middle text-center">Update Data</th>
 				<th class="align-middle text-center">No.</th>
-				<th class="align-middle text-center">ID Alumni</th>
-				<th class="align-middle text-center">Aksi</th>
-				<th class="align-middle text-center">Reset Kata Sandi</th>
-				<th class="align-middle text-center">Update Data</th>
 				<th class="align-middle text-center">Nomor Induk Mahasiswa</th>
 				<th class="align-middle text-center">Nomor Induk Kependudukan</th>
 				<th class="">Nama Alumni</th>
@@ -30,36 +29,35 @@
 
 			<?php foreach ($getData->result() as $row) { ?>
 				<tr style="height: 45px;">
+                    <td>
+                        <?php if ($row->status == 'Belum Diverifikasi') { ?>
+                            <a rel="tooltip" data-placement="left" title="Terima Akun Alumni" 
+                               href="#" data-id="<?= $row->id; ?>" class="approve">
+                                <i class="fa fa-check" aria-hidden="true"></i>
+                            </a>&nbsp;
+                            <a rel="tooltip" data-placement="left" title="Tolak Akun Alumni" 
+                               href="#" data-id="<?= $row->id; ?>" class="reject">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </a>
+                        <?php } else if ($row->status == 'Diterima') { ?>
+                            Alumni Diterima
+                        <?php } else if ($row->status == 'Ditolak') { ?>
+                            Alumni Ditolak
+                        <?php } ?>
+                    </td>
+                    <td>
+                        <a rel="tooltip" data-placement="left" title="Reset Password Akun Alumni" 
+                           href="<?php echo site_url('KonfirmasiAkun/getResetPassword/'.$row->id); ?>">
+                            <i class="fa fa-edit" aria-hidden="true"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <a rel="tooltip" data-placement="left" title="Update Data Akun Alumni" 
+                           href="<?php echo site_url('KonfirmasiAkun/getUpdateData/'.$row->id); ?>">
+                            <i class="fa fa-edit" aria-hidden="true"></i>
+                        </a>
+                    </td>
 					<td><?= $no++; ?></td>
-					<td><?= $row->id; ?></td>
-					<td>
-						<?php if ($row->status == 'Belum Diverifikasi') { ?>
-							<a rel="tooltip" data-placement="left" title="Terima Akun Alumni" 
-							   href="#" data-id="<?= $row->id; ?>" class="approve">
-	                        	<i class="fa fa-check" aria-hidden="true"></i>
-	                        </a>&nbsp;
-	                        <a rel="tooltip" data-placement="left" title="Tolak Akun Alumni" 
-							   href="#" data-id="<?= $row->id; ?>" class="reject">
-	                        	<i class="fa fa-times" aria-hidden="true"></i>
-	                        </a>
-						<?php } else if ($row->status == 'Diterima') { ?>
-							Alumni Diterima
-						<?php } else if ($row->status == 'Ditolak') { ?>
-							Alumni Ditolak
-						<?php } ?>
-					</td>
-					<td>
-						<a rel="tooltip" data-placement="left" title="Reset Password Akun Alumni" 
-						   href="<?php echo site_url('KonfirmasiAkun/getResetPassword/'.$row->id); ?>">
-                        	<i class="fa fa-edit" aria-hidden="true"></i>
-                        </a>
-					</td>
-					<td>
-						<a rel="tooltip" data-placement="left" title="Update Data Akun Alumni" 
-						   href="<?php echo site_url('KonfirmasiAkun/getUpdateData/'.$row->id); ?>">
-                        	<i class="fa fa-edit" aria-hidden="true"></i>
-                        </a>
-					</td>
 					<td><?= $row->nim; ?></td>
 					<td><?= $row->nik; ?></td>
 					<td class="text-left"><?= $row->nama; ?></td>

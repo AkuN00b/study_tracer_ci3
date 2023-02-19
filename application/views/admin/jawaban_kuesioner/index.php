@@ -16,9 +16,8 @@
 	<table id="myTable" class="table table-hover grid scrollstyle text-center" width="100%">
 		<thead>
 			<tr>
-				<th class="align-middle text-center">No.</th>
-				<th class="align-middle text-center">ID Pertanyaan Kuesioner</th>
 				<th class="align-middle text-center">Aksi</th>
+				<th class="align-middle text-center">ID Pertanyaan Kuesioner</th>
 				<th class="align-middle text-center">Kode Pertanyaan Kuesioner</th>
 				<th class="align-middle text-center">ID Jawaban Kuesioner</th>
 				<th class="">Deskripsi Jawaban</th>
@@ -29,12 +28,8 @@
 		</thead>
 
 		<tbody>
-			<?php $no = 1; ?>
-
 			<?php foreach ($getData->result() as $row) { ?>
 				<tr style="height: 45px;">
-					<td><?= $no++; ?></td>
-					<td><?= $row->id_pku; ?></td>
 					<td>
 						<?php if ($row->status == 'Tidak Aktif') { ?>
 							Status Tidak Aktif
@@ -49,6 +44,7 @@
 	                        </a>
 						<?php } ?>
 					</td>
+					<td><?= $row->id_pku; ?></td>
 					<td><?= $row->kodepertanyaan; ?></td>
 					<td><?= $row->id_jawabankuesioner; ?></td>
 					<td class="text-left"><?= $row->deskripsijawaban; ?></td>

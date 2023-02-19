@@ -31,6 +31,7 @@
         	<option value="Combo Box">Combo Box</option>
         	<option value="Radio Button">Radio Button</option>
             <option value="Text Box">Text Box</option>
+            <option value="Hidden">Hidden</option>
         	<option value="Text Area">Text Area</option>
             <option value="Check Box">Check Box</option>
         	<option value="Check Box Value Berurutan">Check Box Value Berurutan</option>

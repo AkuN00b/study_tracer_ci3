@@ -4,12 +4,12 @@
     <form action="<?php echo site_url('Welcome/inputRegister') ?>" method="POST" autocomplete="off">
         <div class="row">
             <div class="col-md-4">
-                <h4>Politeknik Manufaktur Astra</h4>
+                <h4>Politeknik Astra</h4>
                 <hr />
 
-                <p>Polman Astra adalah sebuah lembaga pendidikan di bawah naungan Yayasan Astra Bina Ilmu (YABI), merupakan salah satu anak perusahaan PT Astra International, Tbk. Polman Astra berlokasi di Komplek Astra International, Tbk., Jalan Gaya Motor Raya no.8, Sunter II, Jakarta Utara, Jakarta 14330.</p><br>
+                <p>Politeknik Astra adalah sebuah lembaga pendidikan di bawah naungan Yayasan Astra Bina Ilmu (YABI), merupakan salah satu anak perusahaan PT Astra International, Tbk. Politeknik Astra berlokasi di Komplek Astra International, Tbk., Jalan Gaya Motor Raya no.8, Sunter II, Jakarta Utara, Jakarta 14330.</p><br>
 
-                <h4>Lulusan Polman Astra</h4>
+                <h4>Lulusan Politeknik Astra</h4>
                 <hr />
 
                 <img src="<?php echo base_url() ?>assets/image/alumni.jpg" style="width: 100%"><br><br><br>

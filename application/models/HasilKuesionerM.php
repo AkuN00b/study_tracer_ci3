@@ -7,7 +7,8 @@ class HasilKuesionerM extends CI_Model
 	public function getAll()
     {
         return $this->db->query("SELECT djp.*, hk.* FROM ts_hasilkuesioner hk
-                                 INNER JOIN ts_detailjenisperiode djp ON djp.id_detailPeriode = hk.id_detailPeriode")->result();
+                                 INNER JOIN ts_detailjenisperiode djp ON djp.id_detailPeriode = hk.id_detailPeriode
+                                 ORDER BY hk.id_hasilKuesioner ASC")->result();
     }
 
     public function getAllCount()
