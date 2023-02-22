@@ -75,7 +75,7 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost:3307',
+	'hostname' => 'localhost:3369',
 	'username' => 'root',
 	'password' => '',
 	'database' => 'tracer_study',

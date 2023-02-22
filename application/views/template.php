@@ -20,6 +20,7 @@
 
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <!-- jangan lupa menambahkan script js sweet alert di bawah ini  -->
+    <script src="//cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.7/dist/sweetalert2.all.min.js"></script>
     <script src="<?php echo base_url() ?>assets/Scripts/jquery-ui-1.12.1.min.js"></script>
     <script src="<?php echo base_url() ?>assets/Plugins/bootstrap-4.0.0-alpha.6-dist/js/bootstrap.min.js"></script>
@@ -30,6 +31,7 @@
     <script src="<?php echo base_url() ?>assets/Scripts/jquery.fancybox.pack.js"></script>
     <script src="<?php echo base_url() ?>assets/Scripts/bootstrap-select.min.js"></script>
     <script src="<?php echo base_url() ?>assets/Scripts/LetterAvatar.js"></script>
+    <script src="<?php echo base_url() ?>assets/Scripts/tableToExcel.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
     <script type="text/javascript">

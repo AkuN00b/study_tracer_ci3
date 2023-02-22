@@ -6,11 +6,11 @@
 	</span>
 <?php } else { ?>
 	<?php $i = 0; $detail = 'sss'; foreach ($getListKuesionerTahunIni as $row) { 
-		if ($row->periode == date('Y')) {
+		if ($row->periode <= date('Y')) {
 			$data[] = array($i++ => $row->id_detailPeriode);
 		}
 	?>
-		<?php if ($row->periode == date('Y')) { ?>
+		<?php if ($row->periode <= date('Y')) { ?>
 			<?php $j = 0; foreach ($getListSudahIsi as $row2) { 
 				if (++$j == $i) {
 					if ($row2->id_detailPeriode != $row->id_detailPeriode) { ?>
@@ -108,19 +108,19 @@
 	      <div class="modal-body">
 	        <form action="<?php echo site_url('Alumni/postNPWP') ?>" method="POST" autocomplete="off">
 				<div class="form-group">
-			        <label for="txtJenisKuesioner">
+			        <label for="txtNPWP">
 			            NPWP
-			            <span style="color: red;">*</span>
+			            <span style="color: red;">*</span><span style="color: red;" id="txtNPWPmsg"></span>
 			        </label>
 			        
-			        <input type="number" name="txtNPWP" id="txtNPWP" class="form-control" required
-			        	onKeyPress="if(this.value.length == 15) return false;"
-		                oninvalid="this.setCustomValidity('NPWP Wajib Diisi')"
-		                oninput="this.setCustomValidity('')"
+			        <input type="text" name="txtNPWP" id="txtNPWP" class="form-control" maxlength="20" 
+			        	pattern="[0-9]{2}\.[0-9]{3}\.[0-9]{3}\.[0-9]{1}-[0-9]{3}\.[0-9]{3}"
+			        	oninput="validateInput()"
+			        	onkeyup="validateInputOnBackspace(event)"
 		                onkeypress="allowAlphaNumericSpace(event)">
 			    </div>
 
-			    <button type="submit" class="btn btn-primary btn-block mb-1">
+			    <button type="submit" disabled="true" id="btnSaveNPWP" class="btn btn-primary btn-block mb-1">
 			    	<i class="fa fa-floppy-o"></i> Isi Data NPWP
 			    </button>
 			</form>
@@ -135,6 +135,34 @@
 ?>
 
 <?php ob_start();?>
+
+<script>
+	const npwpInput = document.getElementById("txtNPWP");
+
+	function validateInput() {
+		const npwpPattern = new RegExp(npwpInput.pattern);
+		const npwpValue = npwpInput.value;
+
+		npwpInput.setCustomValidity('');
+
+		if (npwpPattern.test(npwpValue)) {
+			$("#txtNPWPmsg").hide();
+			$('#btnSaveNPWP').prop('disabled', false);
+		} else {
+			$("#txtNPWPmsg").show();
+			$("#txtNPWPmsg").html(" Masukkan Format NPWP yang benar");
+			$('#btnSaveNPWP').prop('disabled', true);
+		}
+	}
+
+	function validateInputOnBackspace(event) {
+		if (event.keyCode == 8 || event.keyCode == 46) {
+			validateInput();
+		} else {
+			validateInput();
+		}
+	}
+</script>
 
 <?php
 	$script = ob_get_clean();

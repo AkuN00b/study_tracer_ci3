@@ -71,11 +71,12 @@ WHERE NOT EXISTS (SELECT * FROM ts_pertanyaankuesioner WHERE ts_detailjenisperio
 
     public function update($id, $nama, $jenis_kuesioner, $periode, $tanggal_sekarang)
     {
-		$sp = "CALL ts_UpdateDetailJenisPeriode(?, ?, ?, ?, ?)";
-		$data = array('Pid' => $id, 'Pnama' => $nama, 'Pjenis_kuesioner' => $jenis_kuesioner, 'Pperiode' => $periode,
-					  'Ptanggal_sekarang' => $tanggal_sekarang);
-
-        $result = $this->db->query($sp, $data);
+        $result = $this->db->query("UPDATE ts_detailjenisperiode
+                                    SET jenis_kuesioner = '$jenis_kuesioner',
+                                        periode = '$periode',
+                                        modified_by = '$nama',
+                                        modified_date = '$tanggal_sekarang'
+                                    WHERE id_detailPeriode = $id");
 
         if ($result) {
             return $result;

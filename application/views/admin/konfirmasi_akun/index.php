@@ -13,7 +13,8 @@
                 <th class="align-middle text-center">Update Data</th>
 				<th class="align-middle text-center">No.</th>
 				<th class="align-middle text-center">Nomor Induk Mahasiswa</th>
-				<th class="align-middle text-center">Nomor Induk Kependudukan</th>
+                <th class="align-middle text-center">Nomor Induk Kependudukan</th>
+				<th class="align-middle text-center">Nomor Pokok Wajib Pajak</th>
 				<th class="">Nama Alumni</th>
 				<th class="">Alamat</th>
 				<th class="align-middle text-center">Tanggal Lahir</th>
@@ -59,7 +60,14 @@
                     </td>
 					<td><?= $no++; ?></td>
 					<td><?= $row->nim; ?></td>
-					<td><?= $row->nik; ?></td>
+                    <td><?= $row->nik; ?></td>
+					<td>
+                        <?php if ($row->npwp == '') { ?>
+                            -
+                        <?php } else { ?>
+                            <?= $row->npwp; ?>
+                        <?php } ?>
+                    </td>
 					<td class="text-left"><?= $row->nama; ?></td>
 					<td class="text-left"><?= $row->alamat; ?></td>
 					<td><?= tgl_indo($row->tanggal_lahir); ?></td>

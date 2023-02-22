@@ -6,7 +6,17 @@
 
 <div class="row mb-3">
 	<div class="col-12">
-		<a href="<?php echo site_url('DetailJenisPeriode/getCreate'); ?>" class="btn btn-primary float-right">
+		<h5 class="float-left" style="padding-top: 8px;">
+			<?php if ($getKodePT == '') { ?>
+				Kode PT: Tidak ada, 
+			<?php } else { ?>
+				Kode PT: <?php echo $getKodePT; ?>,
+			<?php } ?>
+
+			<a href="#" data-toggle="modal" data-target="#exampleModalCenter"> ubah disini</a>
+		</h5>
+
+		<a href="<?php echo site_url('KodeProdi/getCreate'); ?>" class="btn btn-primary float-right">
 			<i class="fa fa-plus"></i>&nbsp;Tambah
 		</a>
 	</div>
@@ -18,8 +28,8 @@
 			<tr>
 				<th class="align-middle text-center">Aksi</th>
 				<th class="align-middle text-center">No.</th>
-				<th class="align-middle text-center">Jenis Kuesioner</th>
-				<th class="align-middle text-center">Periode (Tahun)</th>
+				<th class="align-middle text-center">Nomor Prodi</th>
+				<th class="align-middle text-center">Kode Prodi</th>
 			</tr>
 		</thead>
 
@@ -33,77 +43,54 @@
 							Status Tidak Aktif
 						<?php } else if ($row->status == 'Aktif') { ?>
 							<a rel="tooltip" data-placement="left" title="Ubah <?php echo $title; ?>" 
-							   href="<?php echo site_url('DetailJenisPeriode/getEdit/'.$row->id_detailPeriode); ?>">
+							   href="<?php echo site_url('KodeProdi/getEdit/'.$row->id); ?>">
 	                        	<i class="fa fa-edit" aria-hidden="true"></i>
 	                        </a>&nbsp;
 	                        <a rel="tooltip" data-placement="left" title="Hapus <?php echo $title; ?>" 
-							   href="#" data-id="<?= $row->id_detailPeriode; ?>" class="remove">
+							   href="#" data-id="<?= $row->id; ?>" class="remove">
 	                        	<i class="fa fa-trash" aria-hidden="true"></i>
 	                        </a>
 						<?php } ?>
 					</td>
 					<td><?= $no++; ?></td>
-					<td><?= $row->jenis_kuesioner; ?></td>
-					<td><?= $row->periode; ?></td>
+					<td><?= $row->prodi; ?></td>
+					<td><?= $row->kode; ?></td>
 				</tr>
 			<?php } ?>
 		</tbody>
 	</table>
 </div>
 
-<!-- <form action="<?php echo site_url('DetailJenisPeriode/copyKuesioner') ?>" method="POST" autocomplete="off">
-	<div class="row mb-3 mt-4 text-center">
-		<div class="col-md-3">
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Isi Kode PT</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="<?php echo site_url('KodeProdi/postKodePT') ?>" method="POST" autocomplete="off">
 			<div class="form-group">
-		        <label for="txtid_detailPeriodeAsal">
-		            Periode dan Jenis Kuesioner Asal
+		        <label for="txtKodePT">
+		            Kode PT
 		            <span style="color: red;">*</span>
 		        </label>
-
-				<select class="form-control" name="txtid_detailPeriodeAsal" id="txtid_detailPeriodeAsal" required
-		                oninvalid="this.setCustomValidity('Periode dan Jenis Kuesioner Asal Wajib Diisi')"
-		                oninput="this.setCustomValidity('')">
-		        	<option disabled="" selected="" value="">-- Pilih Periode dan Jenis Kuesioner Asal --</option>
-		        	<?php
-		                foreach ($getDataAda->result() as $row) {
-		                    echo '<option value="' . $row->id_detailPeriode . '">' . $row->jenis_kuesioner . ' - ' . $row->periode . '</option>';
-		                }
-		            ?>
-		        </select>
+		        
+		        <input type="text" name="txtKodePT" maxlength="6" id="txtKodePT" class="form-control" required
+	                oninvalid="this.setCustomValidity('Kode PT Wajib Diisi')"
+	                oninput="this.setCustomValidity('')">
 		    </div>
-		</div>
 
-		<div class="col-md-2 mb-3" style="padding-top: 32px;">
-			<h4>di-salin</h4>
-		</div>
-
-		<div class="col-md-3">
-			<div class="form-group">
-		        <label for="txtid_detailPeriodeKe">
-		            Ke Periode dan Jenis Kuesioner
-		            <span style="color: red;">*</span>
-		        </label>
-
-				<select class="form-control" name="txtid_detailPeriodeKe" id="txtid_detailPeriodeKe" required
-		                oninvalid="this.setCustomValidity('Ke Periode dan Jenis Kuesioner Wajib Diisi')"
-		                oninput="this.setCustomValidity('')">
-		        	<option disabled="" selected="" value="">-- Pilih Ke Periode dan Jenis Kuesioner --</option>
-		        	<?php
-		                foreach ($getDataKosong->result() as $row) {
-		                    echo '<option value="' . $row->id_detailPeriode . '">' . $row->jenis_kuesioner . ' - ' . $row->periode . '</option>';
-		                }
-		            ?>
-		        </select>
-		    </div>
-		</div>
-
-		<div class="col-md-4" style="padding-top: 27px;">
-			<button type="submit" class="btn btn-primary btn-block">
-		    	<i class="fa fa-copy"></i> Copy Pertanyaan dan Jawaban
+		    <button type="submit" class="btn btn-primary btn-block mb-1">
+		    	<i class="fa fa-floppy-o"></i> Isi Data Kode PT
 		    </button>
-		</div>
-	</div>
-</form> -->
+		</form>
+      </div>
+    </div>
+  </div>
+</div>
 
 <?php
 	$data = ob_get_clean();
@@ -126,7 +113,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '/study-tracer/DetailJenisPeriode/postDelete/' + id,
+                    url: '/study-tracer/KodeProdi/postDelete/' + id,
                     method: "POST"
                 });
 
@@ -137,7 +124,7 @@
                     icon: 'success'
                 }).then(okay => {
                     if (okay) {
-                        window.location.href = "<?php echo base_url('DetailJenisPeriode') ?>"
+                        window.location.href = "<?php echo base_url('KodeProdi') ?>"
                     }
                 });
             } else if (result.dismiss === Swal.DismissReason.cancel) {

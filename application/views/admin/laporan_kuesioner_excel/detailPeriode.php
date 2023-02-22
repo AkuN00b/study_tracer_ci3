@@ -5,8 +5,9 @@
 </center><br>
 
 <?php if ($getData != 0) { ?>
-	<div style="width: 100%;">
-		<table id="myTablee" class="table table-hover grid scrollstyle text-center" width="100%">
+	<button id="exportToExcel" class='btn btn-sm btn-success'>Download Laporan Kuesioner Excel</button><br><br>
+	<div style="width: 100%; overflow-x: auto;">
+		<table id="tableLaporan" class="table table-hover grid scrollstyle text-center" width="100%">
 			<thead>
 				<tr>
 					<?php foreach ($getHeaderLaporan->result() as $row): ?>
@@ -25,7 +26,7 @@
 				<?php foreach ($getLaporan as $row) { ?>
 					<tr style="height: 45px;">
 						<?php foreach ($getHeaderLaporan->result() as $row1): ?>
-					    	<td><?php echo $row[$row1->kode]; ?></th>
+					    	<td data-t="s"><?php echo $row[$row1->kode]; ?></th>
 					    <?php endforeach; ?>	
 					</tr>
 				<?php } ?>
@@ -42,46 +43,13 @@
 
 <?php ob_start();?>
 
-<?php if ($getData != 0) { ?>
-	<script type="text/javascript">        
-	    $(document).ready(function () {
-	        $('#myTablee').DataTable({
-	        	dom: 'Bfrti<"bottom-wrapper"p>',
-		        buttons: [
-		            { extend: 'excel', 
-		              className: 'btn btn-sm btn-success', 
-		              text: 'Download Laporan Kuesioner Excel',
-		              init: function(api, node, config) {
-					  	$(node).removeClass('dt-button');
-					  }, 
-					}
-		        ],
-	            "language": {
-	                "emptyTable": "Tidak ada Data <?php echo $title; ?>"
-	            },
-	            scrollX: true,
-	            "bLengthChange": false,
-	            "bInfo": false,
-	            "pageLength": 10,
-	        });
-	    });
-	</script>
-<?php } else { ?>
-	<script type="text/javascript">        
-		$(document).ready(function () {
-		    $('#myTablee').DataTable({
-		    	"dom": 'lfrti<"bottom-wrapper"p>',
-		        "language": {
-		            "emptyTable": "Tidak ada Data <?php echo $title; ?>"
-		        },
-		        scrollX: true,
-		        "bLengthChange": false,
-		        "bInfo": false,
-		        "pageLength": 10,
-		    });
+<script type="text/javascript">
+	document.getElementById('exportToExcel').addEventListener('click', function() {
+		TableToExcel.convert(document.getElementById("tableLaporan"), {
+			name: "Laporan Kuesioner.xlsx",
 		});
-	</script>
-<?php } ?>
+	});
+</script>
 
 <?php
 	$script = ob_get_clean();

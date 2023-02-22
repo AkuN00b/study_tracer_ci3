@@ -64,11 +64,12 @@ class DetailPertanyaanJawabanM extends CI_Model
 
     public function update($id, $nama, $id_jawabanKuesioner, $id_pku_answer, $tanggal_sekarang)
     {
-		$sp = "CALL ts_UpdateDetailPertanyaanJawaban(?, ?, ?, ?, ?)";
-		$data = array('Pid' => $id, 'Pnama' => $nama, 'Pid_jawabanKuesioner' => $id_jawabanKuesioner, 
-					  'Pid_pku_answer' => $id_pku_answer, 'Ptanggal_sekarang' => $tanggal_sekarang);
-
-        $result = $this->db->query($sp, $data);
+      $result = $this->db->query("UPDATE ts_detailpertanyaanjawaban
+                                    SET id_jawabanKuesioner = '$id_jawabanKuesioner',
+                                        id_pku_answer = '$id_pku_answer',
+                                        modified_by = '$nama',
+                                        modified_date = '$tanggal_sekarang'
+                                    WHERE id_detailPertanyaanJawaban = $id");
 
         if ($result) {
             return $result;

@@ -31,7 +31,7 @@
 					<td><?= $row->jenis_kuesioner; ?> - <?= $row->periode; ?></td>
 					<td><?= $row->nim; ?></td>
 					<td><?= $row->created_by; ?></td>
-					<td><?= tgl_indo($row->tanggal_pengisian); ?></td>
+					<td><?= tgl_indo($row->created_date); ?></td>
 				</tr>
 			<?php } ?>
 		</tbody>

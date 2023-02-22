@@ -12,7 +12,7 @@
 
 	<div class="form-group">
 		<span class="mb-1">Kode PT</span>
-		<input type="text" class="form-control" value="35003" readonly="" name="jawabanKuesioner[0]">
+		<input type="text" class="form-control" value="035021" readonly="" name="jawabanKuesioner[0]">
 		<input type="hidden" value="kdptimsmh" name="kode[0]">
     </div>
 
@@ -450,6 +450,7 @@
 	        url: SITEURL + "Alumni/getProvinsi",
 	        dataType: "json",
 	        success: function(res) {
+	        	console.log(res);
 	            // Tambahkan setiap opsi ke elemen select
 	            for (var i = 0; i < res.length; i++) {
 	                $("#provinsi").append("<option value='" + res[i].provinsi_id + "'>" + res[i].provinsi_deskripsi + "</option>");

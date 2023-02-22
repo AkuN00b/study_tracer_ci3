@@ -6,12 +6,18 @@ class AdminM extends CI_Model
 
 	public function getAll()
     {
-        return $this->db->get($this->_table)->result();
+        return $this->db->get($this->_table);
     }
 	
 	public function getByUsernamePassword($username) {
 	    $data = $this->db->get_where($this->_table, array('username' => $username))->row();
 	    return $data;
+	}
+
+	public function saveKodePT($kodePT) 
+	{
+		return $this->db->query("UPDATE ts_admin
+								 SET kodePT = '$kodePT'");
 	}
 }
 

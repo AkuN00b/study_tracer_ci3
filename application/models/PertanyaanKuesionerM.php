@@ -96,12 +96,15 @@ class PertanyaanKuesionerM extends CI_Model
 
     public function update($id, $nama, $deskripsiPertanyaan, $jenis, $kode, $id_detailPeriode, $pertanyaan_utama, $tanggal_sekarang)
     {
-		$sp = "CALL ts_UpdatePertanyaanKuesioner(?, ?, ?, ?, ?, ?, ?, ?)";
-		$data = array('Pid' => $id, 'PdeskripsiPertanyaan' => $deskripsiPertanyaan, 'Pjenis' => $jenis,
-					  'Pkode' => $kode, 'Pid_detailPeriode' => $id_detailPeriode,
-					  'Ppertanyaan_utama' => $pertanyaan_utama, 'Pnama' => $nama, 'Ptanggal_sekarang' => $tanggal_sekarang);
-
-        $result = $this->db->query($sp, $data);
+      $result = $this->db->query("UPDATE ts_pertanyaankuesioner
+                                    SET deskripsiPertanyaan = '$deskripsiPertanyaan',
+                                        jenis = '$jenis',
+                                        kode = '$kode',
+                                        id_detailPeriode = '$id_detailPeriode',
+                                        pertanyaan_utama = '$pertanyaan_utama',
+                                        modified_by = '$nama',
+                                        modified_date = '$tanggal_sekarang'
+                                    WHERE id_pku = '$id'");
 
         if ($result) {
             return $result;

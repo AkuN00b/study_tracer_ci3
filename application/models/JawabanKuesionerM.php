@@ -74,12 +74,15 @@ class JawabanKuesionerM extends CI_Model
 
     public function update($id, $nama, $id_pku, $deskripsiJawaban, $kode, $nilaiJawaban, $textbox, $tanggal_sekarang)
     {
-		$sp = "CALL ts_UpdateJawabanKuesioner(?, ?, ?, ?, ?, ?, ?, ?)";
-		$data = array('Pid' => $id, 'Pid_pku' => $id_pku, 
-					  'PdeskripsiJawaban' => $deskripsiJawaban, 'Pkode' => $kode, 'PnilaiJawaban' => $nilaiJawaban,
-					  'Ptextbox' => $textbox, 'Pnama' => $nama, 'Ptanggal_sekarang' => $tanggal_sekarang);
-
-        $result = $this->db->query($sp, $data);
+      $result = $this->db->query("UPDATE ts_jawabankuesioner
+                                    SET id_pku = '$id_pku',
+                                        deskripsiJawaban = '$deskripsiJawaban',
+                                        kode = '$kode',
+                                        nilaiJawaban = '$nilaiJawaban',
+                                        textbox = '$textbox',
+                                        modified_by = '$nama',
+                                        modified_date = '$tanggal_sekarang'
+                                    WHERE id_jawabanKuesioner = '$id'");
 
         if ($result) {
             return $result;

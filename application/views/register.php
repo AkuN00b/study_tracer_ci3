@@ -174,7 +174,7 @@
         var pw2 = $("#txtKonfirmasiPassword").val();
         
         if ($('#txtKonfirmasiPassword').val().trim() === '') {
-            $("#txtKonfirmasiPasswordMsg").html("Password Tidak Cocok");
+            $("#txtKonfirmasiPasswordMsg").html(" Password Tidak Cocok");
             $("#txtKonfirmasiPasswordMsg").show();
             error_password = true;
         } else {
@@ -182,7 +182,7 @@
                 $("#txtKonfirmasiPasswordMsg").hide();
                 error_password = false;
             } else {
-                $("#txtKonfirmasiPasswordMsg").html("Password Tidak Cocok");
+                $("#txtKonfirmasiPasswordMsg").html(" Password Tidak Cocok");
                 $("#txtKonfirmasiPasswordMsg").show();
                 error_password = true;
             }

@@ -62,7 +62,7 @@ class RegistrasiAlumniM extends CI_Model
     public function saveNPWP($nama, $id, $npwp, $tanggalSekarang) {
         return $this->db->query("
             UPDATE ts_registrasialumni
-            SET npwp = $npwp,
+            SET npwp = '$npwp',
             modified_by = '$nama',
             modified_date = '$tanggalSekarang'
             WHERE id = $id
@@ -96,18 +96,20 @@ class RegistrasiAlumniM extends CI_Model
 
     public function updateDiterimaM($id, $nama, $tanggal_sekarang) 
     {
-        $sp = "CALL ts_UpdateAlumniDiterima(?, ?, ?)";
-        $data = array('Pid' => $id, 'PnamaAdmin' => $nama, 'Ptanggal_sekarang' => $tanggal_sekarang);
-
-        return $this->db->query($sp, $data);
+        return $this->db->query("UPDATE ts_registrasialumni
+                                 SET modified_by = '$nama',
+                                 modified_date = '$tanggal_sekarang',
+                                 status = 'Diterima'
+                                 WHERE id = '$id'");
     }
 
     public function updateDitolakM($id, $nama, $tanggal_sekarang) 
     {
-        $sp = "CALL ts_UpdateAlumniDitolak(?, ?, ?)";
-        $data = array('Pid' => $id, 'PnamaAdmin' => $nama, 'Ptanggal_sekarang' => $tanggal_sekarang);
-
-        return $this->db->query($sp, $data);
+        return $this->db->query("UPDATE ts_registrasialumni
+                                 SET modified_by = '$nama',
+                                 modified_date = '$tanggal_sekarang',
+                                 status = 'Ditolak'
+                                 WHERE id = '$id'");
     }
 
     public function updatePassword($id, $password, $nama, $tanggal_sekarang) 
